@@ -36,6 +36,12 @@ public class EfBayRepository : IBayRepository
         return bays;
     }
 
+    public async Task<BaySnapshot?> GetBayByIdAsync(Guid bayId, CancellationToken ct = default)
+    {
+        var bay = await _db.Bays.AsNoTracking().FirstOrDefaultAsync(b => b.Id == bayId, ct);
+        return bay is null ? null : new BaySnapshot(bay.Id, bay.Level, bay.Type, bay.Status == BayStatus.Occupied, bay.CurrentTicketId);
+    }
+
     public async Task<bool> TryOccupyAsync(Guid bayId, Guid ticketId, CancellationToken ct = default)
     {
         var updated = await _db.Bays

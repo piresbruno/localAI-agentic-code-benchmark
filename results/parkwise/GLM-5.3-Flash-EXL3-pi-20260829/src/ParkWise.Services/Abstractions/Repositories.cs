@@ -10,6 +10,9 @@ public interface IBayRepository
     /// <summary>All bays with their current status.</summary>
     Task<IReadOnlyList<BaySnapshot>> GetAllBaysAsync(CancellationToken ct = default);
 
+    /// <summary>One bay by id, or null.</summary>
+    Task<BaySnapshot?> GetBayByIdAsync(Guid bayId, CancellationToken ct = default);
+
     /// <summary>Race-safe allocation: occupies the bay only if still free.
     /// Returns false when another concurrent entry won the bay.</summary>
     Task<bool> TryOccupyAsync(Guid bayId, Guid ticketId, CancellationToken ct = default);

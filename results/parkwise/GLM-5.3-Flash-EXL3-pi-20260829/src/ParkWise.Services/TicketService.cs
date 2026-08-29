@@ -83,11 +83,13 @@ public class TicketService
             {
                 if (await _bays.TryOccupyAsync(bayId, ticketId, ct))
                 {
+                    var bay = await _bays.GetBayByIdAsync(bayId, ct)
+                        ?? new BaySnapshot(bayId, 0, candidateType, true, ticketId);
                     var ticket = new TicketRecord(
-                        ticketId, plate, type, bayId, candidateType.ToString(),
-                        Level: 0, _clock.UtcNow, ExitAtUtc: null, TicketStatus.Open, permitCode, ReportedLostAtUtc: null);
+                        ticketId, plate, type, bayId, bay.Type.ToString(),
+                        Level: bay.Level, _clock.UtcNow, ExitAtUtc: null, TicketStatus.Open, permitCode, ReportedLostAtUtc: null);
                     await _tickets.AddAsync(ticket, ct);
-                    return new EntryResult(ticket, new BaySnapshot(bayId, 0, candidateType, true, ticketId));
+                    return new EntryResult(ticket, bay);
                 }
                 // Lost the race for this bay; try the next candidate.
             }
@@ -103,6 +105,13 @@ public class TicketService
         var ticket = await _tickets.GetByIdAsync(ticketId, ct)
             ?? throw new TicketNotFoundException(ticketId);
         return await BuildQuoteAsync(ticket, ct);
+    }
+
+    /// <summary>Fetches one ticket (404 when unknown).</summary>
+    public async Task<TicketRecord> GetTicketAsync(Guid ticketId, CancellationToken ct = default)
+    {
+        return await _tickets.GetByIdAsync(ticketId, ct)
+            ?? throw new TicketNotFoundException(ticketId);
     }
 
     /// <summary>Processes an exit. Semantics (spec §4):
