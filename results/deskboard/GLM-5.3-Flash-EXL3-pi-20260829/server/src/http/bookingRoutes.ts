@@ -14,22 +14,22 @@ const listQuerySchema = z.object({
 export function bookingRouter(bookings: BookingService, authMiddleware: AuthMiddleware): Router {
   const router = Router();
 
-  router.post('/bookings', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.post('/bookings', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     const input = parseBody(req, bookingSchema);
-    res.status(201).json(bookings.create(req.user!, input));
+    res.status(201).json(await bookings.create(req.user!, input));
   });
 
-  router.get('/bookings/mine', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.get('/bookings/mine', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     res.json(bookings.listMine(req.user!));
   });
 
-  router.get('/bookings', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.get('/bookings', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     const query = parseQuery(req.query, listQuerySchema);
     res.json(bookings.list(req.user!, query));
   });
 
-  router.delete('/bookings/:id', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
-    res.json(bookings.cancel(req.user!, String(req.params.id)));
+  router.delete('/bookings/:id', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
+    res.json(await bookings.cancel(req.user!, String(req.params.id)));
   });
 
   return router;

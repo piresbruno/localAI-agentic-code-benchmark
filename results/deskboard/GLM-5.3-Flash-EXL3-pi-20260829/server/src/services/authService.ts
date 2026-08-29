@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   /** Registers a new employee. Admin accounts only exist via seeding. */
-  register(input: { name: string; email: string; password: string }): { token: string; user: PublicUser } {
+  async register(input: { name: string; email: string; password: string }): Promise<{ token: string; user: PublicUser }> {
     if (this.users.findByEmail(input.email)) {
       throw new DomainError('CONFLICT', 'An account with this email already exists');
     }
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   /** Verifies credentials and returns a fresh JWT. */
-  login(input: { email: string; password: string }): { token: string; user: PublicUser } {
+  async login(input: { email: string; password: string }): Promise<{ token: string; user: PublicUser }> {
     const user = this.users.findByEmail(input.email);
     const stored = user ? this.users.getPasswordHash(user.id) : undefined;
     if (!user || !stored || !verifyPassword(input.password, stored)) {
@@ -60,10 +60,10 @@ export class AuthService {
   }
 
   /** Changes the caller's password after verifying the current one. */
-  changePassword(
+  async changePassword(
     userId: string,
     input: { currentPassword: string; newPassword: string },
-  ): void {
+  ): Promise<void> {
     const user = this.users.findById(userId);
     if (!user) throw notFoundError('User not found');
     const stored = this.users.getPasswordHash(userId);

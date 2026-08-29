@@ -8,15 +8,15 @@ import { parseBody } from './parse.js';
 export function authRouter(auth: AuthService, authMiddleware: AuthMiddleware): Router {
   const router = Router();
 
-  router.post('/auth/register', (req, res) => {
+  router.post('/auth/register', async (req, res) => {
     const input = parseBody(req, registerSchema);
-    const result = auth.register(input);
+    const result = await auth.register(input);
     res.status(201).json(result);
   });
 
-  router.post('/auth/login', (req, res) => {
+  router.post('/auth/login', async (req, res) => {
     const input = parseBody(req, loginSchema);
-    res.json(auth.login(input));
+    res.json(await auth.login(input));
   });
 
   router.get('/auth/me', authMiddleware.requireAuth, (req: AuthedRequest, res) => {

@@ -152,7 +152,7 @@ export class BookingService {
    * Creates a booking after enforcing every business rule:
    * room exists + active, business hours, capacity, no conflicts (any occurrence).
    */
-  create(actor: PublicUser, input: CreateBookingInput): BookingView {
+  async create(actor: PublicUser, input: CreateBookingInput): Promise<BookingView> {
     const room = this.rooms.findById(input.roomId);
     if (!room) throw notFoundError('Room not found');
     if (!room.active) {
@@ -221,7 +221,7 @@ export class BookingService {
    * Cancels a booking. Admin: any time. Organizer: up to 1h before the first
    * occurrence starts. Anyone else: never. Cancelled bookings never conflict.
    */
-  cancel(actor: PublicUser, bookingId: string): BookingView {
+  async cancel(actor: PublicUser, bookingId: string): Promise<BookingView> {
     const booking = this.bookings.findById(bookingId);
     if (!booking) throw notFoundError('Booking not found');
 

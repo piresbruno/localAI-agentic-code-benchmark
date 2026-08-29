@@ -25,17 +25,17 @@ export function roomRouter(
     res.json(bookings.availability(String(req.params.id), query.date));
   });
 
-  router.post('/rooms', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.post('/rooms', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     const input = parseBody(req, roomSchema);
     res.status(201).json(rooms.create(req.user!, input));
   });
 
-  router.put('/rooms/:id', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.put('/rooms/:id', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     const input = parseBody(req, roomUpdateSchema);
     res.json(rooms.update(req.user!, String(req.params.id), input));
   });
 
-  router.delete('/rooms/:id', authMiddleware.requireAuth, (req: AuthedRequest, res) => {
+  router.delete('/rooms/:id', authMiddleware.requireAuth, async (req: AuthedRequest, res) => {
     res.json(rooms.deactivate(req.user!, String(req.params.id)));
   });
 
