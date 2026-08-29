@@ -12,11 +12,11 @@
 project: deskboard
 agent: pi
 model: deepseek-v4-flash
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
+wall_time: 01:11:48
+total_tokens: 26508376
+input_tokens: 26323203
+output_tokens: 185173
+avg_tps: 43.0
 cost:
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
@@ -24,18 +24,18 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 ## Derivation notes
 
-- **wall_time**: harness session start → last message. Exclude operator idle time if the harness allows; note how it was computed.
-- **avg_tps**: output tokens ÷ generation time if exposed; otherwise output tokens ÷ wall_time (note which).
-- Include retries/errors in totals — they are part of the run's real cost.
+- **wall_time**: 2026-08-29 20:45:54Z → 22:57:42Z per pi session log (first → last message); 4308s = 01:11:48.
+- **avg_tps**: 43.0 = output tokens ÷ wall seconds (harness does not expose separate generation time).
+- **tokens**: summed `message.usage.{input,output}` across 179 assistant messages in the pi session JSONL (`~/.pi/agent/sessions/.../2026-08-29T20-45-54-734Z_*.jsonl`).
 
 ## Extra observations
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 179 assistant messages |
+| Errors/retries visible in transcript (build/test failures) | ~18 TS errors + ~38 failing-test iterations, all resolved |
+| Cache-read tokens (if reported) | not reported |
+| Harness + version | pi (PI_CODING_AGENT=true), model deepseek-ai/DeepSeek-V4-Flash-0731 |
 
 ## Where to find the numbers (by harness)
 
@@ -46,7 +46,24 @@ score:                  # normalized 0–100 (from RESULT.md)
 Paste the exact command used to extract:
 
 ```bash
-# e.g. jq over the session JSONL …
+python3 - <<'EOF'
+import json, datetime
+p = '~/.pi/agent/sessions/--home-piresbruno-developer-code-benchmark--/2026-08-29T20-45-54-734Z_01a04f45-92ae-719d-b710-ed4f2e70c193.jsonl'
+in_tok=out_tok=0; first=last=None
+for line in open(p):
+    o=json.loads(line)
+    ts=o.get('timestamp')
+    if ts:
+        t=datetime.datetime.fromisoformat(ts.replace('Z','+00:00'))
+        first=first or t; last=t
+    m=o.get('message')
+    if isinstance(m,dict):
+        u=m.get('usage')
+        if isinstance(u,dict) and 'input' in u:
+            in_tok+=u.get('input',0); out_tok+=u.get('output',0)
+print(in_tok,out_tok,(last-first).total_seconds())
+EOF
+# 26,323,203 input / 185,173 output / 4308s → avg_tps 43.0
 ```
 
 ## Raw transcript excerpt (evidence)

@@ -4,6 +4,7 @@
 **Started**: 2026-08-29
 **Spec**: /home/piresbruno/developer/code-benchmark/specs/01-typescript-deskboard/SPEC.md
 **Mode**: unattended
+unattended: plan self-approved (no operator interaction requested)
 
 ## Understanding of the task
 
@@ -11,16 +12,16 @@ DeskBoard is a full-stack TypeScript meeting-room booking app (npm workspaces: `
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold npm-workspace monorepo (root package.json + scripts, tsconfig.base.json, server/client/shared packages, vitest projects, eslint+prettier). Accept: `npm install` clean; `npm run build` green on skeleton; `npm test` passes with no tests (passWithNoTests).
-- [ ] T2 — `shared/`: domain types (Role, Feature, Recurrence, Room, Booking, BookingStatus, DTOs), zod validation schemas for every request, the shared error contract `{ error: { code, message, details? } }`, business constants (hours 08:00–19:00 Mon–Fri, max 4h, durations, feature set). Accept: shared unit tests pass; BUILD_CHECK green.
-- [ ] T3 — Server auth & users: scrypt password hashing, JWT issue/verify (12h expiry), auth middleware (401) + admin guard, user repo, register/login/me/password-change logic. Accept: unit tests for hashing/JWT/guards pass.
-- [ ] T4 — Server repositories: in-memory `UserRepository`, `RoomRepository`, `BookingRepository` behind interfaces; `Clock` + `IdGen` injected; thread-safe reads. Accept: repo unit tests pass with fixed clock.
-- [ ] T5 — Server services (ALL business rules, pure): `BookingService` (business hours, end>start, ≤4h, weekly recurrence expansion, room conflict at any occurrence, capacity, cancellation window, completed-on-read, deactivated-room blocks new bookings), `RoomService` (admin-only mutations, case-insensitive unique name, soft deactivate), `UsageService` (per-room booked hours, #bookings, top organizer). Accept: tests named for all 8 §4 rules pass.
-- [ ] T6 — Server HTTP layer: routers (auth, rooms, bookings, users, admin, health), zod boundary validation → 400, shared error mapper, JWT on protected routes, seed (default rooms + admin), `app.ts` + `main.ts` (static UI from client/dist), OpenAPI 3 doc served at `/api-docs` via swagger-ui-express. Accept: supertest integration suite covers every §5 endpoint incl. 401/403/404/409/422 paths; `/health` 200.
-- [ ] T7 — Client design system: `tokens.css` single source (palette, ≥4 type sizes, 4/8px spacing, radii, shadows, focus ring), `components/ui/` (Button, TextField, Select, Modal w/ focus trap+Esc+backdrop, Toast w/ aria-live, Badge, Table, Spinner/Skeleton), app scaffold styles. Accept: ≥ 4 design-system components have RTL tests (variants/disabled/error).
-- [ ] T8 — Client features: typed api wrapper over shared DTOs, auth/session hook (localStorage token), data hooks with loading/empty/error states, unit-tested client logic modules (slot computation, cancel-window), pages (Login, RoomGrid, BookingForm, MyBookings, AdminRooms), routing + header w/ user menu, responsive ≥360px, keyboard-accessible. Accept: `vite build` green; ≥ 8 meaningful RTL tests + logic unit tests pass.
-- [ ] T9 — Docs: README (goal, quickstart ≤3 cmds, architecture, env vars + defaults, seeded accounts, API summary + Swagger link, deviations), `docs/DECISIONS.md`, `docs/DESIGN.md`. Accept: docs committed.
-- [ ] T10 — Quality gates: full test suite green, coverage ≥ 75% lines on `server/src` + `shared/` (via `npx vitest run --coverage`), build zero errors, eslint/prettier zero warnings, smoke: `npm start` → `/health` 200, `/api-docs` serves, UI at `/`. Accept: all gates green; final report written.
+- [x] T1 — Scaffold npm-workspace monorepo (root package.json + scripts, tsconfig.base.json, server/client/shared packages, vitest projects, eslint+prettier). Accept: `npm install` clean; `npm run build` green on skeleton; `npm test` passes with no tests (passWithNoTests).
+- [x] T2 — `shared/`: domain types (Role, Feature, Recurrence, Room, Booking, BookingStatus, DTOs), zod validation schemas for every request, the shared error contract `{ error: { code, message, details? } }`, business constants (hours 08:00–19:00 Mon–Fri, max 4h, durations, feature set). Accept: shared unit tests pass; BUILD_CHECK green.
+- [x] T3 — Server auth & users: scrypt password hashing, JWT issue/verify (12h expiry), auth middleware (401) + admin guard, user repo, register/login/me/password-change logic. Accept: unit tests for hashing/JWT/guards pass.
+- [x] T4 — Server repositories: in-memory `UserRepository`, `RoomRepository`, `BookingRepository` behind interfaces; `Clock` + `IdGen` injected; thread-safe reads. Accept: repo unit tests pass with fixed clock.
+- [x] T5 — Server services (ALL business rules, pure): `BookingService` (business hours, end>start, ≤4h, weekly recurrence expansion, room conflict at any occurrence, capacity, cancellation window, completed-on-read, deactivated-room blocks new bookings), `RoomService` (admin-only mutations, case-insensitive unique name, soft deactivate), `UsageService` (per-room booked hours, #bookings, top organizer). Accept: tests named for all 8 §4 rules pass.
+- [x] T6 — Server HTTP layer: routers (auth, rooms, bookings, users, admin, health), zod boundary validation → 400, shared error mapper, JWT on protected routes, seed (default rooms + admin), `app.ts` + `main.ts` (static UI from client/dist), OpenAPI 3 doc served at `/api-docs` via swagger-ui-express. Accept: supertest integration suite covers every §5 endpoint incl. 401/403/404/409/422 paths; `/health` 200.
+- [x] T7 — Client design system: `tokens.css` single source (palette, ≥4 type sizes, 4/8px spacing, radii, shadows, focus ring), `components/ui/` (Button, TextField, Select, Modal w/ focus trap+Esc+backdrop, Toast w/ aria-live, Badge, Table, Spinner/Skeleton), app scaffold styles. Accept: ≥ 4 design-system components have RTL tests (variants/disabled/error).
+- [x] T8 — Client features: typed api wrapper over shared DTOs, auth/session hook (localStorage token), data hooks with loading/empty/error states, unit-tested client logic modules (slot computation, cancel-window), pages (Login, RoomGrid, BookingForm, MyBookings, AdminRooms), routing + header w/ user menu, responsive ≥360px, keyboard-accessible. Accept: `vite build` green; ≥ 8 meaningful RTL tests + logic unit tests pass.
+- [x] T9 — Docs: README (goal, quickstart ≤3 cmds, architecture, env vars + defaults, seeded accounts, API summary + Swagger link, deviations), `docs/DECISIONS.md`, `docs/DESIGN.md`. Accept: docs committed.
+- [x] T10 — Quality gates: full test suite green, coverage ≥ 75% lines on `server/src` + `shared/` (via `npx vitest run --coverage`), build zero errors, eslint/prettier zero warnings, smoke: `npm start` → `/health` 200, `/api-docs` serves, UI at `/`. Accept: all gates green; final report written.
 
 ## Decisions & spec deviations
 
@@ -37,11 +38,11 @@ DeskBoard is a full-stack TypeScript meeting-room booking app (npm workspaces: `
 | 9   | Server runs compiled `dist` (tsc, CommonJS-free ESM); `npm start` rebuilds deterministically                                            | Guarantees clean-checkout `npm start` works; matches spec command table.                                                             |
 | 10  | Coverage gate measured on `server/src/**` + `shared/src/**`; client coverage reported separately but excluded from the 75% gate         | Matches §2/§8 ("coverage of server/src/** and shared/**; UI components excluded from the gate").                                     |
 
-## Final report (fill at the end)
+## Final report
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 01:11:48 (harness session log, first → last message)
+- Total tokens consumed (in + out) + avg output t/s: 26,508,376 (26,323,203 in / 185,173 out); 43.0 output t/s. Source: pi session JSONL (PI_SESSION_FILE) — self-reported by harness telemetry.
+- Errors/retries (build/test/lint): ~18 build/type errors + ~38 test-run iterations during development, all fixed forward (documented in commit history); 0 unresolved at the end.
+- Final coverage: 97.32% lines on server/src + shared/ via `npx vitest run --coverage` (gate: ≥75%; client excluded per spec §2, 15 RTL tests there).
+- Line counts per directory (src, excl. tests/docs): shared/src 406, server/src 1796, client/src 2706 → 4,908; tests add 2,300.
+- Deviations from spec: see Decisions table — future-start guard, per-occurrence records for weekly recurrence, scrypt hashing, usage-report interpretation, inactive rooms visible to admin list (all documented in README/DECISIONS).

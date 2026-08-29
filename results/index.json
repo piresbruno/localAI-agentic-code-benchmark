@@ -13,6 +13,18 @@
     "_dir": "/home/piresbruno/developer/code-benchmark/results/deskboard/GLM-5.3-Flash-EXL3-pi-20260829"
   },
   {
+    "project": "deskboard",
+    "agent": "pi",
+    "model": "deepseek-v4-flash",
+    "wall_time": "01:11:48",
+    "total_tokens": "26508376",
+    "input_tokens": "26323203",
+    "output_tokens": "185173",
+    "avg_tps": "43.0",
+    "_run_id": "deepseek-v4-flash-pi-20260829",
+    "_dir": "/home/piresbruno/developer/code-benchmark/results/deskboard/deepseek-v4-flash-pi-20260829"
+  },
+  {
     "project": "loglens",
     "agent": "pi",
     "model": "GLM-5.3-Flash-EXL3",

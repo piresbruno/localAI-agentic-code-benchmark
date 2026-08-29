@@ -30,4 +30,5 @@ One line per completed run for quick reference. **The canonical comparison is th
 |------|---------|---------------|---------|----------|--------------|---------|-----------|-------|
 | 2026-08-29 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 97.05% | 10,264,302 | 27.7 | 00:51:01 | 116 tests (86 server + 30 client); awaiting grading |
 | 2026-08-29 | loglens | GLM-5.3-Flash-EXL3/pi | pending grading | 97% | 22,863,549 | 26.7 | 00:51:03 | 134 tests, ruff clean, 4 planted scenarios detected; awaiting grading |
-| 2026-08-29 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 86.49% | 56,585,806 | 19.6 | 01:30:27 | 76 tests (59 unit + 17 integration), warnings-as-errors; awaiting grading | — |
+| 2026-08-29 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 86.49% | 56,585,806 | 19.6 | 01:30:27 | 76 tests (59 unit + 17 integration), warnings-as-errors; awaiting grading |
+| 2026-08-29 | deskboard | deepseek-v4-flash/pi | pending grading | 97.32% | 26,508,376 | 43.0 | 01:11:48 | 168 tests (131 server/shared + 37 client), lint clean, smoke green; pending grading |
