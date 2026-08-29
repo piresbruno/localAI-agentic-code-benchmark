@@ -6,7 +6,7 @@ Execute **top to bottom**. One project per language. Each row links to its self-
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
 | 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 2,000–3,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | 🟨 implemented, awaiting grading |
 | 2 | `loglens` | Python 3.11+ | CLI + library: log analysis & anomaly reports | — | 2,000–3,000 | ≥ 75% | [specs/02-python-loglens/SPEC.md](specs/02-python-loglens/SPEC.md) | 🟨 implemented, awaiting grading |
-| 3 | `parkwise` | C# (.NET 8, ASP.NET Core Web API) | Parking-garage management API | — | 2,000–3,000 | ≥ 75% | [specs/03-csharp-parkwise/SPEC.md](specs/03-csharp-parkwise/SPEC.md) | ⬜ not run |
+| 3 | `parkwise` | C# (.NET 8, ASP.NET Core Web API) | Parking-garage management API | — | 2,000–3,000 | ≥ 75% | [specs/03-csharp-parkwise/SPEC.md](specs/03-csharp-parkwise/SPEC.md) | 🟨 implemented, awaiting grading |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
 
@@ -29,4 +29,5 @@ One line per completed run for quick reference. **The canonical comparison is th
 | date | project | model/harness | verdict | coverage | total_tokens | avg t/s | wall_time | notes |
 |------|---------|---------------|---------|----------|--------------|---------|-----------|-------|
 | 2026-08-29 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 97.05% | 10,264,302 | 27.7 | 00:51:01 | 116 tests (86 server + 30 client); awaiting grading |
-| 2026-08-29 | loglens | GLM-5.3-Flash-EXL3/pi | pending grading | 97% | 22,863,549 | 26.7 | 00:51:03 | 134 tests, ruff clean, 4 planted scenarios detected; awaiting grading | — |
+| 2026-08-29 | loglens | GLM-5.3-Flash-EXL3/pi | pending grading | 97% | 22,863,549 | 26.7 | 00:51:03 | 134 tests, ruff clean, 4 planted scenarios detected; awaiting grading |
+| 2026-08-29 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 86.49% | 56,585,806 | 19.6 | 01:30:27 | 76 tests (59 unit + 17 integration), warnings-as-errors; awaiting grading | — |
