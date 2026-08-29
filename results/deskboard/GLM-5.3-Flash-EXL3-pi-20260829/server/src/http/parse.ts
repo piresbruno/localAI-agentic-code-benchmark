@@ -1,15 +1,15 @@
 /** Boundary validation helper: parses a request payload with a zod schema or raises the shared 400. */
 import type { Request } from 'express';
-import { ZodError, type ZodType } from 'zod';
+import { ZodError, type ZodType, type ZodTypeAny } from 'zod';
 import { validationError } from '@deskboard/shared';
 
-export function parseBody<T>(req: Request, schema: ZodType<T, any, any>): T {
+export function parseBody<T>(req: Request, schema: ZodType<T, ZodTypeAny, ZodTypeAny>): T {
   const result = schema.safeParse(req.body);
   if (!result.success) throw toValidationError(result.error);
   return result.data;
 }
 
-export function parseQuery<T>(query: unknown, schema: ZodType<T, any, any>): T {
+export function parseQuery<T>(query: unknown, schema: ZodType<T, ZodTypeAny, ZodTypeAny>): T {
   const result = schema.safeParse(query);
   if (!result.success) throw toValidationError(result.error);
   return result.data;

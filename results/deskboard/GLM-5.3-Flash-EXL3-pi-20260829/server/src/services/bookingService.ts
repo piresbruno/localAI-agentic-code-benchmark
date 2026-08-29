@@ -207,7 +207,7 @@ export class BookingService {
    * Admins see everyone's bookings; employees only their own.
    */
   list(actor: PublicUser, filters: { date?: string; roomId?: string }): BookingView[] {
-    let candidates = actor.role === 'admin' ? this.bookings.findAll() : this.bookings.findByOrganizerId(actor.id);
+    const candidates = actor.role === 'admin' ? this.bookings.findAll() : this.bookings.findByOrganizerId(actor.id);
     const views = candidates.map((b) => this.toView(b));
     const filtered = views.filter((view) => {
       if (filters.roomId && view.roomId !== filters.roomId) return false;

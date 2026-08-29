@@ -92,5 +92,6 @@ export function createApp(config: Config, options: AppOptions = {}): Express {
 
 /** Server package root, stable whether running from src (tsx) or dist. */
 function serverRootDir(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+  // src/app.ts → server/src → server; dist/app.js → server/dist → server
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 }

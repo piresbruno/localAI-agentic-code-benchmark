@@ -35,7 +35,6 @@ export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[]): FetchSt
     return () => {
       alive = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, attempt]);
 
   const reload = useCallback(() => setAttempt((n) => n + 1), []);
