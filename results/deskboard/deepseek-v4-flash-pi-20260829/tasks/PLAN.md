@@ -24,18 +24,18 @@ DeskBoard is a full-stack TypeScript meeting-room booking app (npm workspaces: `
 
 ## Decisions & spec deviations
 
-| # | Decision / deviation | Justification |
-|---|---------------------|---------------|
-| 1 | Booking start must be in the future (rejects past/present bookings) | Not explicitly stated; booking history is read-only (completed-on-read rule) so past bookings are meaningless — documented + tested. |
-| 2 | Weekly recurrence expands to `count` independent Booking records, each carrying the recurrence def | Matches "creates count occurrences"; DELETE cancels one occurrence. No seriesId per spec silence. |
-| 3 | Password hashing via Node `crypto.scrypt` (salt:hash), min password length 8 | No native deps (deterministic install); sensible default, documented in README. |
-| 4 | Attendees = number of people; `attendees <= capacity` else 422 | Spec: "attendees (count ≤ room capacity)" → 422 rule violation. |
-| 5 | CANCELLED bookings free the room in availability; CONFIRMED+COMPLETED occupy it | Availability reflects actual occupation; cancelled occurrences free the slot. |
-| 6 | Duplicate room name overrides other edits: 409 `ROOM_NAME_TAKEN` | Spec: case-insensitive uniqueness = 409. |
-| 7 | Usage report counts confirmed+completed occurrences overlapping [from,to]; hours = overlap minutes/60; top organizer = most occurrences | Reasonable interpretation of "total booked hours, #bookings, top organizer"; documented + tested. |
-| 8 | Admin can cancel any non-cancelled booking at any time; organizer only ≥1h before start; others 403 | Literal reading of `enforces_cancellation_window`. |
-| 9 | Server runs compiled `dist` (tsc, CommonJS-free ESM); `npm start` rebuilds deterministically | Guarantees clean-checkout `npm start` works; matches spec command table. |
-| 10 | Coverage gate measured on `server/src/**` + `shared/src/**`; client coverage reported separately but excluded from the 75% gate | Matches §2/§8 ("coverage of server/src/** and shared/**; UI components excluded from the gate"). |
+| #   | Decision / deviation                                                                                                                    | Justification                                                                                                                        |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Booking start must be in the future (rejects past/present bookings)                                                                     | Not explicitly stated; booking history is read-only (completed-on-read rule) so past bookings are meaningless — documented + tested. |
+| 2   | Weekly recurrence expands to `count` independent Booking records, each carrying the recurrence def                                      | Matches "creates count occurrences"; DELETE cancels one occurrence. No seriesId per spec silence.                                    |
+| 3   | Password hashing via Node `crypto.scrypt` (salt:hash), min password length 8                                                            | No native deps (deterministic install); sensible default, documented in README.                                                      |
+| 4   | Attendees = number of people; `attendees <= capacity` else 422                                                                          | Spec: "attendees (count ≤ room capacity)" → 422 rule violation.                                                                      |
+| 5   | CANCELLED bookings free the room in availability; CONFIRMED+COMPLETED occupy it                                                         | Availability reflects actual occupation; cancelled occurrences free the slot.                                                        |
+| 6   | Duplicate room name overrides other edits: 409 `ROOM_NAME_TAKEN`                                                                        | Spec: case-insensitive uniqueness = 409.                                                                                             |
+| 7   | Usage report counts confirmed+completed occurrences overlapping [from,to]; hours = overlap minutes/60; top organizer = most occurrences | Reasonable interpretation of "total booked hours, #bookings, top organizer"; documented + tested.                                    |
+| 8   | Admin can cancel any non-cancelled booking at any time; organizer only ≥1h before start; others 403                                     | Literal reading of `enforces_cancellation_window`.                                                                                   |
+| 9   | Server runs compiled `dist` (tsc, CommonJS-free ESM); `npm start` rebuilds deterministically                                            | Guarantees clean-checkout `npm start` works; matches spec command table.                                                             |
+| 10  | Coverage gate measured on `server/src/**` + `shared/src/**`; client coverage reported separately but excluded from the 75% gate         | Matches §2/§8 ("coverage of server/src/** and shared/**; UI components excluded from the gate").                                     |
 
 ## Final report (fill at the end)
 
