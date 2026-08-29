@@ -14,9 +14,9 @@ No database, no manual seeding, no environment file required.
 
 ## Seeded accounts & data
 
-| Account | Credentials | Role |
-|---|---|---|
-| `admin@deskboard.local` | `admin123` | admin (change via `PUT /api/users/me/password`) |
+| Account                 | Credentials | Role                                            |
+| ----------------------- | ----------- | ----------------------------------------------- |
+| `admin@deskboard.local` | `admin123`  | admin (change via `PUT /api/users/me/password`) |
 
 Six rooms are seeded on boot (Atlas, Orion, Vega, Polaris, Andromeda, Lyra) — seeding is idempotent (only when the store is empty).
 
@@ -48,9 +48,9 @@ Where a real DB would plug in: implement the repository interfaces with a Postgr
 
 ## Environment variables
 
-| Variable | Default | Notes |
-|---|---|---|
-| `PORT` | `3000` | HTTP port |
+| Variable     | Default                | Notes                                                                                  |
+| ------------ | ---------------------- | -------------------------------------------------------------------------------------- |
+| `PORT`       | `3000`                 | HTTP port                                                                              |
 | `JWT_SECRET` | `dev-secret-change-me` | **Set a strong value in production** (a warning is logged otherwise). Tokens last 12h. |
 
 "Local time" = the server process timezone (`TZ`); all time math and business-hour checks use it.
@@ -59,20 +59,20 @@ Where a real DB would plug in: implement the repository interfaces with a Postgr
 
 Every endpoint is documented in the interactive **Swagger UI at `/api-docs`**. Error contract on every endpoint: `{ "error": { "code", "message", "details?" } }` (400 validation, 401 unauthenticated/invalid credentials, 403 forbidden, 404 unknown, 409 conflict, 422 rule violation).
 
-| Method | Path | Access |
-|---|---|---|
-| POST | `/api/auth/register` | public |
-| POST | `/api/auth/login` | public |
-| GET | `/api/auth/me` | auth |
-| GET | `/api/rooms` | auth |
-| POST / PUT / DELETE | `/api/rooms` / `/api/rooms/:id` | admin |
-| GET | `/api/rooms/:id/availability?date=YYYY-MM-DD` | auth |
-| POST / GET | `/api/bookings` · `/api/bookings?date=&roomId=` | auth (list scoped to self for employees) |
-| GET | `/api/bookings/mine` | auth |
-| DELETE | `/api/bookings/:id` | auth (owner/admin) |
-| PUT | `/api/users/me/password` | auth |
-| GET | `/api/admin/usage?from=&to=` | admin |
-| GET | `/health` | public |
+| Method              | Path                                            | Access                                   |
+| ------------------- | ----------------------------------------------- | ---------------------------------------- |
+| POST                | `/api/auth/register`                            | public                                   |
+| POST                | `/api/auth/login`                               | public                                   |
+| GET                 | `/api/auth/me`                                  | auth                                     |
+| GET                 | `/api/rooms`                                    | auth                                     |
+| POST / PUT / DELETE | `/api/rooms` / `/api/rooms/:id`                 | admin                                    |
+| GET                 | `/api/rooms/:id/availability?date=YYYY-MM-DD`   | auth                                     |
+| POST / GET          | `/api/bookings` · `/api/bookings?date=&roomId=` | auth (list scoped to self for employees) |
+| GET                 | `/api/bookings/mine`                            | auth                                     |
+| DELETE              | `/api/bookings/:id`                             | auth (owner/admin)                       |
+| PUT                 | `/api/users/me/password`                        | auth                                     |
+| GET                 | `/api/admin/usage?from=&to=`                    | admin                                    |
+| GET                 | `/health`                                       | public                                   |
 
 ## Tests & coverage
 
