@@ -9,18 +9,13 @@ public class GarageOptions
 
     public int Levels { get; set; } = 3;
 
-    /// <summary>Bay counts. Each entry: Level, Type (motorcycle|compact|standard|ev), Count.</summary>
-    public List<BaySpec> Bays { get; set; } = new()
-    {
-        new BaySpec { Level = 1, Type = "motorcycle", Count = 4 },
-        new BaySpec { Level = 1, Type = "compact", Count = 10 },
-        new BaySpec { Level = 1, Type = "standard", Count = 20 },
-        new BaySpec { Level = 2, Type = "compact", Count = 10 },
-        new BaySpec { Level = 2, Type = "standard", Count = 25 },
-        new BaySpec { Level = 2, Type = "ev", Count = 6 },
-        new BaySpec { Level = 3, Type = "standard", Count = 30 },
-        new BaySpec { Level = 3, Type = "ev", Count = 5 },
-    };
+    /// <summary>
+    /// Bay counts. Each entry: Level, Type (motorcycle|compact|standard|ev), Count.
+    /// Deliberately initialized EMPTY: ConfigurationBinder appends to existing collections,
+    /// so defaults here would double every configured bay. The default layout lives in
+    /// appsettings.json.
+    /// </summary>
+    public List<BaySpec> Bays { get; set; } = new();
 }
 
 /// <summary>One line of the bay layout configuration.</summary>

@@ -32,7 +32,30 @@ builder.Services
     .ValidateOnStart();
 
 builder.Services.AddSingleton<IValidateOptions<GarageOptions>, GarageOptionsValidator>();
-builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<GarageOptions>>().Value);
+
+// Resolve the garage layout instance; integration tests (environment "Testing") get a
+// small deterministic layout regardless of configuration-layer list merging.
+var garageOptions = builder.Configuration.GetSection(GarageOptions.SectionName).Get<GarageOptions>() ?? new GarageOptions();
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    garageOptions = new GarageOptions
+    {
+        Levels = 1,
+        Bays =
+        [
+            new BaySpec { Level = 1, Type = "standard", Count = 10 },
+            new BaySpec { Level = 1, Type = "compact", Count = 4 },
+            new BaySpec { Level = 1, Type = "motorcycle", Count = 3 },
+            new BaySpec { Level = 1, Type = "ev", Count = 2 },
+        ],
+    };
+}
+var garageValidation = new GarageOptionsValidator().Validate(null, garageOptions);
+if (garageValidation.Failed)
+{
+    throw new OptionsValidationException(GarageOptions.SectionName, typeof(GarageOptions), garageValidation.Failures);
+}
+builder.Services.AddSingleton(garageOptions);
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<FeeOptions>>().Value);
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<AuthOptions>>().Value);
 builder.Services.AddSingleton<IValidateOptions<FeeOptions>, FeeOptionsValidator>();
@@ -147,7 +170,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.EnsureCreated();
     await DbSeeder.SeedAsync(
         db,
-        scope.ServiceProvider.GetRequiredService<IOptions<GarageOptions>>().Value,
+        scope.ServiceProvider.GetRequiredService<GarageOptions>(), // instance: replaceable by tests
         scope.ServiceProvider.GetRequiredService<IOptions<AuthOptions>>().Value,
         scope.ServiceProvider.GetRequiredService<IPasswordHasher>());
 }
