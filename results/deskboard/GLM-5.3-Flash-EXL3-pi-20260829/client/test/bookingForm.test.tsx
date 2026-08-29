@@ -3,7 +3,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Room } from '@deskboard/shared';
-import { BookingForm } from '../src/components/BookingForm.js';
+import { BookingForm, type BookingFormPrefs } from '../src/components/BookingForm.js';
 import { ToastProvider } from '../src/components/ui/Toast.js';
 
 vi.mock('../src/api/client.js', async (importOriginal) => {
@@ -25,7 +25,7 @@ const rooms: Room[] = [
   { id: 'r3', name: 'Old Room', capacity: 5, floor: 1, features: [], active: false, createdAt: '' },
 ];
 
-function renderForm(prefs = null) {
+function renderForm(prefs: BookingFormPrefs | null = null) {
   const onClose = vi.fn();
   const onBooked = vi.fn();
   render(

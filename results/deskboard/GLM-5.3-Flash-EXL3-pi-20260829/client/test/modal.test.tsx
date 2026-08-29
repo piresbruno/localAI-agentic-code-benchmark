@@ -1,5 +1,5 @@
 /** Modal accessibility: focus trap, Esc to close, backdrop click. */
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Modal } from '../src/components/ui/Modal.js';

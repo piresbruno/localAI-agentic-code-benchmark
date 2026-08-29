@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { Button } from '../src/components/ui/Button.js';
 import { TextField } from '../src/components/ui/TextField.js';
 import { Select } from '../src/components/ui/Select.js';
-import { Badge, FeatureTag, StatusBadge } from '../src/components/ui/Badge.js';
+import { FeatureTag, StatusBadge } from '../src/components/ui/Badge.js';
 import { Table } from '../src/components/ui/Table.js';
 import { Spinner, Skeleton } from '../src/components/ui/Spinner.js';
 
