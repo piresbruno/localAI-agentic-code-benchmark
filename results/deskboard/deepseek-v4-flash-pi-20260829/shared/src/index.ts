@@ -1,5 +1,4 @@
-/**
- * DeskBoard shared package — placeholder exported for module resolution.
- * Domain types, DTOs, validation schemas and constants land here in later steps.
- */
-export const SHARED_PACKAGE_VERSION = '1.0.0';
+export * from './constants.js';
+export * from './errors.js';
+export * from './schemas.js';
+export * from './types.js';
