@@ -20,7 +20,8 @@ def render_terminal(report: Report, console: Console | None = None) -> str:
     summary.add_row("Events", str(report.total_events))
     summary.add_row("Sources", ", ".join(report.sources) or "-")
     if report.time_range.first and report.time_range.last:
-        summary.add_row("Time range", f"{report.time_range.first:%Y-%m-%d %H:%M:%S} → {report.time_range.last:%H:%M:%S} UTC")
+        rng = report.time_range
+        summary.add_row("Time range", f"{rng.first:%Y-%m-%d %H:%M:%S} → {rng.last:%H:%M:%S} UTC")
     summary.add_row("Unparseable lines", str(report.unknown_events))
     score_style = "green" if report.health_score >= 80 else "yellow" if report.health_score >= 50 else "red"
     summary.add_row("Health score", Text(f"{report.health_score}/100", style=score_style))

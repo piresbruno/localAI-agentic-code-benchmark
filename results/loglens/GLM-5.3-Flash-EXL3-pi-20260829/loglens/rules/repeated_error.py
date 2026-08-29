@@ -20,7 +20,7 @@ class RepeatedErrorRule:
     wild-carded) repeats at least ``min_count`` times within ``window_seconds``."""
 
     name = "repeated_error"
-    suggested_action = "A single error is repeating — check the component it originates from for a retry or resource loop."
+    suggested_action = "A single error is repeating — check the originating component for a retry or resource loop."
     window_seconds: int | None = DEFAULTS["window_seconds"]
 
     def __init__(self, clock=None) -> None:

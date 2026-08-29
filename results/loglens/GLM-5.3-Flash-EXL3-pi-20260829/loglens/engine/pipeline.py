@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable, Iterable
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from loglens.engine.scoring import compute_health_score
 from loglens.engine.windowing import WindowBuffer
@@ -23,7 +23,7 @@ from loglens.rules.registry import BUILTIN_REGISTRY, RuleRegistry
 
 BUCKET_SECONDS = 60  # error-rate series granularity
 TOP_MESSAGES = 10
-EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
 
 
 class Engine:
@@ -38,7 +38,7 @@ class Engine:
     ) -> None:
         self.parser = parser
         self.config = config or DEFAULT_CONFIG
-        self.clock = clock or (lambda: datetime.now(tz=timezone.utc))
+        self.clock = clock or (lambda: datetime.now(tz=UTC))
         self.registry = registry or BUILTIN_REGISTRY
 
     def _event_stream(self, line_source: Iterable[tuple[str, str]]) -> Iterable[LogEvent]:

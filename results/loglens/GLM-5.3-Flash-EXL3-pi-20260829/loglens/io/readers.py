@@ -6,9 +6,9 @@ and never materializes the whole source in memory.
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Iterable, Iterator
 from pathlib import Path
-import sys
 
 from loglens.models.errors import SourceError
 
@@ -50,11 +50,13 @@ def iter_lines(sources: Iterable[str], encoding: str = DEFAULT_ENCODING) -> Iter
         if path.is_dir():
             raise SourceError(f"input is a directory: {source}")
         if any(ch in source for ch in "*?["):
-            matches = sorted(Path().glob(source))
+            pattern = Path(source)
+            matches = sorted(pattern.parent.glob(pattern.name))
             if not matches:
                 raise SourceError(f"glob pattern matched no files: {source}")
             for match in matches:
-                yield from ((str(match), line) for line in read_file(match, encoding))
+                full = str(pattern.parent / match.name)
+                yield from ((full, line) for line in read_file(full, encoding))
             continue
         raise SourceError(f"input file not found: {source}")
 
@@ -83,9 +85,11 @@ def probe_first_source(sources: Iterable[str], count: int = 10, encoding: str = 
                 break
         return lines
     if any(ch in first for ch in "*?["):
-        matches = sorted(Path().glob(first))
+        pattern = Path(first)
+        matches = sorted(pattern.parent.glob(pattern.name))
         if matches:
-            for line in read_file(matches[0], encoding):
+            first_match = str(pattern.parent / matches[0].name)
+            for line in read_file(first_match, encoding):
                 lines.append(line)
                 if len(lines) >= count:
                     break

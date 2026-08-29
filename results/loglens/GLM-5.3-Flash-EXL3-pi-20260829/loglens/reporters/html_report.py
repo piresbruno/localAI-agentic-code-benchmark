@@ -21,7 +21,7 @@ def sparkline_svg(points: list[tuple[float, float]], width: int = 640, height: i
     span = max(max_ts - min_ts, 1e-9)
     step_x = width / max(n - 1, 1)
     coords = []
-    for i, (ts, rate) in enumerate(points):
+    for i, (_ts, rate) in enumerate(points):
         x = i * step_x if n > 1 else width / 2
         y = height - min(rate, 1.0) * (height - 6) - 3
         coords.append(f"{x:.1f},{y:.1f}")

@@ -8,9 +8,9 @@ it, and then delegates the rest — no line is lost, duplicated, or re-read.
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Callable, Iterable, Iterator
 from datetime import datetime
-import re
 
 from loglens.models.event import LogEvent
 from loglens.parsers.jsonlines import JsonLinesParser

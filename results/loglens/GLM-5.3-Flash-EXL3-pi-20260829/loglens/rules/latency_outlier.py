@@ -28,7 +28,7 @@ class LatencyOutlierRule:
     """Fires when a numeric attribute exceeds p95 × multiplier."""
 
     name = "latency_outlier"
-    suggested_action = "Latency outliers point to cold caches, lock contention, or a slow upstream — trace the slowest requests."
+    suggested_action = "Latency outliers point to cold caches or a slow upstream — trace the slowest requests."
     window_seconds: int | None = DEFAULTS_WINDOW_SECONDS
 
     def __init__(self, clock=None) -> None:

@@ -15,7 +15,7 @@ class LevelGapRule:
     (or higher) before it within the analyzed stream."""
 
     name = "level_gap"
-    suggested_action = "A component escalated straight to CRITICAL without warning — add earlier-stage alerting to that logger."
+    suggested_action = "A component escalated straight to CRITICAL — add earlier-stage alerting to that logger."
     window_seconds: int | None = WINDOW_SECONDS
 
     def __init__(self, clock=None) -> None:

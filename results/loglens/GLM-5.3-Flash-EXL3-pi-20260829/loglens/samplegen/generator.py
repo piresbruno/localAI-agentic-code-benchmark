@@ -4,10 +4,10 @@ Layout (minutes from start, span scales with event count; density 40 events/min)
 
   [15, 20)  scenario 1 — 30% error rate in a 5-minute window
   [20, 28)  scenario 2 — connection error repeated 12×
-  [28, 46)  scenario 3 — latency p95 ≈ 120ms with outliers ≈ 4000ms
+  [28, 46)  scenario 3 — latency p95 ≈ 120ms, outliers ≈ 4000ms
   minute 50 scenario 4 — payments CRITICAL with no preceding WARNING
-  elsewhere normal mixed traffic (the `payments` logger is never used there,
-  keeping scenario 4 clean).
+  elsewhere normal mixed traffic. The `payments` logger is never used in normal
+  traffic, keeping scenario 4 clean.
 """
 
 from __future__ import annotations
@@ -65,7 +65,10 @@ class SampleGenerator:
                 # Scenario 1: 30% error rate window.
                 level = "ERROR" if self.rng.random() < 0.30 else "INFO"
                 events.append(
-                    self._json_event(ts, level, "Order processing tick", "orders", seq, {"order_id": self.rng.randint(1000, 9999)})
+                    self._json_event(
+                        ts, level, "Order processing tick", "orders", seq,
+                        {"order_id": self.rng.randint(1000, 9999)},
+                    )
                 )
             elif SCENARIO_2_START <= minute < SCENARIO_2_END and connection_errors < SCENARIO_2_COUNT:
                 # Scenario 2: same connection error repeating.
@@ -79,7 +82,10 @@ class SampleGenerator:
                 events.append(
                     self._json_event(
                         ts, "INFO", "Request handled", "http.server", seq,
-                        {"latency_ms": round(latency, 1), "path": self.rng.choice(["/api/users", "/api/orders", "/health"])},
+                        {
+                            "latency_ms": round(latency, 1),
+                            "path": self.rng.choice(["/api/users", "/api/orders", "/health"]),
+                        },
                     )
                 )
             elif not critical_planted and minute >= SCENARIO_4_MINUTE:

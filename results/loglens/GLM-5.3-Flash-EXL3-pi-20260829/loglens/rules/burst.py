@@ -14,7 +14,7 @@ class BurstRule:
     """Fires when more than ``min_events`` events land within ``window_seconds``."""
 
     name = "burst"
-    suggested_action = "An event burst usually means a retry storm, traffic spike, or a hot loop — check upstream traffic first."
+    suggested_action = "An event burst means a retry storm, traffic spike, or hot loop — check upstream traffic first."
     window_seconds: int | None = DEFAULTS["window_seconds"]
 
     def __init__(self, clock=None) -> None:

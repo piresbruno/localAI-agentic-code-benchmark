@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
-from pathlib import Path
 import re
 import time
-from typing import Annotated, Optional
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from typing import Annotated
 
 import typer
 
 from loglens.engine.pipeline import Engine
 from loglens.models.config import load_config
 from loglens.models.errors import ConfigError, LogLensError, SourceError
+from loglens.models.report import Report
 from loglens.parsers.detect import AutoDetectParser
 from loglens.reporters.html_report import write_html
 from loglens.reporters.json_report import render_json
@@ -53,15 +54,15 @@ def parse_since_until(value: str | None) -> datetime | None:
 
 
 TimeFilter = Annotated[
-    Optional[str],
+    str | None,
     typer.Option(help="Only include events after this time (relative like 30m, or ISO-8601)."),
 ]
 UntilFilter = Annotated[
-    Optional[str],
+    str | None,
     typer.Option(help="Only include events before this time (relative like 30m, or ISO-8601)."),
 ]
 ConfigOption = Annotated[
-    Optional[Path],
+    Path | None,
     typer.Option(exists=False, help="TOML config file enabling/disabling rules and overriding thresholds."),
 ]
 
@@ -71,7 +72,12 @@ def _build_engine(config_path: Path | None) -> Engine:
     return Engine(parser=AutoDetectParser(), config=rule_config)
 
 
-def _run_report(inputs: tuple[str, ...], config_path: Path | None, since: str | None, until: str | None) -> tuple[int, str]:
+def _run_report(
+    inputs: tuple[str, ...],
+    config_path: Path | None,
+    since: str | None,
+    until: str | None,
+) -> tuple[int, list[str], Report]:
     """Shared report path. Returns (exit_code, sources, report)."""
     engine = _build_engine(config_path)
     sources = list(inputs)
@@ -99,28 +105,25 @@ def parse(
 ) -> None:
     try:
         engine = _build_engine(None)
-        report = engine.analyze(
-            _iter_source_lines([input]),
-            since=parse_since_until(since),
-            until=parse_since_until(until),
-        )
+        if format == "json":
+            typer.echo(render_json_events(engine, input, since, until, limit))
+        else:
+            _print_parse_table(engine, input, since, until, limit)
     except (SourceError, LogLensError) as exc:
         typer.secho(f"error: {exc}", fg=typer.colors.RED, err=True)
         raise typer.Exit(EXIT_IO) from exc
     except typer.BadParameter:
         raise
 
-    if format == "json":
-        typer.echo(render_json_events(engine, input, since, until, limit))
-    else:
-        _print_parse_table(engine, input, since, until, limit)
-
 
 def _print_parse_table(engine: Engine, input: str, since: str | None, until: str | None, limit: int) -> None:
     from rich.console import Console
     from rich.table import Table
 
-    rows = list(engine.iter_events(_iter_source_lines([input]), since=parse_since_until(since), until=parse_since_until(until)))[:limit]
+    events = engine.iter_events(
+        _iter_source_lines([input]), since=parse_since_until(since), until=parse_since_until(until)
+    )
+    rows = list(events)[:limit]
     console = Console()
     table = Table(title=f"Parsed events ({input})", title_style="bold")
     table.add_column("#", justify="right")
@@ -142,14 +145,19 @@ def _print_parse_table(engine: Engine, input: str, since: str | None, until: str
 def render_json_events(engine: Engine, input: str, since: str | None, until: str | None, limit: int) -> str:
     import json
 
-    events = list(engine.iter_events(_iter_source_lines([input]), since=parse_since_until(since), until=parse_since_until(until)))[:limit]
-    return json.dumps([e.model_dump(mode="json") for e in events], indent=2)
+    stream = engine.iter_events(
+        _iter_source_lines([input]), since=parse_since_until(since), until=parse_since_until(until)
+    )
+    return json.dumps([e.model_dump(mode="json") for e in list(stream)[:limit]], indent=2)
 
 
-@app.command(help="Analyze one or more inputs (files, globs, or '-' for stdin) and produce a report.")
+@app.command(help="Analyze inputs (files, globs, or '-' for stdin) and produce a report.")
 def report(
-    input: Annotated[list[str], typer.Argument(help="Files, glob patterns, or '-' for stdin.")],
-    out: Annotated[Optional[Path], typer.Option("--out", help="Write the report to this file (implies --format html if unset).")] = None,
+    input: Annotated[list[str], typer.Argument(help="Files, globs, or '-' for stdin.")],
+    out: Annotated[
+        Path | None,
+        typer.Option("--out", help="Write the report to this file (implies --format html)."),
+    ] = None,
     format: Annotated[str, typer.Option("--format", help="Output format: terminal, json, or html.")] = "terminal",
     config: ConfigOption = None,
     since: TimeFilter = None,
@@ -157,7 +165,7 @@ def report(
 ) -> None:
     effective_format = "html" if (out is not None and format == "terminal") else format
     if effective_format not in ("terminal", "json", "html"):
-        typer.secho(f"error: unknown format '{format}' (expected terminal, json, or html)", fg=typer.colors.RED, err=True)
+        typer.secho(f"error: unknown format '{format}' (terminal, json, html)", fg=typer.colors.RED, err=True)
         raise typer.Exit(EXIT_USAGE)
 
     try:

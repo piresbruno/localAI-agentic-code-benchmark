@@ -17,6 +17,8 @@ KEY_ALIASES: dict[str, tuple[str, ...]] = {
     "level": ("level", "severity"),
 }
 
+ALL_ALIAS_KEYS = {a for aliases in KEY_ALIASES.values() for a in aliases}
+
 KNOWN_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 _LEVEL_ALIASES = {"WARN": "WARNING", "FATAL": "CRITICAL", "TRACE": "DEBUG", "ERR": "ERROR", "CRIT": "CRITICAL"}
 
@@ -59,13 +61,16 @@ class JsonLinesParser:
 
         message = _pick(payload, "message")
         logger = _pick(payload, "logger")
-        level = normalize_level(_pick(payload, "level"))
+        raw_level = _pick(payload, "level")
+        level = normalize_level(raw_level)
 
         attributes = {
-            key: value for key, value in payload.items() if key not in {a for aliases in KEY_ALIASES.values() for a in aliases}
+            key: value for key, value in payload.items() if key not in ALL_ALIAS_KEYS
         }
         if level == "UNKNOWN" and not message:
             return self._unknown(line, source, clock, "no recognizable level or message field")
+        if level == "UNKNOWN":
+            attributes["parse_error"] = f"unknown level: {raw_level!r}"
 
         return LogEvent(
             timestamp=timestamp,
