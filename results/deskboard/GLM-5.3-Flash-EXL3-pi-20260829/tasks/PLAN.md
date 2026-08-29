@@ -23,11 +23,11 @@ DeskBoard is a full-stack meeting-room booking app: Express 5 REST API with JWT 
       Accept: supertest integration tests for all endpoints incl. 401/403/404/409/422 paths pass.
 - [x] T6 — Server test hardening: full §8 server matrix (unit + integration, fresh app per test)
       Accept: `npm test` green; server coverage measured.
-- [ ] T7 — Client foundation: `tokens.css` design tokens, ui/ components (Button, TextField, Select, Modal, Toast, Badge, Table, Spinner), typed fetch wrapper, auth hook
+- [x] T7 — Client foundation: `tokens.css` design tokens, ui/ components (Button, TextField, Select, Modal, Toast, Badge, Table, Spinner), typed fetch wrapper, auth hook
       Accept: client builds; components render with variants/error/disabled states.
-- [ ] T8 — Client pages: Login, RoomGrid (with slot computation module), BookingForm, MyBookings, AdminRooms + usage report; responsive, keyboard accessible
+- [x] T8 — Client pages: Login, RoomGrid (with slot computation module), BookingForm, MyBookings, AdminRooms + usage report; responsive, keyboard accessible
       Accept: flows work end-to-end against running server.
-- [ ] T9 — Client tests: RTL for components + unit tests for slot-computation/validation modules (≥ 8 meaningful tests)
+- [x] T9 — Client tests: RTL for components + unit tests for slot-computation/validation modules (≥ 8 meaningful tests)
       Accept: `npx vitest run` green in client.
 - [x] T10 — Docs: README (quickstart, env, seeded accounts, API summary), `docs/DESIGN.md`, `docs/DECISIONS.md`; .env.example
       Accept: clean-checkout quickstart ≤ 3 commands documented.
