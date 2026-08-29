@@ -1,0 +1,15 @@
+[
+  {
+    "project": "deskboard",
+    "agent": "pi",
+    "model": "GLM-5.3-Flash-EXL3",
+    "wall_time": "00:51:01",
+    "total_tokens": "10264302",
+    "input_tokens": "10179452",
+    "output_tokens": "84850",
+    "avg_tps": "27.7",
+    "cost": "0",
+    "_run_id": "GLM-5.3-Flash-EXL3-pi-20260829",
+    "_dir": "/home/piresbruno/developer/code-benchmark/results/deskboard/GLM-5.3-Flash-EXL3-pi-20260829"
+  }
+]
