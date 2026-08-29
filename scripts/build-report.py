@@ -85,7 +85,10 @@ def table(runs, show_rank=True) -> str:
     for i, r in enumerate(runs, 1):
         verdict = r.get("verdict", "").upper()
         color = VERDICT_COLOR.get(verdict, "#57606a")
-        date = r["_run_id"].rsplit("-", 1)[-1] if "-" in r["_run_id"] else ""
+        # Run dir name is <model>-<harness>-<YYYYMMDD>[-vN]; model names may
+        # contain dashes, so find the date with a regex instead of splitting.
+        dm = re.search(r"(\d{8})(-v\d+)?$", r["_run_id"])
+        date = dm.group(1) if dm else ""
         rows.append(
             "<tr>"
             f"<td>{i}</td><td><strong>{esc(r.get('model'))}</strong></td>"

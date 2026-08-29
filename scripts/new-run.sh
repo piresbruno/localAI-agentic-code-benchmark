@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Scaffold a new benchmark run directory. The tested MODEL is always identified
 # in the directory name: results/<project>/<model>-<harness>-<date>/
+#
+# Multiple runs of the same model/harness on the same day are supported: if the
+# base directory already exists, a version suffix is appended automatically
+# (-v2, -v3, ...), e.g. results/deskboard/gpt-5.3-pi-20260829-v2
+#
 # Usage: ./scripts/new-run.sh <project-id> <model> [harness]
 set -euo pipefail
 
@@ -11,6 +16,18 @@ HARNESS="${3:-agent}"
 DATE="$(date +%Y%m%d)"
 RUN_ID="${MODEL}-${HARNESS}-${DATE}"
 RUN_DIR="${REPO_ROOT}/results/${PROJECT_ID}/${RUN_ID}"
+
+# Version bump when the same model/harness is run again: -v2, -v3, ...
+VERSION=""
+if [[ -e "${RUN_DIR}" ]]; then
+  v=2
+  while [[ -e "${RUN_DIR}-v${v}" ]]; do
+    v=$((v + 1))
+  done
+  VERSION="-v${v}"
+  RUN_DIR="${RUN_DIR}${VERSION}"
+  RUN_ID="${RUN_ID}${VERSION}"
+fi
 
 SPEC_DIR="$(ls -d "${REPO_ROOT}"/specs/*-"${PROJECT_ID}" 2>/dev/null | head -1 || true)"
 if [[ -z "${SPEC_DIR}" ]]; then
@@ -38,6 +55,7 @@ for tpl in "${RUN_DIR}/RESULT.md" "${RUN_DIR}/METRICS.md"; do
     -e "s/{AGENT_NAME}/${HARNESS}/g" \
     -e "s/{RUN_ID}/${PROJECT_ID}\/${RUN_ID}/g" \
     -e "s/{DATE}/$(date +%Y-%m-%d)/g" \
+    -e "s/{MODEL}/${MODEL//\//\\/}/g" \
     "$tpl"
 done
 # METRICS.md knows the model from the start
@@ -46,7 +64,7 @@ sed -i "s/^model:.*/model: ${MODEL//\//\\/}/" "${RUN_DIR}/METRICS.md"
 cat <<EOF
 
 Run directory ready: ${RUN_DIR}
-  project=${PROJECT_ID}  model=${MODEL}  harness=${HARNESS}
+  project=${PROJECT_ID}  model=${MODEL}  harness=${HARNESS}  run_id=${RUN_ID}
 
 Next steps:
   1. cd ${RUN_DIR}

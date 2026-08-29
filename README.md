@@ -69,6 +69,24 @@ Full procedure: **[PROCESS.md](PROCESS.md)**.
 
 ---
 
+## Running the same model/harness multiple times
+
+You can benchmark the same model/harness as often as you like — for retries after a failed grade, for stability comparisons (n-run variance), or for a new version of the model. Every scaffold gets its own directory; runs never overwrite each other:
+
+```text
+results/deskboard/gpt-5.3-pi-20260829/        ← first run of the day (base)
+results/deskboard/gpt-5.3-pi-20260829-v2/     ← second run (version bump, automatic)
+results/deskboard/gpt-5.3-pi-20260829-v3/     ← third run
+results/deskboard/gpt-5.3-pi-20260830/        ← next day starts fresh at base
+```
+
+- `new-run.sh` detects an existing `results/<project>/<model>-<harness>-<date>/` and appends `-v2`, `-v3`, … automatically — no flags needed.
+- Each versioned directory is a **completely independent run**: own `AGENTS.md`, `METRICS.md`, `RESULT.md`, `tasks/`, own git history (commits inside the run dir), own coverage.
+- All versions are graded independently and all appear in the ranking. `build-report.py` parses the version suffix and treats every run as a separate row; the overall leaderboard aggregates **per model**, so a model's runs of the same project all count toward its record.
+- To re-benchmark after a model update, just run the same command again — the version bump takes care of itself. Keep the model id honest (e.g. `gpt-5.3` vs `gpt-5.3-turbo`); the directory name is the run's permanent identity.
+
+---
+
 ## Hard fail gates (all projects)
 
 A run **fails** unless ALL of the following are true:
@@ -106,4 +124,4 @@ Metrics are **not pass/fail gates** — they are the cost/speed comparison dimen
 ## Code patterns & best practices
 
 Every spec contains a **Required Architecture & Patterns** section. Cross-language expectations (error handling, validation, layering, testing pyramid, commit conventions, simplicity) are defined once in **[docs/ENGINEERING_STANDARDS.md](docs/ENGINEERING_STANDARDS.md)** and are **binding** for all three projects. Graders must check them explicitly.
-# localAI-agentic-code-benchamark
+
