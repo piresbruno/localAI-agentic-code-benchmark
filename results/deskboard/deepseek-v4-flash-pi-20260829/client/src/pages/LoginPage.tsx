@@ -34,7 +34,8 @@ export function LoginPage() {
     setFieldErrors({});
     setFormError(null);
 
-    const registerResult = mode === 'register' ? registerSchema.safeParse({ name, email, password }) : null;
+    const registerResult =
+      mode === 'register' ? registerSchema.safeParse({ name, email, password }) : null;
     const loginResult = mode === 'login' ? loginSchema.safeParse({ email, password }) : null;
     const errorZod = registerResult ? registerResult.error : loginResult?.error;
     if (errorZod) {
@@ -125,7 +126,9 @@ export function LoginPage() {
           {mode === 'register' ? 'Create account' : 'Log in'}
         </Button>
         <p className="hint auth-hint">
-          {mode === 'register' ? 'You get an employee account. Admins are seeded.' : 'Seeded admin: admin@deskboard.local / admin123'}
+          {mode === 'register'
+            ? 'You get an employee account. Admins are seeded.'
+            : 'Seeded admin: admin@deskboard.local / admin123'}
         </p>
       </form>
     </div>

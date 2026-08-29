@@ -4,9 +4,17 @@
  * these helpers drive the UI (free-slot highlighting, prefilled forms).
  */
 import type { AvailabilityResponse, BookingResponse, Feature } from 'shared';
-import { BUSINESS_HOURS, BOOKING_DURATIONS_MINUTES, CANCELLATION_WINDOW_MINUTES, MAX_BOOKING_HOURS } from 'shared';
+import {
+  BUSINESS_HOURS,
+  BOOKING_DURATIONS_MINUTES,
+  CANCELLATION_WINDOW_MINUTES,
+  MAX_BOOKING_HOURS,
+} from 'shared';
 
-export const HOURS = Array.from({ length: BUSINESS_HOURS.end - BUSINESS_HOURS.start }, (_, i) => BUSINESS_HOURS.start + i);
+export const HOURS = Array.from(
+  { length: BUSINESS_HOURS.end - BUSINESS_HOURS.start },
+  (_, i) => BUSINESS_HOURS.start + i,
+);
 
 /** Format a Date as local YYYY-MM-DD (for ?date= params). */
 export function toLocalDateString(date: Date): string {
@@ -47,7 +55,11 @@ export function slotsNeeded(durationMinutes: number): number {
 }
 
 /** True when the `durationMinutes` starting at `hour` fits in consecutive free slots. */
-export function canBookAt(availability: AvailabilityResponse, hour: number, durationMinutes: number): boolean {
+export function canBookAt(
+  availability: AvailabilityResponse,
+  hour: number,
+  durationMinutes: number,
+): boolean {
   const needed = slotsNeeded(durationMinutes);
   const startIndex = HOURS.indexOf(hour);
   if (startIndex === -1) return false;
@@ -75,15 +87,16 @@ export function canCancelBooking(booking: Pick<BookingResponse, 'start'>, now: D
 
 /** Cancel tooltip text when the window is closed. */
 export function cancelWindowHint(booking: Pick<BookingResponse, 'start'>): string {
-  return 'Cancellation closes 1 hour before the booking starts';
+  return `Cancellation closes 1 hour before start (${formatDateTime(booking.start)})`;
 }
 
 /** Half-hour start options within business hours (last start: 18:30). */
 export function startTimeOptions(): string[] {
   const options: string[] = [];
+  const pad = (n: number) => String(n).padStart(2, '0');
   for (let h = BUSINESS_HOURS.start; h < BUSINESS_HOURS.end; h++) {
-    options.push(`${String(h).padStart(2, '0')}:00`);
-    if (h < BUSINESS_HOURS.end - 1) options.push(`${String(h).padStart(2, '0')}:30`);
+    options.push(`${pad(h)}:00`);
+    options.push(`${pad(h)}:30`);
   }
   return options;
 }

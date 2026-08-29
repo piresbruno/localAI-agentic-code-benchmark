@@ -16,6 +16,14 @@ export function Spinner({ size = 'md', label = 'Loading' }: SpinnerProps) {
 }
 
 /** Skeleton placeholder for loading states. */
-export function Skeleton({ width = '100%', height = '1em', className = '' }: { width?: string | number; height?: string | number; className?: string }) {
+export function Skeleton({
+  width = '100%',
+  height = '1em',
+  className = '',
+}: {
+  width?: string | number;
+  height?: string | number;
+  className?: string;
+}) {
   return <span className={`skeleton ${className}`} style={{ width, height }} aria-hidden="true" />;
 }

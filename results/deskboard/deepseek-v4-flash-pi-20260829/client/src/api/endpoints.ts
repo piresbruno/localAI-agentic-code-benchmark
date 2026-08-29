@@ -14,7 +14,8 @@ import { api } from './client';
 export const authApi = {
   register: (body: { name: string; email: string; password: string }) =>
     api.post<AuthResponse>('/api/auth/register', body),
-  login: (body: { email: string; password: string }) => api.post<AuthResponse>('/api/auth/login', body),
+  login: (body: { email: string; password: string }) =>
+    api.post<AuthResponse>('/api/auth/login', body),
   me: () => api.get<PublicUser>('/api/auth/me'),
   changePassword: (body: { currentPassword: string; newPassword: string }) =>
     api.put<{ ok: boolean }>('/api/users/me/password', body),

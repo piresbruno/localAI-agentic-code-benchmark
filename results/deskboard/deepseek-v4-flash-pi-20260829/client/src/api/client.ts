@@ -41,7 +41,9 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError('NETWORK', 'Could not reach the server. Is it running?', 0);
   }
 
-  const data = (await response.json().catch(() => null)) as { error?: { code: ApiErrorCode; message: string; details?: unknown } } | null;
+  const data = (await response.json().catch(() => null)) as {
+    error?: { code: ApiErrorCode; message: string; details?: unknown };
+  } | null;
 
   if (!response.ok) {
     const error = data?.error;
@@ -58,8 +60,14 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) =>
-    request<T>(path, { method: 'POST', body: body === undefined ? undefined : JSON.stringify(body) }),
+    request<T>(path, {
+      method: 'POST',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }),
   put: <T>(path: string, body?: unknown) =>
-    request<T>(path, { method: 'PUT', body: body === undefined ? undefined : JSON.stringify(body) }),
+    request<T>(path, {
+      method: 'PUT',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }),
   del: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };

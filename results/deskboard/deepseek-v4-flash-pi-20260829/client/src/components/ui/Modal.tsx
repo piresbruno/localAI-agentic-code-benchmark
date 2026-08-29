@@ -12,7 +12,11 @@ export interface ModalProps {
   'aria-label'?: string;
 }
 
-const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+/* Auto-focus targets: everything inside the modal body (not the close button). */
+const BODY_FOCUSABLE =
+  '.modal-body input:not([disabled]), .modal-body select:not([disabled]), .modal-body textarea:not([disabled]), .modal-body button:not([disabled]), .modal-body a[href], .modal-body [tabindex]:not([tabindex="-1"])';
 
 /** Accessible modal: role=dialog + aria-modal, focus trap, Esc + backdrop close. */
 export function Modal({ open, title, onClose, children, 'aria-label': ariaLabel }: ModalProps) {
@@ -24,7 +28,7 @@ export function Modal({ open, title, onClose, children, 'aria-label': ariaLabel 
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     const dialog = dialogRef.current;
     const focusables = () => dialog?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [];
-    focusables()[0]?.focus();
+    dialog?.querySelector<HTMLElement>(BODY_FOCUSABLE)?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -33,7 +37,7 @@ export function Modal({ open, title, onClose, children, 'aria-label': ariaLabel 
         return;
       }
       if (event.key !== 'Tab') return;
-      const list = [...focusables()].filter((el) => el.offsetParent !== null);
+      const list = [...focusables()];
       if (list.length === 0) return;
       const first = list[0]!;
       const last = list[list.length - 1]!;

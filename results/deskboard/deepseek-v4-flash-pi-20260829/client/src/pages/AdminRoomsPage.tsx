@@ -127,15 +127,15 @@ export function AdminRoomsPage() {
       </div>
 
       {roomsQuery.loading ? <LoadingState label="Loading rooms…" /> : null}
-      {roomsQuery.error ? <ErrorState message={roomsQuery.error} onRetry={roomsQuery.reload} /> : null}
+      {roomsQuery.error ? (
+        <ErrorState message={roomsQuery.error} onRetry={roomsQuery.reload} />
+      ) : null}
 
       {roomsQuery.data && !roomsQuery.loading ? (
         roomsQuery.data.length === 0 ? (
           <EmptyState
             title="No rooms yet"
-            action={
-              <Button onClick={openCreate}>Add the first room</Button>
-            }
+            action={<Button onClick={openCreate}>Add the first room</Button>}
           />
         ) : (
           <Table
@@ -150,7 +150,9 @@ export function AdminRoomsPage() {
                 <td>{room.capacity}</td>
                 <td>{room.features.length ? room.features.map(featureLabel).join(', ') : '—'}</td>
                 <td>
-                  <Badge tone={roomStatusTone(room.active)}>{room.active ? 'Active' : 'Inactive'}</Badge>
+                  <Badge tone={roomStatusTone(room.active)}>
+                    {room.active ? 'Active' : 'Inactive'}
+                  </Badge>
                 </td>
                 <td>
                   <div className="table-actions">
@@ -209,7 +211,9 @@ export function AdminRoomsPage() {
       </form>
 
       {usageQuery.loading ? <LoadingState label="Loading usage…" /> : null}
-      {usageQuery.error ? <ErrorState message={usageQuery.error} onRetry={usageQuery.reload} /> : null}
+      {usageQuery.error ? (
+        <ErrorState message={usageQuery.error} onRetry={usageQuery.reload} />
+      ) : null}
 
       {usageQuery.data && !usageQuery.loading ? (
         <Table
@@ -222,7 +226,11 @@ export function AdminRoomsPage() {
               <td>{row.roomName}</td>
               <td>{row.bookedHours}</td>
               <td>{row.bookings}</td>
-              <td>{row.topOrganizer ? `${row.topOrganizer.email} (${row.topOrganizer.bookings})` : '—'}</td>
+              <td>
+                {row.topOrganizer
+                  ? `${row.topOrganizer.email} (${row.topOrganizer.bookings})`
+                  : '—'}
+              </td>
             </tr>
           ))}
         </Table>

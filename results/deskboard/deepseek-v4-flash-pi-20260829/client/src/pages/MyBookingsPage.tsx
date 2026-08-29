@@ -59,7 +59,8 @@ export function MyBookingsPage() {
               emptyMessage="No bookings"
             >
               {upcoming.map((booking) => {
-                const cancellable = booking.status === 'confirmed' && canCancelBooking(booking, now);
+                const cancellable =
+                  booking.status === 'confirmed' && canCancelBooking(booking, now);
                 return (
                   <tr key={booking.id}>
                     <td>{booking.roomName}</td>
@@ -68,7 +69,9 @@ export function MyBookingsPage() {
                     <td>{formatDateTime(booking.end)}</td>
                     <td>{booking.attendees}</td>
                     <td>
-                      <Badge tone={bookingStatusTone(booking.status)}>{bookingStatusLabel(booking.status)}</Badge>
+                      <Badge tone={bookingStatusTone(booking.status)}>
+                        {bookingStatusLabel(booking.status)}
+                      </Badge>
                     </td>
                     <td>
                       <Button
@@ -91,14 +94,20 @@ export function MyBookingsPage() {
           {past.length > 0 ? (
             <>
               <h2 className="section-title">Cancelled</h2>
-              <Table caption="Cancelled bookings" headers={['Room', 'Title', 'Start', 'Status']} emptyMessage="—">
+              <Table
+                caption="Cancelled bookings"
+                headers={['Room', 'Title', 'Start', 'Status']}
+                emptyMessage="—"
+              >
                 {past.map((booking) => (
                   <tr key={booking.id}>
                     <td>{booking.roomName}</td>
                     <td>{booking.title}</td>
                     <td>{formatDateTime(booking.start)}</td>
                     <td>
-                      <Badge tone={bookingStatusTone(booking.status)}>{bookingStatusLabel(booking.status)}</Badge>
+                      <Badge tone={bookingStatusTone(booking.status)}>
+                        {bookingStatusLabel(booking.status)}
+                      </Badge>
                     </td>
                   </tr>
                 ))}

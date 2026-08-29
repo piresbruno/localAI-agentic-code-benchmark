@@ -11,7 +11,12 @@ import { Button } from '../components/ui/Button';
 import { TextField } from '../components/ui/TextField';
 import { Select } from '../components/ui/Select';
 import { ErrorState, LoadingState } from '../components/States';
-import { DURATION_OPTIONS, dateTimeToIso, startTimeOptions, toLocalDateString } from '../logic/booking';
+import {
+  DURATION_OPTIONS,
+  dateTimeToIso,
+  startTimeOptions,
+  toLocalDateString,
+} from '../logic/booking';
 
 export function BookingFormPage() {
   const [params] = useSearchParams();
@@ -74,10 +79,14 @@ export function BookingFormPage() {
     }
   }
 
-  const activeRooms = useMemo(() => (roomsQuery.data ?? []).filter((r) => r.active), [roomsQuery.data]);
+  const activeRooms = useMemo(
+    () => (roomsQuery.data ?? []).filter((r) => r.active),
+    [roomsQuery.data],
+  );
 
   if (roomsQuery.loading) return <LoadingState label="Loading rooms…" />;
-  if (roomsQuery.error) return <ErrorState message={roomsQuery.error} onRetry={roomsQuery.reload} />;
+  if (roomsQuery.error)
+    return <ErrorState message={roomsQuery.error} onRetry={roomsQuery.reload} />;
 
   return (
     <section className="form-page">
@@ -122,14 +131,23 @@ export function BookingFormPage() {
             onChange={(e) => setDate(e.target.value)}
             error={fieldErrors.start}
           />
-          <Select label="Start time" value={start} onChange={(e) => setStart(e.target.value)} error={fieldErrors.start}>
+          <Select
+            label="Start time"
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+            error={fieldErrors.start}
+          >
             {startTimeOptions().map((t) => (
               <option key={t} value={t}>
                 {t}
               </option>
             ))}
           </Select>
-          <Select label="Duration" value={duration} onChange={(e) => setDuration(Number(e.target.value))}>
+          <Select
+            label="Duration"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
+          >
             {DURATION_OPTIONS.map((d) => (
               <option key={d} value={d}>
                 {d} min
@@ -157,7 +175,11 @@ export function BookingFormPage() {
             <option value="weekly">Weekly</option>
           </Select>
           {recurrenceKind === 'weekly' ? (
-            <Select label="Occurrences" value={recurrenceCount} onChange={(e) => setRecurrenceCount(Number(e.target.value))}>
+            <Select
+              label="Occurrences"
+              value={recurrenceCount}
+              onChange={(e) => setRecurrenceCount(Number(e.target.value))}
+            >
               {[2, 3, 4, 6, 8, 12].map((n) => (
                 <option key={n} value={n}>
                   {n} weeks

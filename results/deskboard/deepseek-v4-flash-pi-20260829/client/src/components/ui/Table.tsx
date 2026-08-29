@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
+import { Children } from 'react';
 import './ui.css';
 
 export interface TableProps {
   headers: string[];
-  children: ReactNode;
+  children?: ReactNode;
   /** Shown as a full-width row when the body is empty. */
   emptyMessage?: string;
   caption?: string;
@@ -41,6 +42,5 @@ export function Table({ headers, children, emptyMessage, caption }: TableProps) 
 }
 
 function hasRows(children: ReactNode): boolean {
-  if (Array.isArray(children)) return children.length > 0;
-  return children !== null && children !== undefined && children !== false;
+  return Children.count(children) > 0;
 }

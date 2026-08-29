@@ -52,7 +52,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               {toast.kind === 'success' ? '✓' : '✕'}
             </span>
             <span className="toast-message">{toast.message}</span>
-            <button type="button" className="toast-dismiss" aria-label="Dismiss notification" onClick={() => dismiss(toast.id)}>
+            <button
+              type="button"
+              className="toast-dismiss"
+              aria-label="Dismiss notification"
+              onClick={() => dismiss(toast.id)}
+            >
               ×
             </button>
           </div>
