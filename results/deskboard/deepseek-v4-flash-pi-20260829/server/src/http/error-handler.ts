@@ -36,5 +36,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, next: N
 
 /** JSON 404 for unknown /api routes. */
 export function apiNotFound(req: Request, res: Response): void {
-  res.status(404).json({ error: { code: 'NOT_FOUND', message: `No route for ${req.method} ${req.path}` } });
+  res
+    .status(404)
+    .json({ error: { code: 'NOT_FOUND', message: `No route for ${req.method} ${req.path}` } });
 }

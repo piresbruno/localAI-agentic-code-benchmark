@@ -16,18 +16,30 @@ import { DomainError, toErrorResponse } from './errors.js';
 
 describe('registerSchema', () => {
   it('accepts a valid registration', () => {
-    const r = registerSchema.safeParse({ name: 'Ada Lovelace', email: 'ada@example.com', password: 'supersecret' });
+    const r = registerSchema.safeParse({
+      name: 'Ada Lovelace',
+      email: 'ada@example.com',
+      password: 'supersecret',
+    });
     expect(r.success).toBe(true);
   });
 
   it('rejects an invalid email', () => {
-    const r = registerSchema.safeParse({ name: 'Ada', email: 'not-an-email', password: 'supersecret' });
+    const r = registerSchema.safeParse({
+      name: 'Ada',
+      email: 'not-an-email',
+      password: 'supersecret',
+    });
     expect(r.success).toBe(false);
     expect(formatZodErrors(r.error!).email).toBeTruthy();
   });
 
   it('rejects a short password', () => {
-    const r = registerSchema.safeParse({ name: 'Ada', email: 'ada@example.com', password: 'short' });
+    const r = registerSchema.safeParse({
+      name: 'Ada',
+      email: 'ada@example.com',
+      password: 'short',
+    });
     expect(r.success).toBe(false);
     expect(formatZodErrors(r.error!).password).toContain('8');
   });
@@ -59,26 +71,45 @@ describe('changePasswordSchema', () => {
 
 describe('roomCreateSchema', () => {
   it('accepts a valid room', () => {
-    const r = roomCreateSchema.safeParse({ name: 'Atlas', capacity: 10, floor: 3, features: ['screen', 'videoconf'] });
+    const r = roomCreateSchema.safeParse({
+      name: 'Atlas',
+      capacity: 10,
+      floor: 3,
+      features: ['screen', 'videoconf'],
+    });
     expect(r.success).toBe(true);
   });
 
   it('rejects capacity out of range (1–100)', () => {
-    expect(roomCreateSchema.safeParse({ name: 'A', capacity: 0, floor: 1, features: [] }).success).toBe(false);
-    expect(roomCreateSchema.safeParse({ name: 'A', capacity: 101, floor: 1, features: [] }).success).toBe(false);
+    expect(
+      roomCreateSchema.safeParse({ name: 'A', capacity: 0, floor: 1, features: [] }).success,
+    ).toBe(false);
+    expect(
+      roomCreateSchema.safeParse({ name: 'A', capacity: 101, floor: 1, features: [] }).success,
+    ).toBe(false);
   });
 
   it('rejects floor out of range (1–30)', () => {
-    expect(roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 0, features: [] }).success).toBe(false);
-    expect(roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 31, features: [] }).success).toBe(false);
+    expect(
+      roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 0, features: [] }).success,
+    ).toBe(false);
+    expect(
+      roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 31, features: [] }).success,
+    ).toBe(false);
   });
 
   it('rejects unknown and duplicate features', () => {
     expect(
-      roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 1, features: ['projector'] }).success,
+      roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 1, features: ['projector'] })
+        .success,
     ).toBe(false);
     expect(
-      roomCreateSchema.safeParse({ name: 'A', capacity: 5, floor: 1, features: ['screen', 'screen'] }).success,
+      roomCreateSchema.safeParse({
+        name: 'A',
+        capacity: 5,
+        floor: 1,
+        features: ['screen', 'screen'],
+      }).success,
     ).toBe(false);
   });
 });
@@ -122,12 +153,24 @@ describe('isoMinutesSchema / bookingCreateSchema', () => {
   });
 
   it('rejects duration not a multiple of 30', () => {
-    const base = { roomId: 'r1', title: 'T', start: '2026-08-30T09:00:00Z', attendees: 1, recurrence: { kind: 'none' } };
+    const base = {
+      roomId: 'r1',
+      title: 'T',
+      start: '2026-08-30T09:00:00Z',
+      attendees: 1,
+      recurrence: { kind: 'none' },
+    };
     expect(bookingCreateSchema.safeParse({ ...base, durationMinutes: 45 }).success).toBe(false);
   });
 
   it('rejects duration outside 30–240 minutes', () => {
-    const base = { roomId: 'r1', title: 'T', start: '2026-08-30T09:00:00Z', attendees: 1, recurrence: { kind: 'none' } };
+    const base = {
+      roomId: 'r1',
+      title: 'T',
+      start: '2026-08-30T09:00:00Z',
+      attendees: 1,
+      recurrence: { kind: 'none' },
+    };
     expect(bookingCreateSchema.safeParse({ ...base, durationMinutes: 15 }).success).toBe(false);
     expect(bookingCreateSchema.safeParse({ ...base, durationMinutes: 300 }).success).toBe(false);
   });
@@ -172,7 +215,9 @@ describe('calendarDateSchema / usageQuerySchema', () => {
   });
 
   it('rejects from > to', () => {
-    expect(usageQuerySchema.safeParse({ from: '2026-09-02', to: '2026-09-01' }).success).toBe(false);
+    expect(usageQuerySchema.safeParse({ from: '2026-09-02', to: '2026-09-01' }).success).toBe(
+      false,
+    );
   });
 });
 
@@ -180,7 +225,11 @@ describe('DomainError', () => {
   it('produces the shared error envelope', () => {
     const err = new DomainError('ROOM_CONFLICT', 'Room is already booked', { roomId: 'r1' });
     expect(toErrorResponse(err)).toEqual({
-      error: { code: 'ROOM_CONFLICT', message: 'Room is already booked', details: { roomId: 'r1' } },
+      error: {
+        code: 'ROOM_CONFLICT',
+        message: 'Room is already booked',
+        details: { roomId: 'r1' },
+      },
     });
   });
 

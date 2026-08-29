@@ -25,7 +25,9 @@ export function bookingRoutes(bookings: BookingService, secret: string): Router 
   /** GET /api/bookings?date=&roomId= — admin: all (filtered); employee: own. */
   router.get(
     '/',
-    validateQuery(z.object({ date: calendarDateSchema.optional(), roomId: idParamSchema.optional() })),
+    validateQuery(
+      z.object({ date: calendarDateSchema.optional(), roomId: idParamSchema.optional() }),
+    ),
     async (req, res) => {
       const auth = (req as AuthenticatedRequest).auth;
       const date = queryString(req.query.date);

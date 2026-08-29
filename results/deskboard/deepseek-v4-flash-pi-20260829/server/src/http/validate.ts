@@ -13,7 +13,9 @@ export function validateBody<T>(schema: Schema<T>) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-      next(new DomainError('VALIDATION_ERROR', 'Invalid request body', formatZodErrors(result.error)));
+      next(
+        new DomainError('VALIDATION_ERROR', 'Invalid request body', formatZodErrors(result.error)),
+      );
       return;
     }
     req.body = result.data;
@@ -25,7 +27,13 @@ export function validateQuery<T>(schema: Schema<T>) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.query);
     if (!result.success) {
-      next(new DomainError('VALIDATION_ERROR', 'Invalid query parameters', formatZodErrors(result.error)));
+      next(
+        new DomainError(
+          'VALIDATION_ERROR',
+          'Invalid query parameters',
+          formatZodErrors(result.error),
+        ),
+      );
       return;
     }
     next();
@@ -36,7 +44,13 @@ export function validateParams<T>(schema: Schema<T>) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.params);
     if (!result.success) {
-      next(new DomainError('VALIDATION_ERROR', 'Invalid path parameters', formatZodErrors(result.error)));
+      next(
+        new DomainError(
+          'VALIDATION_ERROR',
+          'Invalid path parameters',
+          formatZodErrors(result.error),
+        ),
+      );
       return;
     }
     next();

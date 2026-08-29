@@ -45,7 +45,11 @@ export class DomainError extends Error {
   }
 
   toBody(): ApiErrorBody {
-    return { code: this.code, message: this.message, ...(this.details !== undefined ? { details: this.details } : {}) };
+    return {
+      code: this.code,
+      message: this.message,
+      ...(this.details !== undefined ? { details: this.details } : {}),
+    };
   }
 }
 

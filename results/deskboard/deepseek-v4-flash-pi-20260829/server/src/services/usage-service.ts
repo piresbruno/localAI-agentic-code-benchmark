@@ -36,7 +36,9 @@ export class UsageService {
 
     const rows: UsageRoomRow[] = rooms
       .map((room) => {
-        const relevant = allBookings.filter((b) => b.roomId === room.id && b.status !== 'cancelled');
+        const relevant = allBookings.filter(
+          (b) => b.roomId === room.id && b.status !== 'cancelled',
+        );
         let bookedMinutes = 0;
         let count = 0;
         const organizerCounts = new Map<string, number>();
@@ -48,7 +50,10 @@ export class UsageService {
             const overlapEnd = bEnd.getTime() < end.getTime() ? bEnd : end;
             bookedMinutes += Math.max(0, overlapEnd.getTime() - overlapStart.getTime()) / 60_000;
             count += 1;
-            organizerCounts.set(booking.organizerId, (organizerCounts.get(booking.organizerId) ?? 0) + 1);
+            organizerCounts.set(
+              booking.organizerId,
+              (organizerCounts.get(booking.organizerId) ?? 0) + 1,
+            );
           }
         }
         const topOrganizer = this.topOrganizer(organizerCounts, emails);
@@ -66,9 +71,14 @@ export class UsageService {
     return { from: from ?? this.daysAgo(30), to: to ?? this.today(), rooms: rows };
   }
 
-  private topOrganizer(counts: Map<string, number>, emails: Map<string, string>): UsageRoomRow['topOrganizer'] {
+  private topOrganizer(
+    counts: Map<string, number>,
+    emails: Map<string, string>,
+  ): UsageRoomRow['topOrganizer'] {
     if (counts.size === 0) return null;
-    const userId = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0];
+    const userId = [...counts.entries()].sort(
+      (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+    )[0]![0];
     return { email: emails.get(userId) ?? userId, bookings: counts.get(userId)! };
   }
 

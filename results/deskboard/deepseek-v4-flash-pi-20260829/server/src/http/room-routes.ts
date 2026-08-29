@@ -23,18 +23,35 @@ export function roomRoutes(rooms: RoomService, bookings: BookingService, secret:
   });
 
   /** PUT /api/rooms/:id — update room (admin). */
-  router.put('/:id', requireAdmin, validateParams(z.object({ id: idParamSchema })), validateBody(roomUpdateSchema), async (req, res) => {
-    const auth = (req as AuthenticatedRequest).auth;
-    const room = await rooms.update(queryString(req.params.id)!, req.body, { id: auth.sub, role: auth.role });
-    res.json(room);
-  });
+  router.put(
+    '/:id',
+    requireAdmin,
+    validateParams(z.object({ id: idParamSchema })),
+    validateBody(roomUpdateSchema),
+    async (req, res) => {
+      const auth = (req as AuthenticatedRequest).auth;
+      const room = await rooms.update(queryString(req.params.id)!, req.body, {
+        id: auth.sub,
+        role: auth.role,
+      });
+      res.json(room);
+    },
+  );
 
   /** DELETE /api/rooms/:id — soft deactivate (admin). */
-  router.delete('/:id', requireAdmin, validateParams(z.object({ id: idParamSchema })), async (req, res) => {
-    const auth = (req as AuthenticatedRequest).auth;
-    const room = await rooms.deactivate(queryString(req.params.id)!, { id: auth.sub, role: auth.role });
-    res.json(room);
-  });
+  router.delete(
+    '/:id',
+    requireAdmin,
+    validateParams(z.object({ id: idParamSchema })),
+    async (req, res) => {
+      const auth = (req as AuthenticatedRequest).auth;
+      const room = await rooms.deactivate(queryString(req.params.id)!, {
+        id: auth.sub,
+        role: auth.role,
+      });
+      res.json(room);
+    },
+  );
 
   /** GET /api/rooms/:id/availability?date=YYYY-MM-DD — free/busy grid. */
   router.get(

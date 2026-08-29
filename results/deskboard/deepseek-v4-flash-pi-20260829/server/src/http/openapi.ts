@@ -66,7 +66,10 @@ export const openapi: OpenAPIObject = {
       ChangePasswordRequest: {
         type: 'object',
         required: ['currentPassword', 'newPassword'],
-        properties: { currentPassword: { type: 'string' }, newPassword: { type: 'string', minLength: 8 } },
+        properties: {
+          currentPassword: { type: 'string' },
+          newPassword: { type: 'string', minLength: 8 },
+        },
       },
       Feature: { type: 'string', enum: ['screen', 'whiteboard', 'videoconf', 'phone'] },
       Room: {
@@ -101,7 +104,11 @@ export const openapi: OpenAPIObject = {
       },
       Recurrence: {
         oneOf: [
-          { type: 'object', required: ['kind'], properties: { kind: { type: 'string', enum: ['none'] } } },
+          {
+            type: 'object',
+            required: ['kind'],
+            properties: { kind: { type: 'string', enum: ['none'] } },
+          },
           {
             type: 'object',
             required: ['kind', 'count'],
@@ -207,11 +214,23 @@ export const openapi: OpenAPIObject = {
         summary: 'Register an employee account',
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/RegisterRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/RegisterRequest' } },
+          },
         },
         responses: {
-          201: { description: 'Created', content: { 'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } } } },
-          400: { description: 'Validation error', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+          201: {
+            description: 'Created',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } },
+            },
+          },
+          400: {
+            description: 'Validation error',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+            },
+          },
           409: { description: 'Email already taken' },
         },
       },
@@ -222,10 +241,17 @@ export const openapi: OpenAPIObject = {
         summary: 'Log in with email + password',
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/LoginRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/LoginRequest' } },
+          },
         },
         responses: {
-          200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } } } },
+          200: {
+            description: 'OK',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } },
+            },
+          },
           401: { description: 'Invalid credentials' },
         },
       },
@@ -236,7 +262,12 @@ export const openapi: OpenAPIObject = {
         summary: 'Current user',
         security: [{ bearerAuth: [] }],
         responses: {
-          200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/PublicUser' } } } },
+          200: {
+            description: 'OK',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/PublicUser' } },
+            },
+          },
           401: { description: 'Unauthenticated' },
         },
       },
@@ -248,7 +279,9 @@ export const openapi: OpenAPIObject = {
         security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/ChangePasswordRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/ChangePasswordRequest' } },
+          },
         },
         responses: {
           200: { description: 'Changed' },
@@ -270,10 +303,15 @@ export const openapi: OpenAPIObject = {
         security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/RoomCreateRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/RoomCreateRequest' } },
+          },
         },
         responses: {
-          201: { description: 'Created', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          201: {
+            description: 'Created',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           400: { description: 'Validation error' },
           403: { description: 'Forbidden (not admin)' },
           409: { description: 'Room name taken' },
@@ -288,10 +326,15 @@ export const openapi: OpenAPIObject = {
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/RoomUpdateRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/RoomUpdateRequest' } },
+          },
         },
         responses: {
-          200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          200: {
+            description: 'OK',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           400: { description: 'Validation error' },
           403: { description: 'Forbidden' },
           404: { description: 'Room not found' },
@@ -304,7 +347,10 @@ export const openapi: OpenAPIObject = {
         security: [{ bearerAuth: [] }],
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: {
-          200: { description: 'Deactivated room', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          200: {
+            description: 'Deactivated room',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           403: { description: 'Forbidden' },
           404: { description: 'Room not found' },
         },
@@ -317,10 +363,20 @@ export const openapi: OpenAPIObject = {
         security: [{ bearerAuth: [] }],
         parameters: [
           { name: 'id', in: 'path', required: true, schema: { type: 'string' } },
-          { name: 'date', in: 'query', required: true, schema: { type: 'string', description: 'YYYY-MM-DD' } },
+          {
+            name: 'date',
+            in: 'query',
+            required: true,
+            schema: { type: 'string', description: 'YYYY-MM-DD' },
+          },
         ],
         responses: {
-          200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/AvailabilityResponse' } } } },
+          200: {
+            description: 'OK',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/AvailabilityResponse' } },
+            },
+          },
           400: { description: 'Validation error' },
           404: { description: 'Room not found' },
         },
@@ -333,12 +389,18 @@ export const openapi: OpenAPIObject = {
         security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/BookingCreateRequest' } } },
+          content: {
+            'application/json': { schema: { $ref: '#/components/schemas/BookingCreateRequest' } },
+          },
         },
         responses: {
           201: {
             description: 'Created occurrence(s)',
-            content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Booking' } } } },
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { $ref: '#/components/schemas/Booking' } },
+              },
+            },
           },
           400: { description: 'Validation error' },
           404: { description: 'Room not found' },
@@ -386,11 +448,24 @@ export const openapi: OpenAPIObject = {
         summary: 'Per-room usage report (admin)',
         security: [{ bearerAuth: [] }],
         parameters: [
-          { name: 'from', in: 'query', schema: { type: 'string', description: 'YYYY-MM-DD (default: 30 days ago)' } },
-          { name: 'to', in: 'query', schema: { type: 'string', description: 'YYYY-MM-DD (default: today)' } },
+          {
+            name: 'from',
+            in: 'query',
+            schema: { type: 'string', description: 'YYYY-MM-DD (default: 30 days ago)' },
+          },
+          {
+            name: 'to',
+            in: 'query',
+            schema: { type: 'string', description: 'YYYY-MM-DD (default: today)' },
+          },
         ],
         responses: {
-          200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/UsageResponse' } } } },
+          200: {
+            description: 'OK',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/UsageResponse' } },
+            },
+          },
           400: { description: 'Validation error' },
           403: { description: 'Forbidden' },
         },

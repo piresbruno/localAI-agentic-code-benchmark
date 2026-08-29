@@ -53,7 +53,11 @@ export class UserService {
     return toPublic(user);
   }
 
-  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
     const user = await this.deps.users.findById(userId);
     if (!user) throw new DomainError('NOT_FOUND', 'User not found');
     if (!verifyPassword(currentPassword, user.passwordHash)) {

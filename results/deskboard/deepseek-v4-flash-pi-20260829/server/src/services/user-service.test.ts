@@ -87,7 +87,9 @@ describe('UserService.changePassword', () => {
     await expect(svc.login('grace@example.com', 'supersecret')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
-    await expect(svc.login('grace@example.com', 'newpass123')).resolves.toMatchObject({ id: user.id });
+    await expect(svc.login('grace@example.com', 'newpass123')).resolves.toMatchObject({
+      id: user.id,
+    });
   });
 
   it('rejects a wrong current password', async () => {

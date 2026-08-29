@@ -10,7 +10,8 @@ import { InMemoryUserRepository } from '../repositories/user-repository.js';
 import type { User } from 'shared';
 
 /** Build a Date from local calendar fields (test TZ independent). */
-const local = (y: number, m: number, d: number, h = 0, min = 0) => new Date(y, m - 1, d, h, min, 0, 0);
+const local = (y: number, m: number, d: number, h = 0, min = 0) =>
+  new Date(y, m - 1, d, h, min, 0, 0);
 
 // Fixed "now": Tuesday 2026-08-25 10:00 local.
 const NOW = local(2026, 8, 25, 10, 0);
@@ -52,7 +53,10 @@ const THU = '2026-08-27';
 async function bookThu(
   start = '14:00',
   durationMinutes = 60,
-  overrides: { attendees?: number; recurrence?: { kind: 'none' } | { kind: 'weekly'; count: number } } = {},
+  overrides: {
+    attendees?: number;
+    recurrence?: { kind: 'none' } | { kind: 'weekly'; count: number };
+  } = {},
 ) {
   return bookingService.create(
     {
@@ -158,9 +162,9 @@ describe('rejects_booking_outside_business_hours', () => {
         {
           roomId: 'room-1',
           title: 'Full afternoon',
-        start: `${THU}T15:00:00`,
-        durationMinutes: 240,
-        attendees: 2,
+          start: `${THU}T15:00:00`,
+          durationMinutes: 240,
+          attendees: 2,
           recurrence: { kind: 'none' },
         },
         EMPLOYEE.id,
@@ -238,7 +242,9 @@ describe('expands_weekly_recurrence', () => {
       EMPLOYEE.id,
     );
     // Weekly series starting 2026-08-27 would hit 2026-09-03 → whole series rejected.
-    await expect(bookThu('14:00', 60, { recurrence: { kind: 'weekly', count: 3 } })).rejects.toMatchObject({
+    await expect(
+      bookThu('14:00', 60, { recurrence: { kind: 'weekly', count: 3 } }),
+    ).rejects.toMatchObject({
       code: 'ROOM_CONFLICT',
     });
   });
@@ -246,7 +252,9 @@ describe('expands_weekly_recurrence', () => {
   it('rejects the whole recurrence when any occurrence breaks business hours', async () => {
     await seedRoom();
     // First occurrence fine (Thu 18:30), second would end 19:30 → rejected.
-    await expect(bookThu('18:30', 60, { recurrence: { kind: 'weekly', count: 2 } })).rejects.toMatchObject({
+    await expect(
+      bookThu('18:30', 60, { recurrence: { kind: 'weekly', count: 2 } }),
+    ).rejects.toMatchObject({
       code: 'RULE_VIOLATION',
     });
   });
@@ -255,7 +263,9 @@ describe('expands_weekly_recurrence', () => {
 describe('rejects_booking_over_capacity', () => {
   it('rejects attendees above room capacity', async () => {
     await seedRoom({ capacity: 6 });
-    await expect(bookThu('14:00', 60, { attendees: 7 })).rejects.toMatchObject({ code: 'RULE_VIOLATION' });
+    await expect(bookThu('14:00', 60, { attendees: 7 })).rejects.toMatchObject({
+      code: 'RULE_VIOLATION',
+    });
   });
 
   it('allows attendees exactly at capacity', async () => {
@@ -303,21 +313,27 @@ describe('enforces_cancellation_window', () => {
   it('lets the organizer cancel more than 1h before start', async () => {
     await seedRoom();
     const created = (await bookThu('14:00', 60))[0]!;
-    await expect(bookingService.cancel(created.id, EMPLOYEE)).resolves.toMatchObject({ status: 'cancelled' });
+    await expect(bookingService.cancel(created.id, EMPLOYEE)).resolves.toMatchObject({
+      status: 'cancelled',
+    });
   });
 
   it('rejects organizer cancellation inside the 1h window', async () => {
     await seedRoom();
     MUTABLE_NOW.value = local(2026, 8, 27, 13, 30); // 30 minutes before 14:00
     const created = (await bookThu('14:00', 60))[0]!;
-    await expect(bookingService.cancel(created.id, EMPLOYEE)).rejects.toMatchObject({ code: 'RULE_VIOLATION' });
+    await expect(bookingService.cancel(created.id, EMPLOYEE)).rejects.toMatchObject({
+      code: 'RULE_VIOLATION',
+    });
   });
 
   it('lets an admin cancel at any time', async () => {
     await seedRoom();
     MUTABLE_NOW.value = local(2026, 8, 27, 13, 59);
     const created = (await bookThu('14:00', 60))[0]!;
-    await expect(bookingService.cancel(created.id, ADMIN)).resolves.toMatchObject({ status: 'cancelled' });
+    await expect(bookingService.cancel(created.id, ADMIN)).resolves.toMatchObject({
+      status: 'cancelled',
+    });
   });
 
   it('forbids cancellation by anyone else', async () => {
@@ -325,7 +341,9 @@ describe('enforces_cancellation_window', () => {
     const [created] = await bookThu('14:00', 60);
     const first = created!;
     const other: { id: string; role: 'employee' } = { id: 'emp-2', role: 'employee' };
-    await expect(bookingService.cancel(first.id, other)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    await expect(bookingService.cancel(first.id, other)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
   });
 
   it('rejects cancelling an already-cancelled booking', async () => {
@@ -333,7 +351,9 @@ describe('enforces_cancellation_window', () => {
     const [created] = await bookThu('14:00', 60);
     const first = created!;
     await bookingService.cancel(first.id, EMPLOYEE);
-    await expect(bookingService.cancel(first.id, ADMIN)).rejects.toMatchObject({ code: 'BOOKING_NOT_ACTIVE' });
+    await expect(bookingService.cancel(first.id, ADMIN)).rejects.toMatchObject({
+      code: 'BOOKING_NOT_ACTIVE',
+    });
   });
 });
 
@@ -369,11 +389,16 @@ describe('admins_manage_rooms_only', () => {
 
   it('forbids deactivation for employees', async () => {
     const room = await seedRoom();
-    await expect(roomService.deactivate(room.id, EMPLOYEE)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    await expect(roomService.deactivate(room.id, EMPLOYEE)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
   });
 
   it('allows admins to create, update and deactivate', async () => {
-    const created = await roomService.create({ name: 'Pegasus', capacity: 10, floor: 1, features: ['screen'] }, ADMIN);
+    const created = await roomService.create(
+      { name: 'Pegasus', capacity: 10, floor: 1, features: ['screen'] },
+      ADMIN,
+    );
     const updated = await roomService.update(created.id, { capacity: 12 }, ADMIN);
     expect(updated.capacity).toBe(12);
     const deactivated = await roomService.deactivate(created.id, ADMIN);
@@ -384,9 +409,9 @@ describe('admins_manage_rooms_only', () => {
 describe('rejects_duplicate_room_name', () => {
   it('rejects an identical name case-insensitively on create', async () => {
     await seedRoom({ name: 'Atlas' });
-    await expect(roomService.create({ name: ' atlas ', capacity: 5, floor: 1, features: [] }, ADMIN)).rejects.toMatchObject(
-      { code: 'ROOM_NAME_TAKEN' },
-    );
+    await expect(
+      roomService.create({ name: ' atlas ', capacity: 5, floor: 1, features: [] }, ADMIN),
+    ).rejects.toMatchObject({ code: 'ROOM_NAME_TAKEN' });
   });
 
   it('rejects renaming a room to an existing name', async () => {
@@ -400,7 +425,9 @@ describe('rejects_duplicate_room_name', () => {
 
   it('allows a room to keep its own name on update', async () => {
     const room = await seedRoom();
-    await expect(roomService.update(room.id, { capacity: 9 }, ADMIN)).resolves.toMatchObject({ capacity: 9 });
+    await expect(roomService.update(room.id, { capacity: 9 }, ADMIN)).resolves.toMatchObject({
+      capacity: 9,
+    });
   });
 });
 
@@ -424,7 +451,9 @@ describe('availability grid', () => {
   });
 
   it('returns NOT_FOUND for an unknown room', async () => {
-    await expect(bookingService.getAvailability('ghost', THU)).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    await expect(bookingService.getAvailability('ghost', THU)).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    });
   });
 });
 
@@ -533,9 +562,11 @@ describe('usage report', () => {
   });
 
   it('rejects non-admin callers', async () => {
-    await expect(usageService.getUsage('2026-08-25', '2026-08-31', EMPLOYEE)).rejects.toMatchObject({
-      code: 'FORBIDDEN',
-    });
+    await expect(usageService.getUsage('2026-08-25', '2026-08-31', EMPLOYEE)).rejects.toMatchObject(
+      {
+        code: 'FORBIDDEN',
+      },
+    );
   });
 });
 

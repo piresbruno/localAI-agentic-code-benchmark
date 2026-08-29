@@ -7,7 +7,14 @@
  *  - cancellation window + ownership
  *  - completed-on-read
  */
-import type { AvailabilitySlot, Booking, BookingCreateInput, BookingResponse, Recurrence, Role } from 'shared';
+import type {
+  AvailabilitySlot,
+  Booking,
+  BookingCreateInput,
+  BookingResponse,
+  Recurrence,
+  Role,
+} from 'shared';
 import { CANCELLATION_WINDOW_MINUTES, DomainError, MAX_BOOKING_HOURS } from 'shared';
 import type { Clock, IdGen } from '../ports.js';
 import type { BookingRepository } from '../repositories/booking-repository.js';
@@ -32,7 +39,11 @@ interface Occurrence {
 }
 
 /** Expand a recurrence into concrete occurrences, 7 days apart. */
-export function expandOccurrences(start: Date, durationMinutes: number, recurrence: Recurrence): Occurrence[] {
+export function expandOccurrences(
+  start: Date,
+  durationMinutes: number,
+  recurrence: Recurrence,
+): Occurrence[] {
   const count = recurrence.kind === 'weekly' ? recurrence.count : 1;
   const occurrences: Occurrence[] = [];
   for (let i = 0; i < count; i++) {
@@ -51,7 +62,10 @@ export function expandRecurrence(
 }
 
 /** Compute the read-time status: past confirmed bookings read as 'completed'. */
-export function effectiveStatus(booking: Pick<Booking, 'status' | 'end'>, now: Date): Booking['status'] | 'completed' {
+export function effectiveStatus(
+  booking: Pick<Booking, 'status' | 'end'>,
+  now: Date,
+): Booking['status'] | 'completed' {
   if (booking.status === 'cancelled') return 'cancelled';
   if (parseIso(booking.end).getTime() <= now.getTime()) return 'completed';
   return 'confirmed';
@@ -63,7 +77,8 @@ export class BookingService {
   private async assertRoomBookable(roomId: string, attendees: number) {
     const room = await this.deps.rooms.findById(roomId);
     if (!room) throw new DomainError('NOT_FOUND', 'Room not found');
-    if (!room.active) throw new DomainError('RULE_VIOLATION', 'Room is deactivated and cannot be booked');
+    if (!room.active)
+      throw new DomainError('RULE_VIOLATION', 'Room is deactivated and cannot be booked');
     if (attendees > room.capacity) {
       throw new DomainError(
         'RULE_VIOLATION',
@@ -75,7 +90,11 @@ export class BookingService {
   }
 
   /** All named booking rules validated up front; throws on the first violation. */
-  private assertValidBooking(startIso: string, durationMinutes: number, recurrence: Recurrence): Occurrence[] {
+  private assertValidBooking(
+    startIso: string,
+    durationMinutes: number,
+    recurrence: Recurrence,
+  ): Occurrence[] {
     if (durationMinutes > MAX_BOOKING_HOURS * 60) {
       throw new DomainError('RULE_VIOLATION', `Bookings cannot exceed ${MAX_BOOKING_HOURS} hours`);
     }
@@ -100,7 +119,9 @@ export class BookingService {
   }
 
   private async assertNoConflict(roomId: string, occurrences: Occurrence[]) {
-    const existing = (await this.deps.bookings.listForRoom(roomId)).filter((b) => b.status !== 'cancelled');
+    const existing = (await this.deps.bookings.listForRoom(roomId)).filter(
+      (b) => b.status !== 'cancelled',
+    );
     for (const occ of occurrences) {
       for (const booking of existing) {
         const bStart = parseIso(booking.start);
@@ -119,7 +140,11 @@ export class BookingService {
 
   async create(input: BookingCreateInput, organizerId: string): Promise<BookingResponse[]> {
     const room = await this.assertRoomBookable(input.roomId, input.attendees);
-    const occurrences = this.assertValidBooking(input.start, input.durationMinutes, input.recurrence);
+    const occurrences = this.assertValidBooking(
+      input.start,
+      input.durationMinutes,
+      input.recurrence,
+    );
     await this.assertNoConflict(input.roomId, occurrences);
 
     const now = this.deps.clock.now();
@@ -179,9 +204,14 @@ export class BookingService {
   }
 
   /** Admin: all bookings (optionally filtered); employee: only own. Date filter = local day. */
-  async list(caller: Caller, filter?: { date?: string; roomId?: string }): Promise<BookingResponse[]> {
+  async list(
+    caller: Caller,
+    filter?: { date?: string; roomId?: string },
+  ): Promise<BookingResponse[]> {
     const bookings =
-      caller.role === 'admin' ? await this.deps.bookings.listAll() : await this.deps.bookings.listByOrganizer(caller.id);
+      caller.role === 'admin'
+        ? await this.deps.bookings.listAll()
+        : await this.deps.bookings.listByOrganizer(caller.id);
 
     const filtered = bookings.filter((b) => {
       if (filter?.roomId && b.roomId !== filter.roomId) return false;
@@ -189,7 +219,10 @@ export class BookingService {
         const dayStart = new Date(`${filter.date}T00:00:00`);
         const dayEnd = addDays(dayStart, 1);
         const bStart = parseIso(b.start);
-        if (!(bStart.getTime() < dayEnd.getTime() && dayStart.getTime() < parseIso(b.end).getTime())) return false;
+        if (!(
+          bStart.getTime() < dayEnd.getTime() && dayStart.getTime() < parseIso(b.end).getTime()
+        ))
+          return false;
       }
       return true;
     });
@@ -203,7 +236,9 @@ export class BookingService {
     const room = await this.deps.rooms.findById(roomId);
     if (!room) throw new DomainError('NOT_FOUND', 'Room not found');
 
-    const active = (await this.deps.bookings.listForRoom(roomId)).filter((b) => b.status !== 'cancelled');
+    const active = (await this.deps.bookings.listForRoom(roomId)).filter(
+      (b) => b.status !== 'cancelled',
+    );
 
     const slots: AvailabilitySlot[] = [];
     for (let hour = 8; hour < 19; hour++) {
@@ -218,7 +253,10 @@ export class BookingService {
     const slotEnd = addMinutes(slotStart, 60);
     const occupying = active
       .filter((b) =>
-        intervalOverlap({ start: parseIso(b.start), end: parseIso(b.end) }, { start: slotStart, end: slotEnd }),
+        intervalOverlap(
+          { start: parseIso(b.start), end: parseIso(b.end) },
+          { start: slotStart, end: slotEnd },
+        ),
       )
       .map((b) => ({
         id: b.id,

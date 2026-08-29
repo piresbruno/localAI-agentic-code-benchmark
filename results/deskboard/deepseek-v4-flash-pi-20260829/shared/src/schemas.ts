@@ -59,7 +59,11 @@ const featuresSchema = z
 
 export const roomCreateSchema = z.object({
   name: z.string().trim().min(1, 'required').max(MAX_ROOM_NAME_LENGTH, 'too long'),
-  capacity: z.number().int().min(MIN_CAPACITY, `min ${MIN_CAPACITY}`).max(MAX_CAPACITY, `max ${MAX_CAPACITY}`),
+  capacity: z
+    .number()
+    .int()
+    .min(MIN_CAPACITY, `min ${MIN_CAPACITY}`)
+    .max(MAX_CAPACITY, `max ${MAX_CAPACITY}`),
   floor: z.number().int().min(MIN_FLOOR, `min ${MIN_FLOOR}`).max(MAX_FLOOR, `max ${MAX_FLOOR}`),
   features: featuresSchema,
 });
@@ -77,17 +81,18 @@ export const roomUpdateSchema = z
  * ISO-8601 datetime with minute precision: seconds must be "00", fractions and
  * offset are allowed (e.g. `2026-08-30T09:00:00Z`, `09:30:00+02:00`).
  */
-export const isoMinutesSchema = z.string().refine(
-  (v) => {
-    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00(\.0+)?(Z|[+-]\d{2}:\d{2})$/.test(v)) return false;
-    return !Number.isNaN(Date.parse(v));
-  },
-  'must be ISO-8601 with minute precision (seconds = 00)',
-);
+export const isoMinutesSchema = z.string().refine((v) => {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00(\.0+)?(Z|[+-]\d{2}:\d{2})$/.test(v)) return false;
+  return !Number.isNaN(Date.parse(v));
+}, 'must be ISO-8601 with minute precision (seconds = 00)');
 
 export const bookingCreateSchema = z.object({
   roomId: z.string().min(1, 'required'),
-  title: z.string().trim().min(1, 'required').max(MAX_TITLE_LENGTH, `max ${MAX_TITLE_LENGTH} characters`),
+  title: z
+    .string()
+    .trim()
+    .min(1, 'required')
+    .max(MAX_TITLE_LENGTH, `max ${MAX_TITLE_LENGTH} characters`),
   start: isoMinutesSchema,
   durationMinutes: z
     .number()
@@ -111,7 +116,10 @@ export const usageQuerySchema = z
     from: calendarDateSchema.optional(),
     to: calendarDateSchema.optional(),
   })
-  .refine((v) => v.from === undefined || v.to === undefined || v.from <= v.to, 'from must be <= to');
+  .refine(
+    (v) => v.from === undefined || v.to === undefined || v.from <= v.to,
+    'from must be <= to',
+  );
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;

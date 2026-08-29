@@ -10,5 +10,7 @@ if (!process.env.JWT_SECRET) {
 
 const app = createApp();
 app.listen(port, () => {
-  console.log(`DeskBoard API listening on http://localhost:${port} (UI + /api-docs served from this origin)`);
+  console.log(
+    `DeskBoard API listening on http://localhost:${port} (UI + /api-docs served from this origin)`,
+  );
 });
