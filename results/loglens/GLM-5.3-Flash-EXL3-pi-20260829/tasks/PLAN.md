@@ -45,9 +45,10 @@ LogLens is a log-analysis CLI + library: parse JSON-lines and plain-text logs in
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s:
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:51:03 (harness session JSONL, 02:48:38Z → 03:39:41Z)
+- Total tokens consumed (in + out) + avg output t/s: 22,863,549 total (22,781,843 in / 81,706 out), ≈ 26.7 t/s — source: pi session JSONL usage fields, harness telemetry
+- Errors/retries (build/test/lint): ~12, all fixed forward — circular import, AutoDetectParser line-loss redesign (probe replay), PEP 668 venv setup, per-source detection for short files, ruff E501/E741/F841 cleanup, test assertion over-reaches
+- Final coverage (number + measurement command): 97% lines on loglens/ via `pytest --cov=loglens` (1079 stmts, 32 miss)
+- Line counts per directory: loglens/ package 2,045 (incl. HTML template) · tests/ 1,217 — total 3,262
+- Deviations from spec: none blocking; see plan table (TOML config; watch polls file size; unix ts heuristic)
+- Final gates: pytest 134/134 ✅ · coverage 97% ✅ · ruff zero ✅ · clean-checkout install→sample→report ✅ · 4 planted scenarios detected (SMOKE_CHECK) ✅
