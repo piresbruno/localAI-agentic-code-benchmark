@@ -1,0 +1,317 @@
+/* Page/app-level layout — tokens only. */
+
+.app-header {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.app-brand {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.app-nav {
+  display: flex;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.app-nav-link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.app-nav-link:hover {
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+}
+
+.app-nav-link.active {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-user-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+/* --- auth --------------------------------------------------------------- */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-muted);
+  padding: var(--space-4);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+
+.auth-title {
+  margin: 0 0 var(--space-5);
+  text-align: center;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auth-tab {
+  flex: 1;
+  padding: var(--space-2);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.auth-tab-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.auth-hint {
+  text-align: center;
+  margin-top: var(--space-4);
+}
+
+/* --- forms -------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  max-width: 640px;
+}
+
+.form-page .card {
+  max-width: 640px;
+}
+
+.field-row {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.field-row .field {
+  flex: 1;
+  min-width: 140px;
+}
+
+.field-static {
+  margin: 0;
+  padding: var(--space-2) 0;
+}
+
+.form-error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.feature-group {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+
+.feature-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-right: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.field-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.table-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* --- room grid ------------------------------------------------------------- */
+.grid-scroll {
+  overflow-x: auto;
+}
+
+.room-grid {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: var(--font-size-sm);
+}
+
+.room-grid th,
+.room-grid td {
+  border: 1px solid var(--color-border);
+  padding: var(--space-1);
+  text-align: center;
+  min-width: 72px;
+}
+
+.room-grid thead th {
+  background: var(--color-surface-muted);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.room-col {
+  min-width: 160px;
+  text-align: left !important;
+}
+
+.room-cell {
+  text-align: left;
+  vertical-align: top;
+  display: flow-root;
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+.room-name {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+}
+
+.room-meta {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin: var(--space-1) 0;
+}
+
+.grid-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.grid-slot-free {
+  border: 1px dashed var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  padding: var(--space-1);
+}
+
+.grid-slot-free:hover {
+  background: var(--color-primary-soft);
+}
+
+.grid-slot-busy {
+  background: var(--color-surface-muted);
+  gap: var(--space-1);
+}
+
+.grid-booking {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 0 var(--space-1);
+}
+
+.grid-booking-title {
+  font-size: var(--font-size-xs);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolbar-date input {
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 720px) {
+  .app-header-inner {
+    gap: var(--space-3);
+  }
+
+  .app-user-name {
+    display: none;
+  }
+
+  .room-grid th,
+  .room-grid td {
+    min-width: 56px;
+  }
+}
