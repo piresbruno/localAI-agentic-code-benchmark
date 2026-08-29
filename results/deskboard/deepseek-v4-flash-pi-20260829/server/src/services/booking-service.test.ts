@@ -153,17 +153,19 @@ describe('rejects_booking_outside_business_hours', () => {
 
   it('allows exactly 4 hours ending at 19:00', async () => {
     await seedRoom();
-    const [created] = await bookingService.create(
-      {
-        roomId: 'room-1',
-        title: 'Full afternoon',
+    const created = (
+      await bookingService.create(
+        {
+          roomId: 'room-1',
+          title: 'Full afternoon',
         start: `${THU}T15:00:00`,
         durationMinutes: 240,
         attendees: 2,
-        recurrence: { kind: 'none' },
-      },
-      EMPLOYEE.id,
-    );
+          recurrence: { kind: 'none' },
+        },
+        EMPLOYEE.id,
+      )
+    )[0]!;
     expect(created.status).toBe('confirmed');
   });
 });
@@ -203,7 +205,8 @@ describe('rejects_booking_when_room_already_booked', () => {
   it('does not conflict with cancelled bookings (room is freed)', async () => {
     await seedRoom();
     const [created] = await bookThu('14:00', 60);
-    await bookingService.cancel(created.id, EMPLOYEE);
+    const first = created!;
+    await bookingService.cancel(first.id, EMPLOYEE);
     await expect(bookThu('14:00', 60)).resolves.toHaveLength(1);
   });
 });
@@ -299,36 +302,38 @@ describe('rejects_booking_in_deactivated_room', () => {
 describe('enforces_cancellation_window', () => {
   it('lets the organizer cancel more than 1h before start', async () => {
     await seedRoom();
-    const [created] = await bookThu('14:00', 60);
+    const created = (await bookThu('14:00', 60))[0]!;
     await expect(bookingService.cancel(created.id, EMPLOYEE)).resolves.toMatchObject({ status: 'cancelled' });
   });
 
   it('rejects organizer cancellation inside the 1h window', async () => {
     await seedRoom();
     MUTABLE_NOW.value = local(2026, 8, 27, 13, 30); // 30 minutes before 14:00
-    const [created] = await bookThu('14:00', 60);
+    const created = (await bookThu('14:00', 60))[0]!;
     await expect(bookingService.cancel(created.id, EMPLOYEE)).rejects.toMatchObject({ code: 'RULE_VIOLATION' });
   });
 
   it('lets an admin cancel at any time', async () => {
     await seedRoom();
     MUTABLE_NOW.value = local(2026, 8, 27, 13, 59);
-    const [created] = await bookThu('14:00', 60);
+    const created = (await bookThu('14:00', 60))[0]!;
     await expect(bookingService.cancel(created.id, ADMIN)).resolves.toMatchObject({ status: 'cancelled' });
   });
 
   it('forbids cancellation by anyone else', async () => {
     await seedRoom();
     const [created] = await bookThu('14:00', 60);
+    const first = created!;
     const other: { id: string; role: 'employee' } = { id: 'emp-2', role: 'employee' };
-    await expect(bookingService.cancel(created.id, other)).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    await expect(bookingService.cancel(first.id, other)).rejects.toMatchObject({ code: 'FORBIDDEN' });
   });
 
   it('rejects cancelling an already-cancelled booking', async () => {
     await seedRoom();
     const [created] = await bookThu('14:00', 60);
-    await bookingService.cancel(created.id, EMPLOYEE);
-    await expect(bookingService.cancel(created.id, ADMIN)).rejects.toMatchObject({ code: 'BOOKING_NOT_ACTIVE' });
+    const first = created!;
+    await bookingService.cancel(first.id, EMPLOYEE);
+    await expect(bookingService.cancel(first.id, ADMIN)).rejects.toMatchObject({ code: 'BOOKING_NOT_ACTIVE' });
   });
 });
 
@@ -337,13 +342,14 @@ describe('marks_completed_bookings', () => {
     await seedRoom();
     MUTABLE_NOW.value = local(2026, 8, 27, 8, 0);
     const [created] = await bookThu('09:00', 60);
+    const first = created!;
     // Stored status stays confirmed…
-    expect((await bookings.findById(created.id))!.status).toBe('confirmed');
+    expect((await bookings.findById(first.id))!.status).toBe('confirmed');
     // …but reads report completed once the end passed.
     MUTABLE_NOW.value = local(2026, 8, 27, 10, 30);
     const mine = await bookingService.listMine(EMPLOYEE.id);
-    expect(mine[0]).toMatchObject({ id: created.id, status: 'completed' });
-    await expect(bookings.findById(created.id)).resolves.toMatchObject({ status: 'confirmed' });
+    expect(mine[0]).toMatchObject({ id: first.id, status: 'completed' });
+    await expect(bookings.findById(first.id)).resolves.toMatchObject({ status: 'confirmed' });
   });
 });
 
@@ -518,7 +524,8 @@ describe('usage report', () => {
     await seedRoom();
     await seedRoom({ id: 'room-2', name: 'Orion' });
     const [created] = await bookThu('14:00', 60);
-    await bookingService.cancel(created.id, EMPLOYEE);
+    const first = created!;
+    await bookingService.cancel(first.id, EMPLOYEE);
     const report = await usageService.getUsage('2026-08-25', '2026-08-31', ADMIN);
     expect(report.rooms).toHaveLength(2);
     expect(report.rooms[0]!.bookings).toBe(0);

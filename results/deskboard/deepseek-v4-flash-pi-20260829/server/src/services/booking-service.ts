@@ -7,7 +7,7 @@
  *  - cancellation window + ownership
  *  - completed-on-read
  */
-import type { Booking, BookingCreateInput, BookingResponse, Recurrence, Role } from 'shared';
+import type { AvailabilitySlot, Booking, BookingCreateInput, BookingResponse, Recurrence, Role } from 'shared';
 import { CANCELLATION_WINDOW_MINUTES, DomainError, MAX_BOOKING_HOURS } from 'shared';
 import type { Clock, IdGen } from '../ports.js';
 import type { BookingRepository } from '../repositories/booking-repository.js';
@@ -196,13 +196,16 @@ export class BookingService {
     return this.withRoomNames(filtered);
   }
 
-  async getAvailability(roomId: string, date: string): Promise<{ slots: ReturnType<typeof this.slotFor>[]; roomName: string }> {
+  async getAvailability(
+    roomId: string,
+    date: string,
+  ): Promise<{ slots: AvailabilitySlot[]; roomName: string }> {
     const room = await this.deps.rooms.findById(roomId);
     if (!room) throw new DomainError('NOT_FOUND', 'Room not found');
 
     const active = (await this.deps.bookings.listForRoom(roomId)).filter((b) => b.status !== 'cancelled');
 
-    const slots = [];
+    const slots: AvailabilitySlot[] = [];
     for (let hour = 8; hour < 19; hour++) {
       slots.push(this.slotFor(hour, date, active));
     }
@@ -210,7 +213,7 @@ export class BookingService {
   }
 
   /** Build a one-hour availability slot, marking it busy when any booking overlaps. */
-  private slotFor(hour: number, date: string, active: Booking[]) {
+  private slotFor(hour: number, date: string, active: Booking[]): AvailabilitySlot {
     const slotStart = new Date(`${date}T${String(hour).padStart(2, '0')}:00:00`);
     const slotEnd = addMinutes(slotStart, 60);
     const occupying = active
