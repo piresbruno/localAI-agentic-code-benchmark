@@ -106,3 +106,4 @@ Metrics are **not pass/fail gates** — they are the cost/speed comparison dimen
 ## Code patterns & best practices
 
 Every spec contains a **Required Architecture & Patterns** section. Cross-language expectations (error handling, validation, layering, testing pyramid, commit conventions, simplicity) are defined once in **[docs/ENGINEERING_STANDARDS.md](docs/ENGINEERING_STANDARDS.md)** and are **binding** for all three projects. Graders must check them explicitly.
+# localAI-agentic-code-benchamark
