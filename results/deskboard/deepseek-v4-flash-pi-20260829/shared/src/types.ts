@@ -131,12 +131,13 @@ export interface AvailabilitySlot {
   /** Slot end (start + 1h). */
   end: IsoDateTime;
   status: AvailabilitySlotStatus;
-  booking?: {
+  /** Occupying bookings (empty when free). */
+  bookings: Array<{
     id: string;
     title: string;
     status: BookingStatus;
     organizerId: string;
-  };
+  }>;
 }
 
 export interface AvailabilityResponse {

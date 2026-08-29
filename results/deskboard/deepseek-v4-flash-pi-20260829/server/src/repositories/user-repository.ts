@@ -6,6 +6,7 @@ export interface UserRepository {
   findById(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
   update(user: User): Promise<User>;
+  list(): Promise<User[]>;
 }
 
 /** In-memory user store; email lookups are case-insensitive. */
@@ -28,5 +29,9 @@ export class InMemoryUserRepository implements UserRepository {
 
   async update(user: User): Promise<User> {
     return this.store.update(user);
+  }
+
+  async list(): Promise<User[]> {
+    return this.store.getAll();
   }
 }
