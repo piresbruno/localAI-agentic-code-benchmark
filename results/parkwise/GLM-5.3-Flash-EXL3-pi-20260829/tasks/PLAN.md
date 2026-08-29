@@ -11,27 +11,27 @@ ParkWise is a multi-level parking garage REST API: entry/exit ticketing with bay
 
 ## Task breakdown
 
-- [ ] T1 — Solution skeleton: 4 src projects + 2 test projects, package refs, `dotnet build` green
+- [x] T1 — Solution skeleton: 4 src projects + 2 test projects, package refs, `dotnet build` green
       Accept: BUILD_CHECK green with empty skeleton.
-- [ ] T2 — Contracts: request/response DTOs, error envelope types
+- [x] T2 — Contracts: request/response DTOs, error envelope types
       Accept: builds; DTOs used by controllers later.
-- [ ] T3 — Data: entities, enums, IEntityTypeConfiguration, DbContext, seeder (bays, users, permits)
+- [x] T3 — Data: entities, enums, IEntityTypeConfiguration, DbContext, seeder (bays, users, permits)
       Accept: DbContext creates SQLite schema; seed idempotent.
-- [ ] T4 — Services core: IClock, domain errors, options + IValidateOptions, repository interfaces + EF implementations, PasswordHasher/TokenService abstractions
+- [x] T4 — Services core: IClock, domain errors, options + IValidateOptions, repository interfaces + EF implementations, PasswordHasher/TokenService abstractions
       Accept: unit-testable without EF (fakes possible).
-- [ ] T5 — FeeCalculator: grace 15m, started hours, daily cap, EV +2.50, lost 25.00, permit → 0; away-from-zero rounding at final step
+- [x] T5 — FeeCalculator: grace 15m, started hours, daily cap, EV +2.50, lost 25.00, permit → 0; away-from-zero rounding at final step
       Accept: fee matrix unit tests pass (14:59/15:00/15:01 boundaries, multi-day, caps).
-- [ ] T6 — TicketService: entry (plate regex, bay allocation race-safe), quote, exit (grace/paid/402/409), lost ticket
+- [x] T6 — TicketService: entry (plate regex, bay allocation race-safe), quote, exit (grace/paid/402/409), lost ticket
       Accept: named rule tests pass with fake repos + fixed clock.
-- [ ] T7 — PaymentService, PermitService, ReportService (revenue daily, occupancy)
+- [x] T7 — PaymentService, PermitService, ReportService (revenue daily, occupancy)
       Accept: unit tests pass; refund only within 24h.
-- [ ] T8 — Api: controllers, JWT auth + roles, error-handling middleware, Swagger, options validation at startup, Program.cs wiring
+- [x] T8 — Api: controllers, JWT auth + roles, error-handling middleware, Swagger, options validation at startup, Program.cs wiring
       Accept: `dotnet run` boots; /health 200; /swagger serves.
-- [ ] T9 — Integration tests: WebApplicationFactory + SQLite; entry→quote→pay→exit flow, garage-full under parallel load, authz 401/403, 422 validation
+- [x] T9 — Integration tests: WebApplicationFactory + SQLite; entry→quote→pay→exit flow, garage-full under parallel load, authz 401/403, 422 validation
       Accept: every §4 named rule has a test; all green.
-- [ ] T10 — Docs: README (quickstart, fee table with worked examples, config reference), docs/DECISIONS.md (rounding, concurrency, migrations)
+- [x] T10 — Docs: README (quickstart, fee table with worked examples, config reference), docs/DECISIONS.md (rounding, concurrency, migrations)
       Accept: clean-checkout quickstart ≤ 3 commands documented.
-- [ ] T11 — Quality gates: dotnet build (warnings as errors), dotnet test 100% pass, coverage ≥ 75% on Services+Api (coverlet), smoke boot, security self-review
+- [x] T11 — Quality gates: dotnet build (warnings as errors), dotnet test 100% pass, coverage ≥ 75% on Services+Api (coverlet), smoke boot, security self-review
       Accept: all gates green; final report printed.
 
 ## Decisions & spec deviations
@@ -46,9 +46,10 @@ ParkWise is a multi-level parking garage REST API: entry/exit ticketing with bay
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s:
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 01:30:27 (harness session JSONL, 03:40:22Z → 05:10:50Z)
+- Total tokens consumed (in + out) + avg output t/s: 56,585,806 total (56,479,551 in / 106,255 out), ≈ 19.6 t/s — source: pi session JSONL usage fields, harness telemetry, scoped to this run
+- Errors/retries (build/test/lint): ~15, all fixed forward — record-validation metadata on primary constructors, options DI resolution, missing DI using in test host, the ConfigurationBinder list-append bug (GarageOptions doubling), WebApplicationFactory config/Env propagation for minimal hosting (solved via ConfigureServices overrides), test arithmetic errors, line-length warnings
+- Final coverage (number + measurement command): 86.49% lines on ParkWise.Services + ParkWise.Api via coverlet (`dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura`), merged from both test projects; Services 88.12%, Api 78.99%
+- Line counts per directory: Api 536 · Services 1,056 · Data 498 · Contracts 183 (src 2,273) · UnitTests 840 · IntegrationTests 388 (tests 1,228)
+- Deviations from spec: daily-cap reading documented in DECISIONS.md (satisfies both named examples); lost ticket via report-lost endpoint; EnsureCreated instead of migration files
+- Final gates: dotnet build (warnings as errors) ✅ · 76/76 tests ✅ · coverage 86.49% ✅ · smoke: /health 200, /swagger 200, full entry→pay→exit flow, 401 without JWT ✅ · security self-review ✅

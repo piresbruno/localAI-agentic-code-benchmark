@@ -1,8 +1,8 @@
 # METRICS — parkwise / pi
 
 **Run dir**: results/parkwise/GLM-5.3-Flash-EXL3-pi-20260829
-**Started**: 2026-08-29 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-08-29 — time: `03:40:22 UTC`
+**Ended**: 2026-08-29 `05:10:50 UTC`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the global ranking.
 
@@ -12,30 +12,30 @@
 project: parkwise
 agent: pi
 model: GLM-5.3-Flash-EXL3
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
-verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
-score:                  # normalized 0–100 (from RESULT.md)
+wall_time: 01:30:27
+total_tokens: 56585806
+input_tokens: 56479551
+output_tokens: 106255
+avg_tps: 19.6
+cost: 0
+verdict:
+score:# normalized 0–100 (from RESULT.md)
 ```
 
 ## Derivation notes
 
 - **wall_time**: harness session start → last message. Exclude operator idle time if the harness allows; note how it was computed.
-- **avg_tps**: output tokens ÷ generation time if exposed; otherwise output tokens ÷ wall_time (note which).
+- **avg_tps**: output tokens ÷ wall_time (generation time not exposed): 106,255 / 5427s ≈ 19.6 t/s. Source: pi session JSONL `message.usage` fields.
 - Include retries/errors in totals — they are part of the run's real cost.
 
 ## Extra observations
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
+| Session/turn count | 185 usage events in this run (harness session JSONL, shared session; per-run split at 03:40 UTC) |
+| Errors/retries visible in transcript (build/test failures) | ~15 (record validation metadata, options DI, binder list-append bug, factory config propagation) — all fixed forward |
 | Cache-read tokens (if reported) | |
-| Harness + version | |
+| Harness + version | pi coding agent (PI_CODING_AGENT), provider GLM-5.3-Flash-EXL3, .NET SDK 8.0.424 installed locally |
 
 ## Where to find the numbers (by harness)
 
@@ -46,7 +46,8 @@ score:                  # normalized 0–100 (from RESULT.md)
 Paste the exact command used to extract:
 
 ```bash
-# e.g. jq over the session JSONL …
+node -e '...sum message.usage.input/output over ~/.pi/agent/sessions/.../2026-08-29T01-56-56-967Z_*.jsonl with timestamp >= 2026-08-29T03:40:00'
+# -> {"inTok":56479551,"outTok":106255,"events":185}
 ```
 
 ## Raw transcript excerpt (evidence)
