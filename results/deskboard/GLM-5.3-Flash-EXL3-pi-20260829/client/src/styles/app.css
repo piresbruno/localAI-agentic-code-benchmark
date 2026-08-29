@@ -1,0 +1,329 @@
+/* Base styles — everything builds on the token variables. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+h1, h2, h3 {
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* Page scaffold */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  height: var(--header-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-5);
+  gap: var(--space-5);
+}
+
+.app-header__brand {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.app-nav {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: var(--space-5);
+}
+
+.app-nav__link {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.app-nav__link:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.app-nav__link[aria-current='page'] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-weight: 600;
+}
+
+.app-header__spacer {
+  flex: 1;
+}
+
+.app-main {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-7);
+  flex: 1;
+}
+
+.page-title {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
+}
+
+.page-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5);
+}
+
+.section-title {
+  font-size: var(--text-lg);
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+/* Data-view states */
+.state-panel {
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.state-panel--error {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.state-panel__actions {
+  margin-top: var(--space-4);
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.form-row > * {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* Room grid */
+.room-grid {
+  display: grid;
+  gap: var(--space-2);
+  overflow-x: auto;
+}
+
+.room-grid__row {
+  display: grid;
+  grid-template-columns: 140px repeat(11, minmax(56px, 1fr));
+  gap: 2px;
+  align-items: stretch;
+}
+
+.room-grid__corner,
+.room-grid__room-name {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+}
+
+.room-grid__room-name {
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+}
+
+.room-grid__hour {
+  font-size: var(--text-xs);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.room-grid__cell {
+  min-height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--text-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.room-grid__cell:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  background: var(--color-bg);
+}
+
+.room-grid__cell--booked {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary-strong);
+  font-weight: 600;
+  cursor: default;
+}
+
+.room-grid__cell--past {
+  opacity: 0.55;
+}
+
+/* Booking list */
+.booking-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.booking-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.booking-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.booking-card__title {
+  font-weight: 600;
+  font-size: var(--text-md);
+}
+
+.booking-card__meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Modal & toast styling lives with components; overlay here */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: 50;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.modal__title {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-4);
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* Toast stack */
+.toast-region {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 100;
+  max-width: min(360px, calc(100vw - 32px));
+}
+
+.toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-success);
+}
+
+.toast--error {
+  border-left-color: var(--color-danger);
+}
+
+/* Responsive: stack nav and rows on small screens */
+@media (max-width: 640px) {
+  .app-header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .app-nav {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+}
