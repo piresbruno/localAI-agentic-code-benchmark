@@ -11,27 +11,27 @@ LogLens is a log-analysis CLI + library: parse JSON-lines and plain-text logs in
 
 ## Task breakdown
 
-- [ ] T1 — Package skeleton: pyproject.toml (PEP 621, `loglens = "loglens.cli:app"`), module dirs, `pip install -e ".[dev]"`, `loglens --help` works
+- [x] T1 — Package skeleton: pyproject.toml (PEP 621, `loglens = "loglens.cli:app"`), module dirs, `pip install -e ".[dev]"`, `loglens --help` works
       Accept: install + --help green from clean checkout.
-- [ ] T2 — models/: LogEvent, Incident, Report, RuleConfig (pydantic v2)
+- [x] T2 — models/: LogEvent, Incident, Report, RuleConfig (pydantic v2)
       Accept: models importable, aliases validated, UNKNOWN level supported.
-- [ ] T3 — parsers/: JSONLinesParser (key aliases, ISO/unix ts), PlainTextParser (≥3 regex patterns), format auto-detection (probe first 10 lines)
+- [x] T3 — parsers/: JSONLinesParser (key aliases, ISO/unix ts), PlainTextParser (≥3 regex patterns), format auto-detection (probe first 10 lines)
       Accept: unit tests incl. malformed-line fixtures; unparseable → UNKNOWN + parse_error attr.
-- [ ] T4 — io/readers.py: file, glob set, stdin readers; lazy generators; encoding/failure policy
+- [x] T4 — io/readers.py: file, glob set, stdin readers; lazy generators; encoding/failure policy
       Accept: streaming test with 100k-line generator, O(1) retained events.
-- [ ] T5 — rules/ + engine/: Rule protocol, registry, 5 built-in rules (positive+negative tests, injected clock); correlation windowing, scoring, --since/--until filter
+- [x] T5 — rules/ + engine/: Rule protocol, registry, 5 built-in rules (positive+negative tests, injected clock); correlation windowing, scoring, --since/--until filter
       Accept: every rule has named positive & negative tests; health score deterministic.
-- [ ] T6 — reporters/: terminal (rich), JSON, HTML (Jinja2, self-contained, SVG sparkline, summary cards, incidents + top messages tables)
+- [x] T6 — reporters/: terminal (rich), JSON, HTML (Jinja2, self-contained, SVG sparkline, summary cards, incidents + top messages tables)
       Accept: HTML is single-file, no CDN; JSON round-trips report data.
-- [ ] T7 — samplegen/: `loglens sample` generates demo logs with the 4 planted scenarios
+- [x] T7 — samplegen/: `loglens sample` generates demo logs with the 4 planted scenarios
       Accept: rules detect all 4 planted scenarios on generated sample (SMOKE_CHECK).
-- [ ] T8 — cli/: parse, report, watch, sample commands; exit codes 0/1/2/3; --config validation with file+line errors
+- [x] T8 — cli/: parse, report, watch, sample commands; exit codes 0/1/2/3; --config validation with file+line errors
       Accept: CliRunner tests for every command + exit codes + --help.
-- [ ] T9 — test hardening: property-style parser tests over ≥50 malformed lines, per-module unit tests, rule positive/negative, streaming, CLI integration
+- [x] T9 — test hardening: property-style parser tests over ≥50 malformed lines, per-module unit tests, rule positive/negative, streaming, CLI integration
       Accept: pytest green; coverage measured ≥75%.
-- [ ] T10 — docs: README (quickstart, rule table, config example, exit codes, health formula, extending), docs/ARCHITECTURE.md
+- [x] T10 — docs: README (quickstart, rule table, config example, exit codes, health formula, extending), docs/ARCHITECTURE.md
       Accept: quickstart ≤3 cmds documented.
-- [ ] T11 — Quality gates: pytest all pass, coverage ≥75%, ruff zero warnings, smoke check, final report
+- [x] T11 — Quality gates: pytest all pass, coverage ≥75%, ruff zero warnings, smoke check, final report
       Accept: all gates green.
 
 ## Decisions & spec deviations
