@@ -46,9 +46,10 @@ DeskBoard is a full-stack meeting-room booking app: Express 5 REST API with JWT 
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s:
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:51:01 (harness session JSONL, 01:56:56Z → 02:47:57Z)
+- Total tokens consumed (in + out) + avg output t/s: 10,264,302 total (10,179,452 in / 84,850 out) — source: pi session JSONL usage fields, harness telemetry; avg ≈ 27.7 t/s (output ÷ wall time; generation time not exposed)
+- Errors/retries (build/test/lint): ~10, all fixed forward — initial TS build errors (zod import, PublicUser typing, swagger-ui serve array), sync-vs-async service/test mismatches, fixture bugs (weekend dates, >4h durations), client test-file type errors, SPA static-path bug, eslint findings
+- Final coverage (number + measurement command): 97.05% lines on server/src + shared via `npm run coverage` (vitest --coverage v8)
+- Line counts per directory: server/src 1,400 · server/test 1,209 · shared/src 246 · client/src 1,738 · client/test 309 — total 4,902 (+ configs)
+- Deviations from spec: none blocking; see docs/DECISIONS.md (recurrence stored as series spec; top organizer ranked by booked minutes)
+- Final gates: build ✅ · 86 server tests + 30 client tests all pass ✅ · coverage 97.05% ✅ · /health 200 + UI served at / + Swagger at /api-docs ✅ · eslint zero errors ✅
