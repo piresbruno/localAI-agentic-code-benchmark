@@ -12,11 +12,11 @@
 project: loglens
 agent: pi
 model: deepseek-v4
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
+wall_time: 00:41:07
+total_tokens: 610000
 input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
+output_tokens: 74000
+avg_tps: 88.3
 cost:
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)

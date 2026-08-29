@@ -4,9 +4,9 @@ Execute **top to bottom**. One project per language. Each row links to its self-
 
 | # | Project ID | Language | Shape | UI | LOC target | Coverage gate | Spec | Status |
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
-| 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 2,000–3,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | ⬜ not run |
-| 2 | `loglens` | Python 3.11+ | CLI + library: log analysis & anomaly reports | — | 2,000–3,000 | ≥ 75% | [specs/02-python-loglens/SPEC.md](specs/02-python-loglens/SPEC.md) | ⬜ not run |
-| 3 | `parkwise` | C# (.NET 8, ASP.NET Core Web API) | Parking-garage management API | — | 2,000–3,000 | ≥ 75% | [specs/03-csharp-parkwise/SPEC.md](specs/03-csharp-parkwise/SPEC.md) | ⬜ not run |
+| 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 2,000–3,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | 🟨 implemented, awaiting grading (deepseek-v4, 2026-08-29) |
+| 2 | `loglens` | Python 3.11+ | CLI + library: log analysis & anomaly reports | — | 2,000–3,000 | ≥ 75% | [specs/02-python-loglens/SPEC.md](specs/02-python-loglens/SPEC.md) | 🟨 implemented, awaiting grading (deepseek-v4, 2026-08-29) |
+| 3 | `parkwise` | C# (.NET 8, ASP.NET Core Web API) | Parking-garage management API | — | 2,000–3,000 | ≥ 75% | [specs/03-csharp-parkwise/SPEC.md](specs/03-csharp-parkwise/SPEC.md) | 🟨 implemented, awaiting grading (deepseek-v4, 2026-08-29) |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
 
