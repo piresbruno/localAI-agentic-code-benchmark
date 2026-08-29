@@ -61,19 +61,22 @@ public class PermitService
 
         var now = _clock.UtcNow;
         var permit = await _permits.GetActiveByPlateAsync(plate, now, ct);
-        if (permit is null)
+        if (permit is not null)
+        {
+            return new PermitValidationResponse(plate, Active: true, permit.Code, permit.ValidUntilUtc, Reason: null);
+        }
+
+        // No active permit — distinguish "none at all" from "expired" for attendants.
+        var latest = await _permits.GetLatestByPlateAsync(plate, ct);
+        if (latest is null)
         {
             return new PermitValidationResponse(plate, Active: false, PermitCode: null, ValidUntil: null, Reason: "No permit for this plate");
         }
-        if (now < permit.ValidFromUtc)
+        if (now < latest.ValidFromUtc)
         {
-            return new PermitValidationResponse(plate, Active: false, permit.Code, permit.ValidUntilUtc, Reason: "Permit not yet valid");
+            return new PermitValidationResponse(plate, Active: false, latest.Code, latest.ValidUntilUtc, Reason: "Permit not yet valid");
         }
-        if (now > permit.ValidUntilUtc)
-        {
-            return new PermitValidationResponse(plate, Active: false, permit.Code, permit.ValidUntilUtc, Reason: ErrorCodes.PermitExpired);
-        }
-        return new PermitValidationResponse(plate, Active: true, permit.Code, permit.ValidUntilUtc, Reason: null);
+        return new PermitValidationResponse(plate, Active: false, latest.Code, latest.ValidUntilUtc, Reason: ErrorCodes.PermitExpired);
     }
 
     /// <summary>Deletes a permit (admin).</summary>

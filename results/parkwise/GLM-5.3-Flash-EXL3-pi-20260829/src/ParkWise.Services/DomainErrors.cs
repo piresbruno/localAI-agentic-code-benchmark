@@ -14,7 +14,10 @@ public abstract class DomainException(string code, string message, int statusCod
 /// <summary>No compatible bay is free — garage (or vehicle type) full.</summary>
 public sealed class GarageFullException(IReadOnlyCollection<BayType> fullTypes)
     : DomainException(ErrorCodes.GarageFull, "No compatible bay is free for this vehicle type.", 409,
-        new { full = fullTypes.Select(t => t.ToString()).ToArray() });
+        new { full = fullTypes.Select(t => t.ToString()).ToArray() })
+{
+    public IReadOnlyCollection<BayType> FullTypes { get; } = fullTypes;
+}
 
 /// <summary>The ticket has already exited.</summary>
 public sealed class AlreadyExitedException(Guid ticketId)
@@ -22,7 +25,10 @@ public sealed class AlreadyExitedException(Guid ticketId)
 
 /// <summary>Exit requires payment first; carries the outstanding quote.</summary>
 public sealed class PaymentRequiredException(QuoteResponse quote)
-    : DomainException(ErrorCodes.PaymentRequired, "Payment required before exit.", 402, quote);
+    : DomainException(ErrorCodes.PaymentRequired, "Payment required before exit.", 402, quote)
+{
+    public QuoteResponse Quote { get; } = quote;
+}
 
 /// <summary>Ticket id unknown.</summary>
 public sealed class TicketNotFoundException(Guid ticketId)

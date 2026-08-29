@@ -65,7 +65,8 @@ public class PaymentService
 
         // EV charging: flat surcharge when explicitly requested on the payment.
         var amount = quote.Amount;
-        if (evChargingUsed && ticket.VehicleType == VehicleType.Ev && !quote.IsLost && !permitExempt)
+        var surchargeApplied = evChargingUsed && ticket.VehicleType == VehicleType.Ev && !quote.IsLost && !permitExempt;
+        if (surchargeApplied)
         {
             amount += _feeOptions.EvChargingSurcharge;
         }
@@ -73,7 +74,7 @@ public class PaymentService
         amount = Math.Round(amount, 2, MidpointRounding.AwayFromZero);
 
         var payment = new PaymentRecord(
-            Guid.NewGuid(), ticketId, amount, paymentMethod, now, evChargingUsed, RefundedAtUtc: null, permitExempt);
+            Guid.NewGuid(), ticketId, amount, paymentMethod, now, surchargeApplied, RefundedAtUtc: null, permitExempt);
         await _payments.AddAsync(payment, ct);
 
         var paid = ticket with { Status = TicketStatus.Paid };

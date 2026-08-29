@@ -48,7 +48,7 @@ public class TicketService
     /// double-booked and capacity can never be exceeded.</summary>
     public async Task<EntryResult> RegisterEntryAsync(string plate, string vehicleType, string? permitCode, CancellationToken ct = default)
     {
-        plate = plate?.Trim().ToUpperInvariant() ?? string.Empty;
+        plate = plate?.Trim() ?? string.Empty;
         if (!PlateRegex.IsMatch(plate))
         {
             throw new PlateInvalidException(plate);

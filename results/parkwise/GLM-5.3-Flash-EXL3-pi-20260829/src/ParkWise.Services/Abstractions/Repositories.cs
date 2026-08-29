@@ -49,6 +49,9 @@ public interface IPermitRepository
     Task AddAsync(PermitRecord permit, CancellationToken ct = default);
     Task<PermitRecord?> GetByCodeAsync(string code, CancellationToken ct = default);
     Task<PermitRecord?> GetActiveByPlateAsync(string plate, DateTime atUtc, CancellationToken ct = default);
+
+    /// <summary>Most recent permit for a plate regardless of validity (for expiry diagnostics).</summary>
+    Task<PermitRecord?> GetLatestByPlateAsync(string plate, CancellationToken ct = default);
     Task<IReadOnlyList<PermitRecord>> GetAllAsync(CancellationToken ct = default);
     Task<bool> DeleteAsync(string code, CancellationToken ct = default);
 }

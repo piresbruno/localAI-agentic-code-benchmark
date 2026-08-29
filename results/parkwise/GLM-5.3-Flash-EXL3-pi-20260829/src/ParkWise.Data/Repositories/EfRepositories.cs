@@ -143,6 +143,16 @@ public class EfPermitRepository : IPermitRepository
         return permit is null ? null : Mappers.ToRecord(permit);
     }
 
+    public async Task<PermitRecord?> GetLatestByPlateAsync(string plate, CancellationToken ct = default)
+    {
+        var permit = await _db.Permits
+            .AsNoTracking()
+            .Where(p => p.Plate == plate)
+            .OrderByDescending(p => p.ValidUntil)
+            .FirstOrDefaultAsync(ct);
+        return permit is null ? null : Mappers.ToRecord(permit);
+    }
+
     public async Task<IReadOnlyList<PermitRecord>> GetAllAsync(CancellationToken ct = default)
     {
         var permits = await _db.Permits.AsNoTracking().OrderBy(p => p.Code).ToListAsync(ct);
