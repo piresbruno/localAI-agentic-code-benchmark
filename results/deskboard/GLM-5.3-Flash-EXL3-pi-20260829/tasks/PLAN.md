@@ -11,17 +11,17 @@ DeskBoard is a full-stack meeting-room booking app: Express 5 REST API with JWT 
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold npm workspaces (root, server, client, shared) with tsconfigs; `npm run build` passes on empty skeleton
+- [x] T1 — Scaffold npm workspaces (root, server, client, shared) with tsconfigs; `npm run build` passes on empty skeleton
       Accept: BUILD_CHECK green with empty skeleton.
-- [ ] T2 — `shared/`: domain types, DTOs, zod validation schemas (register/login, room, booking, password change)
+- [x] T2 — `shared/`: domain types, DTOs, zod validation schemas (register/login, room, booking, password change)
       Accept: shared builds; schemas exported and used by both sides later.
-- [ ] T3 — Server domain: repository interfaces + in-memory stores; auth service (register, login, password change); room service (CRUD, deactivate, duplicate-name rule)
+- [x] T3 — Server domain: repository interfaces + in-memory stores; auth service (register, login, password change); room service (CRUD, deactivate, duplicate-name rule)
       Accept: unit tests for auth + room rules pass with injected clock/idgen.
-- [ ] T4 — Booking service: business-hours rule, overlap conflict (adjacent OK), recurrence expansion, capacity rule, cancellation window, computed completed status
+- [x] T4 — Booking service: business-hours rule, overlap conflict (adjacent OK), recurrence expansion, capacity rule, cancellation window, computed completed status
       Accept: unit tests named after every §4 business rule pass.
-- [ ] T5 — Usage report service + HTTP layer: express routers, JWT middleware, one shared error mapper, OpenAPI/Swagger at `/api-docs`, seed data, `app.ts`/`main.ts`, `/health`
+- [x] T5 — Usage report service + HTTP layer: express routers, JWT middleware, one shared error mapper, OpenAPI/Swagger at `/api-docs`, seed data, `app.ts`/`main.ts`, `/health`
       Accept: supertest integration tests for all endpoints incl. 401/403/404/409/422 paths pass.
-- [ ] T6 — Server test hardening: full §8 server matrix (unit + integration, fresh app per test)
+- [x] T6 — Server test hardening: full §8 server matrix (unit + integration, fresh app per test)
       Accept: `npm test` green; server coverage measured.
 - [ ] T7 — Client foundation: `tokens.css` design tokens, ui/ components (Button, TextField, Select, Modal, Toast, Badge, Table, Spinner), typed fetch wrapper, auth hook
       Accept: client builds; components render with variants/error/disabled states.
@@ -29,9 +29,9 @@ DeskBoard is a full-stack meeting-room booking app: Express 5 REST API with JWT 
       Accept: flows work end-to-end against running server.
 - [ ] T9 — Client tests: RTL for components + unit tests for slot-computation/validation modules (≥ 8 meaningful tests)
       Accept: `npx vitest run` green in client.
-- [ ] T10 — Docs: README (quickstart, env, seeded accounts, API summary), `docs/DESIGN.md`, `docs/DECISIONS.md`; .env.example
+- [x] T10 — Docs: README (quickstart, env, seeded accounts, API summary), `docs/DESIGN.md`, `docs/DECISIONS.md`; .env.example
       Accept: clean-checkout quickstart ≤ 3 commands documented.
-- [ ] T11 — Quality gates: build, tests 100% pass, coverage ≥ 75% (server+shared), boot & smoke (`/health`, UI at `/`), security self-review, lint clean
+- [x] T11 — Quality gates: build, tests 100% pass, coverage ≥ 75% (server+shared), boot & smoke (`/health`, UI at `/`), security self-review, lint clean
       Accept: all gates green; final report printed.
 
 ## Decisions & spec deviations
