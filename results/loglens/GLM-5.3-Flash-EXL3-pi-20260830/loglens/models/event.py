@@ -19,6 +19,7 @@ LEVEL_NAMES = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "UNKNOWN")
 LEVEL_ALIASES: dict[str, str] = {
     "TRACE": "DEBUG",
     "WARN": "WARNING",
+    "WARNING": "WARNING",
     "ERR": "ERROR",
     "ERROR": "ERROR",
     "SEVERE": "ERROR",
