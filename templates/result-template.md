@@ -46,20 +46,20 @@ List the spec's named edge-case tests and whether they exist:
 - [ ] …
 - [ ] …
 
-## UI/UX & design system check (deskboard only — evidence for the ×1.5 category)
+## UI/UX & design system check (all projects — evidence for the ×1.5 category; depth per each spec's UI section)
 
 | Check | Result | Evidence (path / observation) |
 |-------|--------|-------------------------------|
 | Tokens file exists; no off-token hex/spacing (grep) | ✅/❌ | |
-| ≥ 6 shared UI components in `components/ui/`, reused (not re-implemented per page) | ✅/❌ | |
-| Button loading state + double-submit safe | ✅/❌ | |
-| Loading / empty / error states on RoomGrid, MyBookings, AdminRooms | ✅/❌ | how induced: |
+| Shared UI components reused (not re-implemented per page) | ✅/❌ | |
+| Button/loading state + double-submit safe | ✅/❌ | |
+| Loading / empty / error states on every data view (deskboard: RoomGrid, MyBookings, AdminRooms; parkwise: tickets table, occupancy) | ✅/❌ | how induced: |
 | Toast/inline feedback carries API error messages | ✅/❌ | |
-| Keyboard-only walkthrough: login → book → cancel (modal focus trap, Esc) | ✅/❌ | |
-| Visible focus ring, labels tied to inputs, `aria-live` toasts | ✅/❌ | |
+| Keyboard-only walkthrough of the main flow (deskboard: login → book → cancel, modal focus trap, Esc; parkwise: login → entry → pay → exit) | ✅/❌ | |
+| Visible focus ring, labels tied to inputs, `aria-live` feedback | ✅/❌ | |
 | Contrast ≥ 4.5:1 on body text (spot-check primary pairs) | ✅/❌ | |
 | Responsive ≥ 360px | ✅/❌ | |
-| `docs/DESIGN.md` present and matches implementation | ✅/❌ | |
+| Design docs present and match implementation (deskboard `docs/DESIGN.md`; parkwise: UI rationale in `docs/DECISIONS.md`) | ✅/❌ | |
 
 UI/UX score: __ / 10
 
