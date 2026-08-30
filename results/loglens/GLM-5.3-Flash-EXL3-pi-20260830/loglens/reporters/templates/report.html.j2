@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LogLens report</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --border: #262b36; --text: #e6e9ef;
+    --muted: #8b93a3; --good: #3fb96f; --fair: #e0a83a; --poor: #e05252;
+    --accent: #5b8def; --critical: #e05252; --warn: #e0a83a; --info: #5b8def;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .generated { color: var(--muted); margin: 0 0 20px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .card .value { font-size: 26px; font-weight: 700; margin-top: 2px; }
+  .value.good { color: var(--good); }
+  .value.fair { color: var(--fair); }
+  .value.poor { color: var(--poor); }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  h2 { font-size: 15px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  tr:last-child td { border-bottom: none; }
+  .severity { font-weight: 700; text-transform: uppercase; font-size: 12px; }
+  .severity.critical { color: var(--critical); }
+  .severity.warn { color: var(--warn); }
+  .severity.info { color: var(--info); }
+  .sparkline { width: 100%; height: auto; }
+  .spark-line { fill: none; stroke: var(--accent); stroke-width: 2; }
+  .spark-area { fill: rgba(91, 141, 239, 0.15); stroke: none; }
+  .empty { color: var(--muted); font-style: italic; }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>LogLens report</h1>
+  <p class="generated">Generated {{ report.generated_at.strftime("%Y-%m-%d %H:%M:%S %Z") }}
+    {%- if report.inputs %} from {{ report.inputs | join(", ") }}{% endif %}</p>
+
+  <div class="cards">
+    <div class="card"><div class="label">Events</div><div class="value">{{ report.events_total }}</div></div>
+    <div class="card"><div class="label">Parse errors</div><div class="value">{{ report.parse_errors }}</div></div>
+    <div class="card"><div class="label">Incidents</div><div class="value">{{ report.incidents | length }}</div></div>
+    <div class="card"><div class="label">Health score</div><div class="value {{ score_class }}">{{ report.health_score }}</div></div>
+    <div class="card"><div class="label">Time range</div><div class="value" style="font-size:15px">
+      {%- if report.first_timestamp and report.last_timestamp -%}
+        {{ report.first_timestamp.strftime("%H:%M:%S") }}–{{ report.last_timestamp.strftime("%H:%M:%S") }}
+      {%- else -%}—{%- endif -%}
+    </div></div>
+  </div>
+
+  <section>
+    <h2>Incidents</h2>
+    {% if report.incidents %}
+    <table>
+      <thead><tr><th>Severity</th><th>Rule</th><th>Window</th><th>Summary</th><th>Suggested action</th></tr></thead>
+      <tbody>
+      {% for incident in report.incidents %}
+        <tr>
+          <td><span class="severity {{ incident.severity.value }}">{{ incident.severity.value }}</span></td>
+          <td>{{ incident.rule }}</td>
+          <td>
+            {%- if incident.first_timestamp -%}
+              {{ incident.first_timestamp.strftime("%H:%M:%S") }}{% if incident.last_timestamp and incident.last_timestamp != incident.first_timestamp %}–{{ incident.last_timestamp.strftime("%H:%M:%S") }}{% endif %}
+            {%- else -%}—{%- endif -%}
+          </td>
+          <td>{{ incident.summary }}</td>
+          <td>{{ incident.suggested_action }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="empty">No incidents detected.</p>{% endif %}
+  </section>
+
+  <section>
+    <h2>Error rate over time</h2>
+    {% if report.error_rate_series %}{{ sparkline | safe }}
+    <p class="generated">Share of ERROR/CRITICAL events per 5-minute bucket.</p>
+    {% else %}<p class="empty">No timestamped events to chart.</p>{% endif %}
+  </section>
+
+  <section>
+    <h2>Top messages</h2>
+    {% if report.top_messages %}
+    <table>
+      <thead><tr><th>Count</th><th>Level</th><th>Message (normalized)</th></tr></thead>
+      <tbody>
+      {% for row in report.top_messages %}
+        <tr><td>{{ row.count }}</td><td>{{ row.level }}</td><td>{{ row.message }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="empty">No messages.</p>{% endif %}
+  </section>
+
+  <footer>Generated by LogLens — self-contained report, no external resources.</footer>
+</main>
+</body>
+</html>
