@@ -33,3 +33,4 @@ One line per completed run for quick reference. **The canonical comparison is th
 | 2026-08-29 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 86.49% | 56,585,806 | 19.6 | 01:30:27 | 76 tests (59 unit + 17 integration), warnings-as-errors; awaiting grading |
 | 2026-08-29 | deskboard | deepseek-v4-flash/pi | pending grading | 97.32% | 26,508,376 | 43.0 | 01:11:48 | 168 tests (131 server/shared + 37 client), lint clean, smoke green; pending grading |
 | 2026-08-30 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 96.08% | 164,391 (final ctx; 110,776 output) | 27.4 | 01:08:34 | 114 tests (70 server/shared + 44 client), lint clean, smoke green; new run of same model; pending grading |
+| 2026-08-30 | loglens | GLM-5.3-Flash-EXL3/pi | pending grading | 96% | 21,459,134 | 30.0 | 01:22:06 | 211 tests, ruff clean, smoke green, 4 planted scenarios detected; repeat run of same model; pending grading |

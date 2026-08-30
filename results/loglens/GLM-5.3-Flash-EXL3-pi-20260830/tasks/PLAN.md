@@ -40,23 +40,23 @@ traffic). The library core must be importable without the CLI; the CLI is a thin
       registry, five built-ins with per-rule windows and incident metadata (severity, summary,
       suggested action).
       Accept: every rule has a positive AND negative test with injected event timestamps.
-- [ ] T7 — reporters/: terminal (rich tables), JSON (full report dump), HTML (Jinja2, single
+- [x] T7 — reporters/: terminal (rich tables), JSON (full report dump), HTML (Jinja2, single
       self-contained file: summary cards, incidents table, SVG error-rate sparkline, top messages),
       registry.
       Accept: unit tests green; HTML has no external URLs; JSON round-trips.
-- [ ] T8 — cli/: typer app `parse | report | watch | sample`, `--format`, `--out`, `--config`,
+- [x] T8 — cli/: typer app `parse | report | watch | sample`, `--format`, `--out`, `--config`,
       `--since/--until`, `--interval`; exit codes 0/1/2/3; config loader (TOML+JSON, file+line in
       errors, exit 2); `--help` documents every command.
       Accept: CliRunner tests green for all exit codes and help texts.
-- [ ] T9 — samplegen/: deterministic (seeded) generator writing `samples/app.log` (plain text) and
+- [x] T9 — samplegen/: deterministic (seeded) generator writing `samples/app.log` (plain text) and
       `samples/app.jsonl` (JSON lines) planting exactly the 4 spec scenarios without baseline
       dilution.
       Accept: engine over generated samples detects all 4 scenario incidents (integration test).
-- [ ] T10 — Tests hardening: ≥ 50 documented malformed-line fixtures in `tests/data/`
+- [x] T10 — Tests hardening: ≥ 50 documented malformed-line fixtures in `tests/data/`
       (property-style parser test), CLI integration suite, streaming test, coverage ≥ 75%
       (`pytest --cov=loglens`), zero ruff warnings.
       Accept: gates green: build, pytest 100%, coverage ≥ 75%, ruff clean.
-- [ ] T11 — Docs: README (goal, ≤ 3-command quickstart, rule table w/ defaults, config example,
+- [x] T11 — Docs: README (goal, ≤ 3-command quickstart, rule table w/ defaults, config example,
       exit codes, health-score formula, extend-in-10-lines guide, decisions), docs/ARCHITECTURE.md
       (pipeline diagram + data flow).
       Accept: README quickstart verified from clean-checkout state; docs committed.
@@ -80,9 +80,23 @@ traffic). The library core must be importable without the CLI; the CLI is a thin
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 01:22:00 (work started 12:39:24 UTC, finished ~14:01 UTC, 2026-08-30)
+- Total tokens consumed (in + out) + avg output t/s: 21,459,134 total (21,311,285 input /
+  147,849 output; reasoning 0) — self-reported from pi harness session telemetry
+  (`message.usage` in the session jsonl). Avg output ≈ 30 t/s (output tokens ÷ wall time;
+  estimate, not a metered rate).
+- Errors/retries (build/test/lint): ~21 fix-forward cycles, zero restarts. Real implementation
+  bugs found by tests: (1) JSONL field order let level assignment un-UNKNOWN parse errors;
+  (2) pydantic assignment validation was off, so non-UTC tzinfo survived; (3) engine pooled
+  unordered/cross-file events into one giant window (burst false positive, O(n) retention) —
+  fixed with per-source window flushes + late-arrival policy; (4) `report --out report.html`
+  wrote a terminal report — fixed to imply html per the spec's smoke contract. The rest were
+  test-expectation and lint fixes.
+- Final coverage (number + measurement command): 96% via `pytest --cov=loglens --cov-report=term`
+  (210→211 tests, all passing, none skipped)
+- Line counts per directory: models 238, parsers 371, rules 560, engine 572, reporters 224,
+  io 114, cli 248, samplegen 314 → package ≈ 2,871 lines (incl. 1 Jinja2 template);
+  tests ≈ 1,901 lines
+- Deviations from spec: see "Decisions & spec deviations" table above (12 entries; none
+  functional — tumbling windows, per-source timelines, sample-data dilution guards, and the
+  html-format default are documented design decisions).

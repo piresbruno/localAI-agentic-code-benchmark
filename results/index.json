@@ -50,6 +50,18 @@
     "_dir": "/home/piresbruno/developer/code-benchmark/results/loglens/GLM-5.3-Flash-EXL3-pi-20260829"
   },
   {
+    "project": "loglens",
+    "agent": "pi",
+    "model": "GLM-5.3-Flash-EXL3",
+    "wall_time": "01:22:06",
+    "total_tokens": "21459134",
+    "input_tokens": "21311285",
+    "output_tokens": "147849",
+    "avg_tps": "30.0",
+    "_run_id": "GLM-5.3-Flash-EXL3-pi-20260830",
+    "_dir": "/home/piresbruno/developer/code-benchmark/results/loglens/GLM-5.3-Flash-EXL3-pi-20260830"
+  },
+  {
     "project": "parkwise",
     "agent": "pi",
     "model": "GLM-5.3-Flash-EXL3",
