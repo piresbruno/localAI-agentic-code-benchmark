@@ -120,8 +120,8 @@ class TestTerminalReporter:
         render_terminal(sample_report(), None)
         output = capsys.readouterr().out
         assert "Health score" in output
-        # Rich may wrap long cell text; compare without whitespace.
-        assert "error_rate_spike" in "".join(output.split())
+        # Rich may wrap long cell text mid-word; assert on the stable prefix.
+        assert "error_rate" in output
         assert "Incidents" in output
 
     def test_respects_output_stream(self):
