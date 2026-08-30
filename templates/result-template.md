@@ -23,6 +23,7 @@
 | G3 All tests pass | ✅/❌ | N passed / N failed |
 | G4 Coverage ≥ 75% | ✅/❌ | number + command: |
 | G5 Architecture matches spec | ✅/❌ | modules reviewed: |
+| G6 No contamination | ✅/❌ | reads outside run dir checked: |
 
 ## Scores (0–10 each, weighted per RUBRIC)
 
@@ -33,10 +34,10 @@
 | Code quality | ×2 | | | |
 | Testing quality | ×2 | | | |
 | Security & validation | ×1.5 | | | |
-| UI/UX & design system (deskboard only) | ×1.5 | | | |
+| UI/UX & design system (all projects; depth per spec UI section) | ×1.5 | | | |
 | Documentation | ×1 | | | |
 | Process discipline | ×0.5 | | | |
-| **Total** | | | **/135 → /100** (deskboard) | |
+| **Total** | | | **/135 → /100** | |
 
 ## Spec edge-case spot check
 

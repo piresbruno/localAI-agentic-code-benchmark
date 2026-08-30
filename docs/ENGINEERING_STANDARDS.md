@@ -51,7 +51,7 @@ These standards apply to **every** benchmark project, in addition to each spec's
 - Language-idiomatic naming (camelCase TS, snake_case Python, PascalCase/camelCase C# per convention).
 - One responsibility per module/function; functions ≤ ~40 lines as a guideline.
 - Public surface documented: docstrings/XML-doc on exported functions, classes, and endpoints.
-- Enforce linting/formatting: ESLint+Prettier (TS), ruff+black (Python), .editorconfig + built-in analyzers (C#). Zero warnings policy.
+- Enforce linting/formatting: ESLint+Prettier (TS), .editorconfig + built-in analyzers (C#). Zero warnings policy.
 
 ## 8. Repository hygiene
 

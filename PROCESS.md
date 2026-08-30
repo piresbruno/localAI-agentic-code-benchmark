@@ -9,7 +9,7 @@ This is the **mandatory process** for executing and grading a benchmark project.
 
 ## Two launch modes
 
-- **Mode A — autonomous (repo root)**: the agent is opened at the repo root and told only *"execute the task"*. It bootstraps itself via `AGENTS.md` §1: reads `BENCHMARKS.md`, picks the next ⬜ project, self-identifies its model, runs `new-run.sh` itself, implements, and does the closing bookkeeping (§7: metrics, status update, `build-report.py`, commits). **You then jump in at Phase 4 (verify) and Phase 5 (grade).**
+- **Mode A — autonomous (repo root)**: the agent is opened at the repo root and told only *"execute the task"*. It bootstraps itself via `AGENTS.md` §1: reads `BENCHMARKS.md`, picks the next ⬜ project, self-identifies its model, runs `new-run.sh` itself, implements, and does the closing bookkeeping (§7: metrics, status update, commits). **You then jump in at Phase 4 (verify) and Phase 5 (grade).**
 - **Mode B — operator-launched (run dir)**: you scaffold (Phase 1) and paste the filled prompt. The rest is identical from Phase 2 on.
 
 In Mode A the agent's Phase 3 metrics are **self-reported** — always overwrite/confirm them from harness telemetry in Phase 4 before grading, and mark the source in `METRICS.md`.
@@ -24,7 +24,8 @@ cd ~/developer/code-benchmark
 ## Phase 1 — Start a run
 
 1. Pick the next project from **BENCHMARKS.md** (execute top to bottom).
-2. Scaffold the run — the tested **model** must be identified; it becomes the directory name:
+2. **Isolate**: if `results/` contains any run directories, run `./scripts/archive-results.sh` — completed runs move to gitignored `results-archive/` (untracked) so this run's agent cannot read a prior implementation. `new-run.sh` refuses to scaffold while other runs are visible.
+3. Scaffold the run — the tested **model** must be identified; it becomes the directory name:
 
    ```bash
    ./scripts/new-run.sh <project-id> <model> [harness]
@@ -34,8 +35,8 @@ cd ~/developer/code-benchmark
    ```
 
    Use the exact model id/alias you would report in a results table (e.g. `claude-opus-4.6`, `gpt-5.3-codex`, `deepseek-v4`). The harness argument distinguishes runs of the same model through different tools.
-3. Fill the placeholders in **PROMPT_TEMPLATE.md** for this project.
-4. Launch the agent with cwd = run directory, paste the prompt. It auto-loads `AGENTS.md` from the run directory.
+4. Fill the placeholders in **PROMPT_TEMPLATE.md** for this project.
+5. Launch the agent with cwd = run directory, paste the prompt. It auto-loads `AGENTS.md` from the run directory.
 
 ## Phase 2 — During the run
 
@@ -53,7 +54,7 @@ Every run records **total token count, average t/s, and total execution time** i
 
 1. Note the harness session start time when you launch the agent; note the end time when it prints its final report.
 2. Extract token usage from **harness telemetry** (see the "Where to find the numbers" section inside `METRICS.md` for Claude Code / Pi / Codex locations). In Mode A the agent's numbers are self-reported — replace them with harness truth. If they disagree, harness wins.
-3. Fill the **yaml block** in `METRICS.md` exactly — `scripts/build-report.py` (and `collect-metrics.sh` for a terminal view) parse it for the global ranking and per-project comparison tables.
+3. Fill the **yaml block** in `METRICS.md` exactly — `scripts/build-report.py` (and `collect-metrics.sh` for a terminal view) parse it for the `results/RESULTS.md` ranking and per-project comparison tables.
 4. Retry/turnover overhead counts: tokens burned in failed builds/tests are part of the run's real cost. Do not subtract them.
 
 ## Phase 4 — Independent verification (operator, never trust the agent)
@@ -82,19 +83,22 @@ Hard fail gates (any one fails the whole run):
 3. Any test failing
 4. Coverage < 75% (on the spec's scope)
 5. Architecture does not match the spec's Required Architecture section
+6. Contamination — the agent read anything outside its run directory beyond the three reference docs (spec, standards, plan template)
 
 ## Phase 6 — Record, rank & publish
 
 1. Complete `RESULT.md` (verdict, scores, notes).
 2. Copy the final `verdict` and normalized `score` (0–100) into the yaml block of `METRICS.md` (overwriting any self-reported values with harness truth).
-3. Run `./scripts/build-report.py` — it scans **all** `results/*/*/METRICS.md`, ranks models per project (score ↓, tokens ↑, t/s ↓), computes the overall model leaderboard, and **regenerates `results/index.html` with every past result included** — i.e. each execution appends the new run to the global ranking. A machine-readable `results/index.json` is written alongside for CI.
+3. Run `./scripts/build-report.py` — it scans **all** `results/*/*/METRICS.md` **and** `results-archive/*/*/METRICS.md`, ranks models per project (score ↓, tokens ↑, t/s ↓), computes the overall model leaderboard, and **regenerates `results/RESULTS.md` (markdown) with every past result included** — i.e. each execution appends the new run to the global ranking. No HTML, no JSON — Markdown only.
 4. Commit the graded artifact: `chore(benchmarks): grade <project-id> run for <model-id> — <verdict> (<score>/100)`.
 5. Optionally run `./scripts/collect-metrics.sh` for a quick terminal view of the same data.
-6. Leave the run directory untouched after grading — it is the artifact.
+6. Before the next run: `./scripts/archive-results.sh` — moves the graded run out of the working tree into gitignored `results-archive/` (isolation). Restore any time with `scripts/restore-results.sh`.
+7. Leave the run directory untouched after grading — it is the artifact.
 
 ## Fairness rules
 
 - Same spec, same prompt, same gates for every agent. **Never** tune a spec after seeing a run's results.
+- **One implementation must never see another.** Archive prior runs before scaffolding (`scripts/archive-results.sh`); contamination (agent reads other runs/specs/history) = automatic FAIL.
 - One attempt per run directory; if you re-run, make a new directory.
 - Time is recorded but not gated — the report is part of the deliverable. **Token count, avg t/s, and wall time are recorded per run and compared per project; they are metrics, not gates.**
 - The agent may use any tools/MCPs it has; grade the outcome, not the mechanics (except sandboxing).

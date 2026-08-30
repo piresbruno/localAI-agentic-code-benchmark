@@ -4,9 +4,9 @@
 **Started**: {DATE} — time: `____:____`
 **Ended**: `____:____`
 
-> Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the global ranking.
+> Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
-## Machine-readable block (fill exactly — scripts/build-report.py parses this)
+## Machine-readable block (fill exactly — scripts/build-report.py parses this for results/RESULTS.md)
 
 ```yaml
 project: {PROJECT_ID}

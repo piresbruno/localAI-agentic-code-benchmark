@@ -20,8 +20,11 @@ builds and runs from a clean checkout"
 
 Your working directory is {RUN_DIR}. Everything you create must live inside it.
 You have NO access to any reference implementation. The spec is the single
-source of truth. Where the spec is silent, make a reasonable decision and
-document it in your task file.
+source of truth. Other runs' code, other specs, prior results, and git history
+outside your run directory are off-limits — reading anything beyond AGENTS.md,
+the spec, and docs/ENGINEERING_STANDARDS.md is a sandbox breach and fails the
+run (contamination gate G6). Where the spec is silent, make a reasonable
+decision and document it in your task file.
 
 Step 1 — Read
 - Read AGENTS.md in your working directory — it defines the rules, process,

@@ -13,8 +13,8 @@ You may have arrived in one of two places. **Detect your mode first:**
 
 Everything you need is discoverable. Execute exactly this sequence:
 
-1. **Read the execution list** `BENCHMARKS.md`. It contains one project per language (TypeScript `deskboard`, Python `loglens`, C# `parkwise`) with a Status column and a link to each spec.
-2. **Pick the next project**: the first row whose Status is "⬜ not run". Cross-check: if `results/<project>/` already contains a completed run for your model, pick the next project instead. (If all rows are done, say so and stop.)
+1. **Read the execution list** `BENCHMARKS.md`. It contains one project per language (TypeScript `deskboard`, C# `parkwise`) with a Status column and a link to each spec.
+2. **Pick the next project**: the first row whose Status is "⬜ not run". Decide **only from the Status column** — never inspect `results/` or other runs' code to make this decision (that is contamination, see §4.7; `new-run.sh` auto-version-bumps if a directory collides). If all rows are done, say so and stop.
 3. **Self-identify**: your model id (e.g. `claude-opus-4.6`, `gpt-5.3`, `deepseek-v4`) and your harness (e.g. `claude-code`, `pi`, `codex`). Be honest and precise — this identifies your run forever.
 4. **Scaffold the run**:
    ```bash
@@ -50,10 +50,11 @@ Reading those three is allowed and expected. Everything else at the repo root (o
 
 1. **Stay sandboxed.** Write files only inside your run directory. Build/run may not depend on anything outside it (no absolute paths, no external services, no network calls at runtime unless the spec says so). A sandbox breach fails the run.
 2. **The spec is the contract.** Implement what it says. Genuinely contradictory requirements: pick the simpler reading, note it, move on — do not stall.
-3. **Do not edit** `RESULT.md` (grader's sheet), the spec, the standards, or anything outside your run directory — with exactly one exception: the **closing bookkeeping** in §7 touches `BENCHMARKS.md` and `results/index.*`.
+3. **Do not edit** `RESULT.md` (grader's sheet), the spec, the standards, or anything outside your run directory — with exactly one exception: the **closing bookkeeping** in §7 touches `BENCHMARKS.md`.
 4. **No reference implementations.** Searching for this benchmark's solution online is cheating. General documentation lookups (docs, MCP tools) are fine.
 5. **No fake signals.** Coverage-gaming with trivial assertions, deleting failing tests, hand-edited coverage reports = automatic fail. Do not fabricate token/usage numbers — record only what you can actually observe, and label the source.
 6. **One shot.** If something breaks, fix it forward. Do not ask to restart.
+7. **No contamination.** Read nothing outside your run directory except the three reference docs in §2. Other runs' code, other specs, prior results, and the git history of anything outside your run directory are off-limits — inspecting any of them (even `git log`/`git show` archaeology) is a sandbox breach and an **automatic FAIL** (RUBRIC gate G6).
 
 ## 5. Commit discipline (mandatory)
 
@@ -62,11 +63,11 @@ This is a git repository and **your commit history is part of the deliverable** 
 - **Commit at every milestone, minimum**: (1) the scaffold, (2) after each completed PLAN.md task, (3) docs, (4) the closing bookkeeping. Do not bulk-commit everything at the end.
 - **Conventional commits**, scoped to the project id:
   - `feat(deskboard): add booking conflict detection service`
-  - `test(loglens): cover malformed-line parser fixtures`
+  - `test(parkwise): cover garage-full concurrency fixture`
   - `chore(parkwise): scaffold run for gpt-5.3`
   - `docs(deskboard): add README quickstart and decisions`
   - `chore(benchmarks): mark deskboard implemented, awaiting grading`
-- **Commit only your run directory** plus, at closing, `BENCHMARKS.md` and `results/index.*`. Never commit outside those paths; never commit build junk (respect `.gitignore`: `node_modules/`, `__pycache__/`, `bin/`, `obj/`, `dist/`, coverage output).
+- **Commit only your run directory** plus, at closing, `BENCHMARKS.md`. Never commit outside those paths; never commit build junk (respect `.gitignore`: `node_modules/`, `__pycache__/`, `bin/`, `obj/`, `dist/`, coverage output).
 - Write meaningful messages. `update`, `fix stuff`, `wip` are rubric deductions.
 
 ## 6. The process you must follow (in order)
@@ -117,8 +118,9 @@ Honest gaps score better than silence — the grader will find them anyway.
 
 1. **Fill the yaml block in `METRICS.md`** with what you can observe (wall time; tokens/t·s only if your harness exposes usage — set `model`, leave `verdict`/`score` empty for the grader). Never fabricate numbers.
 2. **Update `BENCHMARKS.md`**: set the row's Status to "🟨 implemented, awaiting grading" and append one row to the results log with your metrics and "pending grading".
-3. **Run `./scripts/build-report.py`** — it regenerates `results/index.html` + `index.json`, including your run. (Your run appears ungraded; the operator adds verdict/score later and re-runs it.)
-4. **Commit everything**: `chore(benchmarks): <project-id> run complete for <model-id>`.
+3. **Commit everything**: `chore(benchmarks): <project-id> run complete for <model-id>`.
+
+Nothing else. The operator regenerates `results/RESULTS.md` and archives your run (`scripts/archive-results.sh`) after grading — do not create or modify anything else under `results/`.
 
 Do NOT fill `RESULT.md` — that belongs to the grader.
 
@@ -131,14 +133,15 @@ Do NOT fill `RESULT.md` — that belongs to the grader.
 3. Any test failing
 4. Coverage < 75% on the spec's scope
 5. Architecture does not match the spec's Required Architecture section
+6. Contamination — read anything outside your run directory beyond the §2 reference docs (§4.7)
 
-**Then scored 0–10 per category** (weighted; full detail in `docs/RUBRIC.md`): spec compliance (×3), architecture & patterns (×2), code quality (×2), testing quality (×2), security & validation (×1.5), UI/UX & design system (×1.5, deskboard only), documentation (×1), process discipline (×0.5 — includes commit history quality). Every score cites evidence.
+**Then scored 0–10 per category** (weighted; full detail in `docs/RUBRIC.md`): spec compliance (×3), architecture & patterns (×2), code quality (×2), testing quality (×2), security & validation (×1.5), UI/UX & design system (×1.5, both projects — depth per each spec's UI section), documentation (×1), process discipline (×0.5 — includes commit history quality). Every score cites evidence.
 
 **Metrics recorded per project** (not gates, but compared): total token count, average output t/s, total wall-clock time. The grader takes these from harness telemetry; report what you see honestly.
 
 ## 9. FAQ
 
-**Q: The spec's LOC target (2,000–3,000) seems large. Should I pad?**
+**Q: The spec's LOC target (600–1,000) seems small for the feature list. Should I pad?**
 No. It indicates feature depth. Implement everything; landing short usually means missed features, not verbosity.
 
 **Q: Can I use MCP tools / web search / Context7 for library docs?**
