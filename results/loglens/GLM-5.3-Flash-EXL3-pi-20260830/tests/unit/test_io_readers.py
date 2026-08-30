@@ -52,9 +52,9 @@ class TestGlobInputs:
     def test_glob_expands_to_sorted_matches(self, tmp_path: Path, log_a: Path, log_b: Path):
         (tmp_path / "c.log").write_text("gamma\n", encoding="utf-8")
         records = list(read_lines([str(tmp_path / "*.log")]))
-        sources = [r.source for r in records]
-        assert sources == sorted(set(sources))
-        assert len({s for s in sources}) == 3
+        unique_sources = list(dict.fromkeys(r.source for r in records))
+        assert unique_sources == sorted(unique_sources)
+        assert len(unique_sources) == 3
 
     def test_empty_glob_is_an_error(self, tmp_path: Path):
         with pytest.raises(InputError, match="no files matched"):
