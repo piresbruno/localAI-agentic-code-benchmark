@@ -6,14 +6,14 @@ incident found, 2 usage/config error, 3 I/O error.
 """
 
 import time
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator, Optional
 
 import typer
 
 from loglens.engine import Engine, build_rules, load_config, parse_time_filter
-from loglens.engine.pipeline import parse_inputs
 from loglens.engine.filters import TimeFilter
+from loglens.engine.pipeline import parse_inputs
 from loglens.errors import ConfigError, InputError
 from loglens.io.readers import resolve_inputs
 from loglens.models import LogEvent, Report
@@ -26,6 +26,10 @@ EXIT_CRITICAL = 1
 EXIT_USAGE = 2
 EXIT_IO = 3
 
+_FORMAT_HELP = "Report format: terminal, json, or html."
+_SINCE_HELP = "Only events at/after this time (30m or ISO-8601)."
+_UNTIL_HELP = "Only events at/before this time (30m or ISO-8601)."
+
 app = typer.Typer(
     name="loglens",
     help="Normalize application logs, detect anomalies, and build actionable reports.",
@@ -33,23 +37,19 @@ app = typer.Typer(
 )
 
 
-def _version(value: bool) -> None:
+def _version_callback(value: bool) -> None:
     if value:
         from loglens import __version__
 
-        typer.echo(f"loglens {_version_text()}")
+        typer.echo(f"loglens {__version__}")
         raise typer.Exit(EXIT_OK)
-
-
-def _version_text() -> str:
-    from loglens import __version__
-
-    return __version__
 
 
 @app.callback()
 def _root(
-    version: bool = typer.Option(False, "--version", help="Show the version and exit.", callback=_version),
+    version: bool = typer.Option(
+        False, "--version", help="Show the version and exit.", callback=_version_callback
+    ),
 ) -> None:
     """LogLens: parse logs, detect incidents, and report health."""
 
@@ -58,8 +58,8 @@ def _root(
 def parse(
     input: str = typer.Argument(..., help="Log file, glob pattern, or '-' for stdin."),
     format: str = typer.Option("terminal", "--format", help="Output format: terminal or json."),
-    since: Optional[str] = typer.Option(None, "--since", help="Only events at/after this time (30m or ISO-8601)."),
-    until: Optional[str] = typer.Option(None, "--until", help="Only events at/before this time (30m or ISO-8601)."),
+    since: str | None = typer.Option(None, "--since", help=_SINCE_HELP),
+    until: str | None = typer.Option(None, "--until", help=_UNTIL_HELP),
     limit: int = typer.Option(100, "--limit", help="Max events to display (0 = unlimited)."),
 ) -> None:
     """Normalize events from INPUT and print them as a table or JSON."""
@@ -71,7 +71,8 @@ def parse(
     if format == "json":
         import json
 
-        typer.echo(json.dumps([e.model_dump(mode="json", exclude_none=True) for e in events], indent=2))
+        payload = [e.model_dump(mode="json", exclude_none=True) for e in events]
+        typer.echo(json.dumps(payload, indent=2))
     else:
         _print_event_table(events, limit)
     raise typer.Exit(EXIT_OK)
@@ -80,11 +81,15 @@ def parse(
 @app.command()
 def report(
     inputs: list[str] = typer.Argument(..., help="Files, globs, or '-' for stdin (repeatable)."),
-    out: Optional[Path] = typer.Option(None, "--out", help="Write the report to this file (html defaults to report.html)."),
-    format: str = typer.Option("terminal", "--format", help="Report format: terminal, json, or html."),
-    config: Optional[Path] = typer.Option(None, "--config", help="TOML or JSON config: enable/disable rules, override thresholds."),
-    since: Optional[str] = typer.Option(None, "--since", help="Only events at/after this time (30m or ISO-8601)."),
-    until: Optional[str] = typer.Option(None, "--until", help="Only events at/before this time (30m or ISO-8601)."),
+    out: Path | None = typer.Option(
+        None, "--out", help="Write the report to this file (html defaults to report.html)."
+    ),
+    format: str = typer.Option("terminal", "--format", help=_FORMAT_HELP),
+    config: Path | None = typer.Option(
+        None, "--config", help="TOML or JSON config: enable/disable rules, override thresholds."
+    ),
+    since: str | None = typer.Option(None, "--since", help=_SINCE_HELP),
+    until: str | None = typer.Option(None, "--until", help=_UNTIL_HELP),
 ) -> None:
     """Analyze one or more inputs and produce an actionable report."""
     if format not in ("terminal", "json", "html"):
@@ -103,10 +108,10 @@ def watch(
     input: str = typer.Argument(..., help="Log file to watch (file growth); '-' is not supported."),
     interval: float = typer.Option(5.0, "--interval", min=0.1, help="Seconds between report runs."),
     max_runs: int = typer.Option(0, "--max-runs", help="Stop after N runs (0 = until Ctrl-C)."),
-    format: str = typer.Option("terminal", "--format", help="Report format: terminal, json, or html."),
-    config: Optional[Path] = typer.Option(None, "--config", help="TOML or JSON config file."),
-    since: Optional[str] = typer.Option(None, "--since", help="Only events at/after this time (30m or ISO-8601)."),
-    until: Optional[str] = typer.Option(None, "--until", help="Only events at/before this time (30m or ISO-8601)."),
+    format: str = typer.Option("terminal", "--format", help=_FORMAT_HELP),
+    config: Path | None = typer.Option(None, "--config", help="TOML or JSON config file."),
+    since: str | None = typer.Option(None, "--since", help=_SINCE_HELP),
+    until: str | None = typer.Option(None, "--until", help=_UNTIL_HELP),
 ) -> None:
     """Re-run the report on a growing file every --interval seconds until Ctrl-C."""
     if input == "-":
@@ -132,7 +137,9 @@ def watch(
 
 @app.command()
 def sample(
-    events: int = typer.Option(5000, "--events", min=1, help="Approximate number of baseline events to generate."),
+    events: int = typer.Option(
+        5000, "--events", min=1, help="Approximate number of baseline events to generate."
+    ),
     dir: Path = typer.Option("./samples", "--dir", help="Directory to write demo logs into."),
 ) -> None:
     """Generate deterministic demo logs containing four planted anomalies."""
@@ -161,7 +168,7 @@ def _resolve_inputs_or_exit(inputs: list[str]) -> None:
         _fail(exc.message, EXIT_IO)
 
 
-def _rules_or_exit(config: Optional[Path]) -> list[BaseRule]:
+def _rules_or_exit(config: Path | None) -> list[BaseRule]:
     if config is None:
         return build_rules(None)
     try:
@@ -170,14 +177,14 @@ def _rules_or_exit(config: Optional[Path]) -> list[BaseRule]:
         _fail(exc.message, EXIT_USAGE)
 
 
-def _time_filter_or_exit(since: Optional[str], until: Optional[str]) -> Optional[TimeFilter]:
+def _time_filter_or_exit(since: str | None, until: str | None) -> TimeFilter | None:
     try:
         return parse_time_filter(since, until, Engine().clock)
     except ValueError as exc:
         _fail(str(exc), EXIT_USAGE)
 
 
-def _analyze(inputs: list[str], rules: list[BaseRule], time_filter: Optional[TimeFilter]) -> Report:
+def _analyze(inputs: list[str], rules: list[BaseRule], time_filter: TimeFilter | None) -> Report:
     engine = Engine(rules, time_filter=time_filter)
     try:
         return engine.run(parse_inputs(inputs), inputs=inputs)
@@ -185,7 +192,7 @@ def _analyze(inputs: list[str], rules: list[BaseRule], time_filter: Optional[Tim
         _fail(exc.message, EXIT_IO)
 
 
-def _render(analysis: Report, format: str, out: Optional[Path]) -> None:
+def _render(analysis: Report, format: str, out: Path | None) -> None:
     target_path = out
     if format == "html" and target_path is None:
         target_path = Path("report.html")
@@ -200,7 +207,9 @@ def _render(analysis: Report, format: str, out: Optional[Path]) -> None:
         get_reporter(format)(analysis, None)
 
 
-def _filtered(events: Iterator[LogEvent], time_filter: Optional[TimeFilter], limit: int) -> Iterator[LogEvent]:
+def _filtered(
+    events: Iterator[LogEvent], time_filter: TimeFilter | None, limit: int
+) -> Iterator[LogEvent]:
     count = 0
     for event in events:
         if time_filter is not None and not time_filter.matches(event):

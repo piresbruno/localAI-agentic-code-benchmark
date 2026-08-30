@@ -48,14 +48,11 @@ def load_config(path: str) -> ConfigData:
         with open(path, "rb") as handle:
             raw = handle.read()
     except OSError as exc:
-        raise ConfigError(f"cannot read config file '{path}': {exc.strerror or 'unknown error'}") from exc
+        reason = exc.strerror or "unknown error"
+        raise ConfigError(f"cannot read config file '{path}': {reason}") from exc
     text = raw.decode("utf-8", errors="replace")
 
-    if path.endswith(".json"):
-        data = _parse_json(text, path)
-    else:
-        data = _parse_toml(text, path)
-
+    data = _parse_json(text, path) if path.endswith(".json") else _parse_toml(text, path)
     return _validate(data, text, path)
 
 
@@ -117,7 +114,8 @@ def _validate(data: dict, text: str, path: str) -> ConfigData:
         raise ConfigError("[parsers] must be a table", file=path, line=_find_line(text, "parsers"))
     for key, value in parsers.items():
         if key not in ALLOWED_PARSER_KEYS:
-            raise ConfigError(f"unknown parser option '{key}'", file=path, line=_find_line(text, key))
+            line = _find_line(text, key)
+            raise ConfigError(f"unknown parser option '{key}'", file=path, line=line)
         if key == "extra_patterns":
             if not isinstance(value, list) or not all(isinstance(p, str) for p in value):
                 raise ConfigError(
@@ -137,16 +135,16 @@ def _validate(data: dict, text: str, path: str) -> ConfigData:
         if not isinstance(params, dict):
             raise ConfigError(f"rule '{name}' must be a table", file=path, line=line)
         for param_key in params:
-            if param_key == "enabled":
-                if not isinstance(params[param_key], bool):
-                    raise ConfigError(
-                        f"rule '{name}': enabled must be true or false",
-                        file=path,
-                        line=_find_line(text, param_key),
-                    )
-        config.rules.append(RuleConfig(name=name, enabled=params.get("enabled", True), params={
-            k: v for k, v in params.items() if k != "enabled"
-        }))
+            if param_key == "enabled" and not isinstance(params[param_key], bool):
+                raise ConfigError(
+                    f"rule '{name}': enabled must be true or false",
+                    file=path,
+                    line=_find_line(text, param_key),
+                )
+        rule_params = {k: v for k, v in params.items() if k != "enabled"}
+        config.rules.append(
+            RuleConfig(name=name, enabled=params.get("enabled", True), params=rule_params)
+        )
     return config
 
 

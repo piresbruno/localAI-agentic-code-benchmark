@@ -1,7 +1,7 @@
 """The normalized event model every parser produces."""
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -33,7 +33,7 @@ LEVEL_ALIASES: dict[str, str] = {
 }
 
 
-class LogLevel(str, Enum):
+class LogLevel(StrEnum):
     """Severity levels of a normalized event.
 
     ``UNKNOWN`` marks lines that could not be parsed; such events carry a

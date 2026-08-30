@@ -1,11 +1,10 @@
 """Engine pipeline tests: stats, filtering, windows, streaming O(1)."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from loglens.engine.engine import Engine
 from loglens.engine.filters import parse_time_filter
-from loglens.models import LogEvent, LogLevel, Severity
-
+from loglens.models import LogEvent, LogLevel
 from tests.unit.helpers import BASE, mk
 
 
@@ -20,7 +19,12 @@ class TestReportStats:
             mk(0, level="INFO", message="a"),
             mk(1, level="ERROR", message="b"),
             mk(2, level="WARNING", message="c"),
-            LogEvent(timestamp=None, level=LogLevel.UNKNOWN, attributes={"parse_error": "bad line"}, raw="garbage"),
+            LogEvent(
+                timestamp=None,
+                level=LogLevel.UNKNOWN,
+                attributes={"parse_error": "bad line"},
+                raw="garbage",
+            ),
         ]
         report = engine.run(events, inputs=["test.log"])
         assert report.events_total == 4
@@ -84,7 +88,9 @@ class TestTimeFiltering:
 
     def test_no_filter_keeps_timestampless_events(self):
         engine = Engine(clock=fixed_clock)
-        unknown = LogEvent(timestamp=None, level=LogLevel.UNKNOWN, attributes={"parse_error": "bad"}, raw="??")
+        unknown = LogEvent(
+            timestamp=None, level=LogLevel.UNKNOWN, attributes={"parse_error": "bad"}, raw="??"
+        )
         report = engine.run([unknown])
         assert report.events_total == 1
         assert report.parse_errors == 1
@@ -105,7 +111,7 @@ class TestIncidentsFlow:
         events += [mk(100, level="CRITICAL", message="early critical", logger="payments")]
         report = engine.run(events)
         timestamps = [i.first_timestamp for i in report.incidents]
-        assert timestamps == sorted(timestamps, key=lambda t: t or datetime.max.replace(tzinfo=timezone.utc))
+        assert timestamps == sorted(timestamps, key=lambda t: t or datetime.max.replace(tzinfo=UTC))
 
     def test_default_rules_are_the_five_builtins(self):
         engine = Engine(clock=fixed_clock)

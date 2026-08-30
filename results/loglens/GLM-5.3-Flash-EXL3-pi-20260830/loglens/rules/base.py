@@ -12,8 +12,6 @@ from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 from loglens.models import RuleConfig
 
 if TYPE_CHECKING:  # pragma: no cover
-    from datetime import datetime
-
     from loglens.engine.windows import EventWindow
     from loglens.models import Incident
 

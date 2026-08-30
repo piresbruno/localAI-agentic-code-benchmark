@@ -40,7 +40,7 @@ class TestFileReading:
     def test_trailing_whitespace_other_than_newline_is_kept(self, tmp_path: Path):
         path = tmp_path / "ws.log"
         path.write_text("message   \n", encoding="utf-8")
-        assert list(read_lines([str(path)]))[0].text == "message   "
+        assert list(read_lines([str(path)]))[0].text == "message   "  # noqa: RUF015
 
     def test_is_lazy_generator(self, log_a: Path):
         iterator = read_lines([str(log_a)])

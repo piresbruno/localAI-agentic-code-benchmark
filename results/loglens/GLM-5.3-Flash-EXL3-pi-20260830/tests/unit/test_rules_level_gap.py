@@ -2,8 +2,7 @@
 
 from loglens.models import RuleConfig, Severity
 from loglens.rules.level_gap import LevelGapRule
-
-from tests.unit.helpers import BASE, mk, window
+from tests.unit.helpers import mk, window
 
 
 def feed(rule: LevelGapRule, events: list) -> list:

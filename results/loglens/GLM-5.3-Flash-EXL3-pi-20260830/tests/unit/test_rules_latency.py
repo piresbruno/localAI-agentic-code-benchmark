@@ -4,7 +4,6 @@ from datetime import timedelta
 
 from loglens.models import RuleConfig, Severity
 from loglens.rules.latency_outlier import LatencyOutlierRule, percentile
-
 from tests.unit.helpers import BASE, mk, window
 
 FIVE_MIN = timedelta(minutes=5)

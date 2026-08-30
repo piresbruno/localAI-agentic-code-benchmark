@@ -1,8 +1,6 @@
 """Pipeline tests: input specs → parsed event streams (format detection, mixing)."""
 
 import io
-import json
-import sys
 from pathlib import Path
 
 from loglens.engine.pipeline import parse_inputs
@@ -52,7 +50,11 @@ class TestParseInputs:
 
     def test_extra_patterns_reach_text_parser(self, tmp_path: Path):
         path = write(tmp_path, "pipe.log", ["1768458181|INFO|pipe format line"])
-        events = list(parse_inputs([path], extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"]))
+        events = list(
+            parse_inputs(
+                [path], extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"]
+            )
+        )
         assert events[0].message == "pipe format line"
 
     def test_stdin_streaming(self, monkeypatch):

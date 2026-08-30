@@ -1,11 +1,13 @@
 """Unit tests for the JSON-lines parser."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from loglens.models import LogLevel, PARSE_ERROR_ATTR
+from loglens.models import PARSE_ERROR_ATTR, LogLevel
 from loglens.parsers.jsonl import JsonLinesParser
 
-CANONICAL_LINE = '{"ts": "2026-01-15T08:23:01Z", "level": "ERROR", "msg": "boom", "logger": "worker"}'
+CANONICAL_LINE = (
+    '{"ts": "2026-01-15T08:23:01Z", "level": "ERROR", "msg": "boom", "logger": "worker"}'
+)
 
 
 def parse(parser: JsonLinesParser, line: str, *, source: str = "test.log", line_number: int = 1):
@@ -18,7 +20,7 @@ class TestHappyPath:
         assert event.level is LogLevel.ERROR
         assert event.message == "boom"
         assert event.logger == "worker"
-        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=timezone.utc)
+        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=UTC)
         assert event.source == "test.log"
         assert event.raw == CANONICAL_LINE
 
@@ -50,19 +52,19 @@ class TestHappyPath:
 class TestTimestamps:
     def test_iso_with_offset_is_converted_to_utc(self):
         event = parse(JsonLinesParser(), '{"ts": "2026-01-15T10:23:01+02:00", "msg": "x"}')
-        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=timezone.utc)
+        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=UTC)
 
     def test_naive_iso_is_assumed_utc(self):
         event = parse(JsonLinesParser(), '{"ts": "2026-01-15 08:23:01", "msg": "x"}')
-        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=timezone.utc)
+        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, tzinfo=UTC)
 
     def test_unix_seconds(self):
         event = parse(JsonLinesParser(), '{"ts": 1768458181, "msg": "x"}')
-        assert event.timestamp == datetime.fromtimestamp(1768458181, tz=timezone.utc)
+        assert event.timestamp == datetime.fromtimestamp(1768458181, tz=UTC)
 
     def test_unix_millis(self):
         event = parse(JsonLinesParser(), '{"ts": 1768458181000, "msg": "x"}')
-        assert event.timestamp == datetime.fromtimestamp(1768458181, tz=timezone.utc)
+        assert event.timestamp == datetime.fromtimestamp(1768458181, tz=UTC)
 
     def test_numeric_string_unix(self):
         event = parse(JsonLinesParser(), '{"ts": "1768458181", "msg": "x"}')
@@ -92,7 +94,9 @@ class TestMalformedLines:
         assert "message" in event.attributes[PARSE_ERROR_ATTR]
 
     def test_unknown_level_string_marks_parse_error(self):
-        event = parse(JsonLinesParser(), '{"ts": "2026-01-15T08:23:01Z", "level": "SHOUTING", "msg": "x"}')
+        event = parse(
+            JsonLinesParser(), '{"ts": "2026-01-15T08:23:01Z", "level": "SHOUTING", "msg": "x"}'
+        )
         assert event.level is LogLevel.UNKNOWN
         assert "level" in event.attributes[PARSE_ERROR_ATTR]
 

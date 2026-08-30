@@ -1,6 +1,6 @@
 """Timestamp parsing shared by parsers: ISO-8601 and unix seconds/millis."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 _UNIX_MILLIS_THRESHOLD = 1e11  # 1e11 seconds is year ~5138; logs use millis long before.
 
@@ -10,7 +10,7 @@ def _from_unix(number: float) -> datetime | None:
     try:
         if number >= _UNIX_MILLIS_THRESHOLD:
             number = number / 1000.0
-        return datetime.fromtimestamp(number, tz=timezone.utc)
+        return datetime.fromtimestamp(number, tz=UTC)
     except (OverflowError, OSError, ValueError):
         return None
 
@@ -52,5 +52,5 @@ def _parse_iso(text: str) -> datetime | None:
     except ValueError:
         return None
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
+        parsed = parsed.replace(tzinfo=UTC)
     return parsed

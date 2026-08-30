@@ -8,13 +8,17 @@ testable.
 import re
 from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Optional
 
 from loglens.models import LogEvent
 from loglens.parsers.timestamps import parse_timestamp
 
 _RELATIVE = re.compile(r"^(\d+)([smhd])$")
-_UNITS = {"s": timedelta(seconds=1), "m": timedelta(minutes=1), "h": timedelta(hours=1), "d": timedelta(days=1)}
+_UNITS = {
+    "s": timedelta(seconds=1),
+    "m": timedelta(minutes=1),
+    "h": timedelta(hours=1),
+    "d": timedelta(days=1),
+}
 
 Clock = Callable[[], datetime]
 
@@ -24,7 +28,7 @@ class TimeFilter:
 
     __slots__ = ("since", "until")
 
-    def __init__(self, since: Optional[datetime] = None, until: Optional[datetime] = None) -> None:
+    def __init__(self, since: datetime | None = None, until: datetime | None = None) -> None:
         self.since = since
         self.until = until
 
@@ -34,9 +38,7 @@ class TimeFilter:
             return False
         if self.since is not None and event.timestamp < self.since:
             return False
-        if self.until is not None and event.timestamp > self.until:
-            return False
-        return True
+        return not (self.until is not None and event.timestamp > self.until)
 
 
 def parse_time_value(raw: str, clock: Clock) -> datetime:
@@ -56,9 +58,7 @@ def parse_time_value(raw: str, clock: Clock) -> datetime:
     return parsed
 
 
-def parse_time_filter(
-    since: Optional[str], until: Optional[str], clock: Clock
-) -> Optional[TimeFilter]:
+def parse_time_filter(since: str | None, until: str | None, clock: Clock) -> TimeFilter | None:
     """Build a :class:`TimeFilter` from CLI strings; ``None`` inputs → no filter."""
     if since is None and until is None:
         return None

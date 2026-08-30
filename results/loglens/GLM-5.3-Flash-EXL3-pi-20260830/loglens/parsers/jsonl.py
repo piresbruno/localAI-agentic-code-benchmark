@@ -76,9 +76,7 @@ def _first_key(obj: dict[str, Any], keys: tuple[str, ...]) -> Any:
 
 def _collect_attributes(obj: dict[str, Any]) -> dict[str, Any]:
     consumed = set(TS_KEYS + MSG_KEYS + LOGGER_KEYS + LEVEL_KEYS)
-    attributes: dict[str, Any] = {
-        key: value for key, value in obj.items() if key not in consumed
-    }
+    attributes: dict[str, Any] = {key: value for key, value in obj.items() if key not in consumed}
     for key in ATTR_KEYS:
         nested = attributes.get(key)
         if isinstance(nested, dict):

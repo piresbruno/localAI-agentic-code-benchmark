@@ -100,7 +100,9 @@ class TestReportCommand:
 
     def test_html_report_writes_file(self, log_file: Path, tmp_path: Path):
         out = tmp_path / "r.html"
-        result = runner.invoke(app, ["report", str(log_file), "--format", "html", "--out", str(out)])
+        result = runner.invoke(
+            app, ["report", str(log_file), "--format", "html", "--out", str(out)]
+        )
         assert result.exit_code == 0
         html = out.read_text(encoding="utf-8")
         assert "<svg" in html and "<style>" in html
@@ -113,7 +115,10 @@ class TestReportCommand:
 
     def test_multiple_inputs_and_glob(self, tmp_path: Path, log_file: Path):
         second = tmp_path / "app.jsonl"
-        second.write_text('{"ts": "2026-01-15T08:05:00Z", "level": "INFO", "msg": "from json"}\n', encoding="utf-8")
+        second.write_text(
+            '{"ts": "2026-01-15T08:05:00Z", "level": "INFO", "msg": "from json"}\n',
+            encoding="utf-8",
+        )
         result = runner.invoke(app, ["report", str(tmp_path / "app.*"), "--format", "json"])
         assert result.exit_code == 0
         payload = json.loads(result.output)
@@ -125,7 +130,11 @@ class TestReportCommand:
 
     def test_critical_incident_exit_1(self, tmp_path: Path):
         path = tmp_path / "critical.log"
-        lines = [f"2026-01-15 08:{m:02d}:{s:02d},000 ERROR [api] boom" for m in range(5) for s in range(0, 60, 6)]
+        lines = [
+            f"2026-01-15 08:{m:02d}:{s:02d},000 ERROR [api] boom"
+            for m in range(5)
+            for s in range(0, 60, 6)
+        ]
         path.write_text("\n".join(lines), encoding="utf-8")  # 50 errors/5m → 100% spike → critical
         result = runner.invoke(app, ["report", str(path), "--format", "json"])
         assert result.exit_code == 1
@@ -133,7 +142,9 @@ class TestReportCommand:
     def test_config_disabling_rules(self, log_file: Path, tmp_path: Path):
         config = tmp_path / "c.toml"
         config.write_text("[rules.burst]\nenabled = false\n", encoding="utf-8")
-        result = runner.invoke(app, ["report", str(log_file), "--config", str(config), "--format", "json"])
+        result = runner.invoke(
+            app, ["report", str(log_file), "--config", str(config), "--format", "json"]
+        )
         assert result.exit_code == 0
         payload = json.loads(result.output)
         assert all(i["rule"] != "burst" for i in payload["incidents"])
@@ -156,8 +167,14 @@ class TestReportCommand:
         result = runner.invoke(
             app,
             [
-                "report", str(path), "--format", "json",
-                "--since", "2026-01-15T08:29:00Z", "--until", "2026-01-15T08:31:00Z",
+                "report",
+                str(path),
+                "--format",
+                "json",
+                "--since",
+                "2026-01-15T08:29:00Z",
+                "--until",
+                "2026-01-15T08:31:00Z",
             ],
         )
         assert result.exit_code == 0
@@ -169,7 +186,9 @@ class TestReportCommand:
 class TestWatchCommand:
     def test_runs_n_times_then_exits(self, log_file: Path, monkeypatch):
         monkeypatch.setattr("time.sleep", lambda seconds: None)
-        result = runner.invoke(app, ["watch", str(log_file), "--interval", "0.1", "--max-runs", "3"])
+        result = runner.invoke(
+            app, ["watch", str(log_file), "--interval", "0.1", "--max-runs", "3"]
+        )
         assert result.exit_code == 0
         assert result.output.count("Health score") == 3
 
@@ -180,7 +199,11 @@ class TestWatchCommand:
     def test_watch_reports_critical_exit_1(self, tmp_path: Path, monkeypatch):
         monkeypatch.setattr("time.sleep", lambda seconds: None)
         path = tmp_path / "critical.log"
-        lines = [f"2026-01-15 08:{m:02d}:{s:02d},000 ERROR [api] boom" for m in range(5) for s in range(0, 60, 6)]
+        lines = [
+            f"2026-01-15 08:{m:02d}:{s:02d},000 ERROR [api] boom"
+            for m in range(5)
+            for s in range(0, 60, 6)
+        ]
         path.write_text("\n".join(lines), encoding="utf-8")
         result = runner.invoke(app, ["watch", str(path), "--max-runs", "1"])
         assert result.exit_code == 1

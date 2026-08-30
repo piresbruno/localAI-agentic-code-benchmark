@@ -8,8 +8,8 @@ which the level is derived).
 """
 
 import re
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Sequence
 
 from loglens.models import LogEvent, LogLevel
 from loglens.parsers.base import register_parser

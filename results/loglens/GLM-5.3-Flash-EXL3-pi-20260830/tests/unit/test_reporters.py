@@ -36,7 +36,9 @@ def sample_report() -> Report:
         top_messages=[],
         error_rate_series=[
             ErrorRatePoint(bucket_start=BASE, total=40, errors=12, ratio=0.3),
-            ErrorRatePoint(bucket_start=BASE + timedelta_hours(1), total=80, errors=5, ratio=0.0625),
+            ErrorRatePoint(
+                bucket_start=BASE + timedelta_hours(1), total=80, errors=5, ratio=0.0625
+            ),
         ],
     )
 
@@ -88,9 +90,7 @@ class TestHtmlReporter:
             get_reporter("html")(sample_report(), handle)
         html = out_path.read_text(encoding="utf-8")
         external = [
-            token
-            for token in html.split('"')
-            if token.startswith("http") and "w3.org" not in token
+            token for token in html.split('"') if token.startswith("http") and "w3.org" not in token
         ]
         assert external == []
 

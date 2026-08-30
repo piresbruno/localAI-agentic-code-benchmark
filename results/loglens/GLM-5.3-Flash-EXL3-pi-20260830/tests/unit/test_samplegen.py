@@ -15,7 +15,7 @@ class TestDeterminism:
     def test_same_seed_produces_identical_files(self, tmp_path: Path):
         first = generate(500, tmp_path / "a")
         second = generate(500, tmp_path / "b")
-        for (f1, f2) in zip(first, second):
+        for f1, f2 in zip(first, second, strict=True):
             assert f1.lines == f2.lines
             assert _sha256(f1.path) == _sha256(f2.path)
 
@@ -24,7 +24,9 @@ class TestDeterminism:
         names = {f.path.name for f in files}
         assert names == {"app.log", "app.jsonl"}
         (tmp_path / "s" / "app.jsonl").read_text(encoding="utf-8").splitlines()[0]
-        first_json = json.loads((tmp_path / "s" / "app.jsonl").read_text(encoding="utf-8").splitlines()[0])
+        first_json = json.loads(
+            (tmp_path / "s" / "app.jsonl").read_text(encoding="utf-8").splitlines()[0]
+        )
         assert "ts" in first_json and "msg" in first_json
 
 
@@ -36,7 +38,7 @@ class TestPlantedScenarios:
         inputs = [str(tmp_path / "s" / "app.log"), str(tmp_path / "s" / "app.jsonl")]
         report = Engine().run(parse_inputs(inputs), inputs=inputs)
         detected = {incident.rule for incident in report.incidents}
-        assert EXPECTED_RULES <= detected, f"missing: {EXPECTED_RULES - detected}"
+        assert detected >= EXPECTED_RULES, f"missing: {EXPECTED_RULES - detected}"
         assert detected <= EXPECTED_RULES, f"spurious: {detected - EXPECTED_RULES}"
 
     def test_plain_text_file_alone_hits_three_scenarios(self, tmp_path: Path):

@@ -8,8 +8,8 @@ with ``errors="replace"`` so decoding never crashes a run.
 import glob as globlib
 import os
 import sys
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from typing import Iterator, Sequence
 
 from loglens.errors import InputError
 
@@ -73,7 +73,7 @@ def read_source(origin: SourceInput, *, encoding: str = "utf-8") -> Iterator[Lin
         yield from _read_stdin()
         return
     try:
-        handle = open(origin.path, encoding=encoding, errors="replace")
+        handle = open(origin.path, encoding=encoding, errors="replace")  # noqa: SIM115 (closed below)
     except OSError as exc:
         raise InputError(f"cannot read '{origin.path}': {exc.strerror or 'unknown error'}") from exc
     with handle:

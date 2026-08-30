@@ -60,7 +60,7 @@ class LevelGapRule(BaseRule):
 
 
 class _LoggerState:
-    __slots__ = ("seen_warning", "reported")
+    __slots__ = ("reported", "seen_warning")
 
     def __init__(self) -> None:
         self.seen_warning = False

@@ -1,14 +1,14 @@
 """Incidents produced by rules."""
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field, field_validator
 
 from loglens.models._time import ensure_utc
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     """Incident severity used for scoring and rendering."""
 
     INFO = "info"

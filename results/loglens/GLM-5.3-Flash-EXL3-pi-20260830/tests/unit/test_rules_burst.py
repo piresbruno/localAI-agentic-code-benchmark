@@ -4,7 +4,6 @@ from datetime import timedelta
 
 from loglens.models import RuleConfig, Severity
 from loglens.rules.burst import BurstRule
-
 from tests.unit.helpers import BASE, mk, window
 
 MINUTE = timedelta(seconds=60)

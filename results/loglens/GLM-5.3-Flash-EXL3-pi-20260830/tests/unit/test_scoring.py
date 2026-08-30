@@ -28,9 +28,7 @@ class TestHealthScore:
         assert volume_factor(20) == 1 + 20 / 20
 
     def test_critical_weights_more_than_warn(self):
-        assert (
-            SEVERITY_WEIGHTS["critical"] > SEVERITY_WEIGHTS["warn"] > SEVERITY_WEIGHTS["info"]
-        )
+        assert SEVERITY_WEIGHTS["critical"] > SEVERITY_WEIGHTS["warn"] > SEVERITY_WEIGHTS["info"]
 
     def test_many_incidents_floor_at_zero(self):
         heavy = [incident(Severity.CRITICAL, 200) for _ in range(10)]

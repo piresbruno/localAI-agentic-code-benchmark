@@ -14,11 +14,11 @@ Output is fully deterministic for a given seed.
 """
 
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import NamedTuple
 
-BASE_TIME = datetime(2026, 1, 15, 8, 0, 0, tzinfo=timezone.utc)
+BASE_TIME = datetime(2026, 1, 15, 8, 0, 0, tzinfo=UTC)
 DEFAULT_SEED = 42
 DEFAULT_EVENTS = 5000
 
@@ -34,8 +34,18 @@ PAYMENTS_MESSAGE = "Payment processor deadlock detected"
 #: Distinct alphabetic tenants keep the 12 spike errors in 12 *different*
 #: normalized templates, so repeated_error stays silent on scenario 1.
 SPIKE_TENANTS = (
-    "alpha", "bravo", "charlie", "delta", "echo", "foxtrot",
-    "golf", "hotel", "india", "juliett", "kilo", "lima",
+    "alpha",
+    "bravo",
+    "charlie",
+    "delta",
+    "echo",
+    "foxtrot",
+    "golf",
+    "hotel",
+    "india",
+    "juliett",
+    "kilo",
+    "lima",
 )
 SPIKE_ERROR_MESSAGE = "Order processing stalled for tenant {tenant}"
 
@@ -126,7 +136,7 @@ def generate(
 def _planted_plain_text_events(rng: random.Random) -> list[dict]:
     """Scenarios 1, 2, and 4 live in the plain-text file."""
     events: list[dict] = []
-    spike_start, spike_end = SPIKE_WINDOW
+    spike_start = SPIKE_WINDOW[0]
     # Scenario 1: 40 events, 12 ERROR → exactly 30% in the 08:20–08:25 window.
     for i in range(40):
         ts = spike_start + timedelta(seconds=(i * 299) / 40)
@@ -136,11 +146,17 @@ def _planted_plain_text_events(rng: random.Random) -> list[dict]:
         else:
             level = "INFO"
             message = rng.choice(NORMAL_MESSAGES).format(
-                tenant=f"t-{rng.randint(1, 40)}", user=f"u{rng.randint(1000, 9999)}",
-                job=f"j{rng.randint(100, 999)}", ms=rng.randint(5, 400),
-                offset=rng.randint(1000, 99999), depth=rng.randint(100, 500),
-                attempt=rng.randint(1, 3), op=f"op-{rng.randint(1, 20)}",
-                pct=rng.randint(75, 95), lock=rng.randint(1, 50), version=rng.randint(1, 9),
+                tenant=f"t-{rng.randint(1, 40)}",
+                user=f"u{rng.randint(1000, 9999)}",
+                job=f"j{rng.randint(100, 999)}",
+                ms=rng.randint(5, 400),
+                offset=rng.randint(1000, 99999),
+                depth=rng.randint(100, 500),
+                attempt=rng.randint(1, 3),
+                op=f"op-{rng.randint(1, 20)}",
+                pct=rng.randint(75, 95),
+                lock=rng.randint(1, 50),
+                version=rng.randint(1, 9),
             )
         events.append(_text_event(ts, level, "order-worker", message))
     # Scenario 2: the same connection error 12× in 8 minutes.
@@ -164,11 +180,17 @@ def _busy_period_events(rng: random.Random, count: int) -> list[dict]:
     for _ in range(count):
         ts = start + timedelta(seconds=rng.randint(0, span - 1))
         message = rng.choice(NORMAL_MESSAGES).format(
-            tenant=f"t-{rng.randint(1, 40)}", user=f"u{rng.randint(1000, 9999)}",
-            job=f"j{rng.randint(100, 999)}", ms=rng.randint(5, 400),
-            offset=rng.randint(1000, 99999), depth=rng.randint(100, 500),
-            attempt=rng.randint(1, 3), op=f"op-{rng.randint(1, 20)}",
-            pct=rng.randint(75, 95), lock=rng.randint(1, 50), version=rng.randint(1, 9),
+            tenant=f"t-{rng.randint(1, 40)}",
+            user=f"u{rng.randint(1000, 9999)}",
+            job=f"j{rng.randint(100, 999)}",
+            ms=rng.randint(5, 400),
+            offset=rng.randint(1000, 99999),
+            depth=rng.randint(100, 500),
+            attempt=rng.randint(1, 3),
+            op=f"op-{rng.randint(1, 20)}",
+            pct=rng.randint(75, 95),
+            lock=rng.randint(1, 50),
+            version=rng.randint(1, 9),
         )
         events.append(_text_event(ts, "INFO", rng.choice(LOGGERS), message))
     return events
@@ -251,7 +273,9 @@ def _text_event(ts: datetime, level: str, logger: str, message: str) -> dict:
 
 
 def _json_event(ts: datetime, level: str, logger: str, message: str, **attributes) -> dict:
-    return {"kind": "json", "ts": ts, "level": level, "logger": logger, "message": message, **attributes}
+    payload = {"kind": "json", "ts": ts, "level": level, "logger": logger, "message": message}
+    payload.update(attributes)
+    return payload
 
 
 def _format_plain_text(events: list[dict]) -> list[str]:
@@ -275,7 +299,11 @@ def _format_json_lines(events: list[dict]) -> list[str]:
             "logger": event["logger"],
         }
         payload.update(
-            {k: v for k, v in event.items() if k not in ("kind", "ts", "level", "logger", "message")}
+            {
+                k: v
+                for k, v in event.items()
+                if k not in ("kind", "ts", "level", "logger", "message")
+            }
         )
         lines.append(json.dumps(payload))
     return lines

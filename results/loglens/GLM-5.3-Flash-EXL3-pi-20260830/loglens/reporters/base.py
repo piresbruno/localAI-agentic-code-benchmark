@@ -4,7 +4,8 @@ Adding a reporter = one ``render(report, out)`` function plus one
 ``@register_reporter("...")`` decoration line.
 """
 
-from typing import Callable, Protocol
+from collections.abc import Callable
+from typing import Protocol
 
 from loglens.models import Report
 

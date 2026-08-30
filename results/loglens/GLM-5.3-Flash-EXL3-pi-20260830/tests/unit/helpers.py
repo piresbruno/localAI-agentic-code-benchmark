@@ -1,11 +1,11 @@
 """Shared helpers for rule and engine tests: event/window factories."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from loglens.engine.windows import EventWindow
 from loglens.models import LogEvent, LogLevel
 
-BASE = datetime(2026, 1, 15, 8, 0, 0, tzinfo=timezone.utc)
+BASE = datetime(2026, 1, 15, 8, 0, 0, tzinfo=UTC)
 
 
 def mk(

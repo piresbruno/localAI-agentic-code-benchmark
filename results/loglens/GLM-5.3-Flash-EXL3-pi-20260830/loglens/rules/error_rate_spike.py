@@ -57,7 +57,8 @@ class ErrorRateSpikeRule(BaseRule):
                 event_ids=[e.id or "" for e in events],
                 summary=(
                     f"Error rate spiked to {ratio:.0%} ({errors}/{total} events) in the "
-                    f"{humanize_duration(self.window)} window {window.start:%H:%M:%S}–{window.end:%H:%M:%S}"
+                    f"{humanize_duration(self.window)} window "
+                    f"{window.start:%H:%M:%S}–{window.end:%H:%M:%S}"
                 ),
                 suggested_action=(
                     "Inspect the failing components in this window and check upstream "

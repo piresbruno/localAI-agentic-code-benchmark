@@ -1,12 +1,12 @@
 """Tests for --since/--until parsing and TimeFilter behavior."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
 from loglens.engine.filters import TimeFilter, parse_time_filter, parse_time_value
 
-FIXED_NOW = datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+FIXED_NOW = datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC)
 
 
 def fake_clock() -> datetime:
@@ -24,7 +24,7 @@ class TestParseTimeValue:
 
     def test_absolute_iso(self):
         assert parse_time_value("2026-01-15T08:00:00Z", fake_clock) == datetime(
-            2026, 1, 15, 8, 0, 0, tzinfo=timezone.utc
+            2026, 1, 15, 8, 0, 0, tzinfo=UTC
         )
 
     def test_invalid_value_raises_value_error(self):
@@ -44,9 +44,7 @@ class TestParseTimeFilter:
 
     def test_since_after_until_rejected(self):
         with pytest.raises(ValueError, match="since"):
-            parse_time_filter(
-                "2026-01-15T12:00:00Z", "2026-01-15T11:00:00Z", fake_clock
-            )
+            parse_time_filter("2026-01-15T12:00:00Z", "2026-01-15T11:00:00Z", fake_clock)
 
 
 class TestTimeFilter:

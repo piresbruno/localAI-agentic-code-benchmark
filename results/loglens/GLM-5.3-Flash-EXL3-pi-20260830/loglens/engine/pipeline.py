@@ -1,11 +1,11 @@
 """Normalization pipeline glue: input specs → lazy stream of parsed events."""
 
+from collections.abc import Iterator, Sequence
 from itertools import chain
-from typing import Iterator, Sequence
 
 from loglens.io.readers import LineRecord, read_source, resolve_inputs
 from loglens.models import LogEvent
-from loglens.parsers.detect import PROBE_LINES, JSON_LINES_FORMAT, detect_format
+from loglens.parsers.detect import JSON_LINES_FORMAT, PROBE_LINES, detect_format
 from loglens.parsers.jsonl import JsonLinesParser
 from loglens.parsers.plaintext import PlainTextParser
 
@@ -36,7 +36,9 @@ def parse_inputs(
                 text_parser = PlainTextParser(extra_patterns=extra_patterns)
             parser = text_parser
         for record in chain(probed, records):
-            yield parser.parse_line(record.text, source=record.source, line_number=record.line_number)
+            yield parser.parse_line(
+                record.text, source=record.source, line_number=record.line_number
+            )
 
 
 def _probe_format(records: Iterator[LineRecord]) -> tuple[str, list[LineRecord]]:

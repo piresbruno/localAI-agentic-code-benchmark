@@ -4,7 +4,6 @@ from datetime import timedelta
 
 from loglens.models import RuleConfig, Severity
 from loglens.rules.repeated_error import RepeatedErrorRule
-
 from tests.unit.helpers import BASE, mk, window
 
 TEN_MIN = timedelta(minutes=10)

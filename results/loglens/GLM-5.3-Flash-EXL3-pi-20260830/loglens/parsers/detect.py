@@ -1,7 +1,7 @@
 """Per-file format auto-detection by probing the first lines."""
 
 import json
-from typing import Iterable
+from collections.abc import Iterable
 
 #: How many non-empty lines the probe inspects (spec: first 10 lines).
 PROBE_LINES = 10

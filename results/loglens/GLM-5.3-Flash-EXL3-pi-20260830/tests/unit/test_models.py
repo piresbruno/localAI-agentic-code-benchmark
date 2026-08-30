@@ -1,6 +1,6 @@
 """Unit tests for the model layer (UTC normalization, parse-error convention)."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -38,14 +38,14 @@ class TestLogEvent:
     def test_naive_timestamp_is_interpreted_as_utc(self):
         event = LogEvent(timestamp=datetime(2026, 1, 15, 8, 0, 0))
         assert event.timestamp is not None
-        assert event.timestamp.tzinfo is timezone.utc
+        assert event.timestamp.tzinfo is UTC
 
     def test_aware_timestamp_is_converted_to_utc(self):
         ts = datetime(2026, 1, 15, 9, 30, 0, tzinfo=timezone(timedelta(hours=2)))
         event = LogEvent(timestamp=ts)
         assert event.timestamp is not None
         assert event.timestamp.hour == 7
-        assert event.timestamp.tzinfo is timezone.utc
+        assert event.timestamp.tzinfo is UTC
 
     def test_timestamp_may_be_missing_for_unparseable_lines(self):
         event = LogEvent(level=LogLevel.UNKNOWN, raw="garbage")
@@ -133,4 +133,4 @@ class TestEnsureUtc:
     def test_naive_becomes_utc(self):
         result = ensure_utc(datetime(2026, 1, 1))
         assert result is not None
-        assert result.tzinfo is timezone.utc
+        assert result.tzinfo is UTC

@@ -4,7 +4,6 @@ from datetime import timedelta
 
 from loglens.models import RuleConfig, Severity
 from loglens.rules.error_rate_spike import ErrorRateSpikeRule
-
 from tests.unit.helpers import BASE, mk, window
 
 FIVE_MIN = timedelta(minutes=5)
@@ -63,7 +62,9 @@ class TestNegative:
 class TestConfiguration:
     def test_params_override_defaults(self):
         rule = ErrorRateSpikeRule()
-        rule.configure(RuleConfig(name="error_rate_spike", params={"threshold": 0.5, "min_events": 5}))
+        rule.configure(
+            RuleConfig(name="error_rate_spike", params={"threshold": 0.5, "min_events": 5})
+        )
         assert rule.threshold == 0.5
         assert rule.min_events == 5
         events = spike_events(total=10, errors=2)  # 20% > 10% but < 50%, ≥ 5 events

@@ -5,7 +5,8 @@
 ``volume_factor = 1 + min(4, affected_events / 20)``.
 """
 
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from loglens.models import Incident

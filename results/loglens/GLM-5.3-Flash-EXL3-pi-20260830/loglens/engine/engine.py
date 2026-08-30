@@ -6,8 +6,8 @@ retained, so memory stays O(1) with respect to stream length.
 """
 
 from collections import Counter
-from datetime import datetime, timedelta, timezone
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
+from datetime import UTC, datetime, timedelta
 
 from loglens.engine.filters import TimeFilter
 from loglens.engine.scoring import health_score
@@ -17,7 +17,7 @@ from loglens.rules.base import BaseRule, create_default_rules, normalize_message
 
 
 def _system_clock() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class Engine:
@@ -144,7 +144,7 @@ class Engine:
     def _build_report(self, inputs: Sequence[str]) -> Report:
         incidents = sorted(
             self._incidents,
-            key=lambda i: (i.first_timestamp or datetime.max.replace(tzinfo=timezone.utc), i.rule),
+            key=lambda i: (i.first_timestamp or datetime.max.replace(tzinfo=UTC), i.rule),
         )
         series = [
             ErrorRatePoint(

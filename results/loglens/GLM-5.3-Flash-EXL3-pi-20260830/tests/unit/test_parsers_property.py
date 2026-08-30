@@ -6,12 +6,12 @@ unparseable becomes UNKNOWN with a parse_error attribute; 4. timestamps are
 UTC-aware or absent — never naive.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 
-from loglens.models import LogLevel, PARSE_ERROR_ATTR
+from loglens.models import PARSE_ERROR_ATTR, LogLevel
 from loglens.parsers.jsonl import JsonLinesParser
 from loglens.parsers.plaintext import PlainTextParser
 
@@ -57,7 +57,7 @@ class TestMalformedLineProperties:
         for number, line in enumerate(fixture_lines(), start=1):
             event = parser.parse_line(line, source="f", line_number=number)
             if event.timestamp is not None:
-                assert event.timestamp.tzinfo is timezone.utc, f"line {number} naive timestamp"
+                assert event.timestamp.tzinfo is UTC, f"line {number} naive timestamp"
 
     def test_round_trip_through_utc_instant(self, parser):
         for number, line in enumerate(fixture_lines(), start=1):

@@ -1,8 +1,8 @@
 """Unit tests for the plain-text regex parser."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from loglens.models import LogLevel, PARSE_ERROR_ATTR
+from loglens.models import PARSE_ERROR_ATTR, LogLevel
 from loglens.parsers.plaintext import PlainTextParser
 
 
@@ -16,7 +16,7 @@ class TestDefaultPatterns:
         assert event.level is LogLevel.ERROR
         assert event.logger == "worker"
         assert event.message == "Connection refused"
-        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, 441000, tzinfo=timezone.utc)
+        assert event.timestamp == datetime(2026, 1, 15, 8, 23, 1, 441000, tzinfo=UTC)
 
     def test_space_timestamp_without_logger(self):
         event = parse("2026-01-15 08:23:01 INFO Service started")
@@ -46,7 +46,7 @@ class TestDefaultPatterns:
 
     def test_access_log_timestamp_converts_to_utc(self):
         event = parse('127.0.0.1 - frank [10/Oct/2023:13:55:36 -0700] "GET /api HTTP/1.0" 200 2326')
-        assert event.timestamp == datetime(2023, 10, 10, 20, 55, 36, tzinfo=timezone.utc)
+        assert event.timestamp == datetime(2023, 10, 10, 20, 55, 36, tzinfo=UTC)
 
 
 class TestLevelHandling:
@@ -79,13 +79,17 @@ class TestMalformedLines:
 
 class TestConfigurability:
     def test_extra_pattern_is_tried(self):
-        custom = PlainTextParser(extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"])
+        custom = PlainTextParser(
+            extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"]
+        )
         event = parse("1768458181|INFO|from custom pipe format", custom)
         assert event.level is LogLevel.INFO
         assert event.message == "from custom pipe format"
         assert event.timestamp is not None
 
     def test_default_patterns_still_active_with_extras(self):
-        custom = PlainTextParser(extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"])
+        custom = PlainTextParser(
+            extra_patterns=[r"^(?P<ts>\d{10})\|(?P<level>\w+)\|(?P<message>.*)$"]
+        )
         event = parse("2026-01-15 08:23:01 INFO default still works", custom)
         assert event.level is LogLevel.INFO

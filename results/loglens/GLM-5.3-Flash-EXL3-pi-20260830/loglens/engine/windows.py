@@ -1,10 +1,10 @@
 """Tumbling correlation windows fed to rules."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from loglens.models import LogLevel
 
-_EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+_EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
 
 
 def aligned_start(ts: datetime, duration: timedelta) -> datetime:
@@ -16,7 +16,7 @@ def aligned_start(ts: datetime, duration: timedelta) -> datetime:
 class EventWindow:
     """A bounded, time-boxed batch of events handed to ``Rule.evaluate``."""
 
-    __slots__ = ("start", "end", "events")
+    __slots__ = ("end", "events", "start")
 
     def __init__(self, start: datetime, end: datetime) -> None:
         self.start = start
