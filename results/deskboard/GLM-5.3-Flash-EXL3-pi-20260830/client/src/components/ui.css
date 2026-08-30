@@ -1,0 +1,319 @@
+/* Component-level styles. All values come from tokens.css — no off-token values. */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:active:not(:disabled) {
+  background: var(--color-primary-active);
+}
+
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-bg);
+}
+
+.btn--danger {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: var(--color-danger-hover);
+}
+
+/* Fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.field__input {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.field__input:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.field__input:focus-visible {
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+.field__input:disabled {
+  background: var(--color-bg);
+  cursor: not-allowed;
+}
+
+.field__input--error {
+  border-color: var(--color-danger);
+}
+
+.field__error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.field__hint {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.badge--neutral {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.badge--success {
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+}
+
+.badge--warning {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning);
+}
+
+.badge--danger {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+.badge--info {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner--sm {
+  width: 14px;
+  height: 14px;
+}
+
+.spinner--md {
+  width: 20px;
+  height: 20px;
+}
+
+.spinner--lg {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-7) var(--space-4);
+  z-index: 50;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  width: 100%;
+  max-width: 480px;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5) 0;
+}
+
+.modal__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.modal__body {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+/* Toasts */
+.toast-region {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 60;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  border-left: 4px solid var(--color-border-strong);
+}
+
+.toast--success {
+  border-left-color: var(--color-success);
+}
+
+.toast--error {
+  border-left-color: var(--color-danger);
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.data-table th {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: var(--color-bg);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-primary-subtle);
+}
+
+.data-table__empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--space-5);
+}
+
+/* Empty / error / loading page states */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.state--error .state__title {
+  color: var(--color-danger);
+}
+
+.state__title {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.skeleton {
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--color-bg) 25%, var(--color-border) 50%, var(--color-bg) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  height: 14px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
