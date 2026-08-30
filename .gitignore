@@ -21,4 +21,7 @@ coverage/
 .coverage
 *.egg-info/
 
-# Do NOT ignore results/ — graded runs and results/index.html are the artifacts.
+# results/ holds the ACTIVE run only. Completed runs are archived (untracked) to
+# results-archive/ so future agents never see prior implementations; the permanent
+# record is the results log in BENCHMARKS.md + results/RESULTS.md.
+results-archive/

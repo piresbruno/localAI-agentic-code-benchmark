@@ -41,6 +41,16 @@ if [[ -e "${RUN_DIR}" ]]; then
   exit 2
 fi
 
+# Isolation guard: the working tree must never show a previous run's
+# implementation to the next agent (contamination block — RUBRIC gate G6).
+PRIOR="$(find "${REPO_ROOT}/results" -mindepth 2 -maxdepth 2 -type d -not -empty 2>/dev/null || true)"
+if [[ -n "${PRIOR}" ]]; then
+  echo "error: prior run directories are visible under results/ — contamination risk:" >&2
+  sed 's/^/       /' <<<"${PRIOR}" >&2
+  echo "       run ./scripts/archive-results.sh first, then retry." >&2
+  exit 3
+fi
+
 mkdir -p "${RUN_DIR}/tasks"
 cp "${REPO_ROOT}/templates/result-template.md" "${RUN_DIR}/RESULT.md"
 cp "${REPO_ROOT}/templates/metrics-template.md" "${RUN_DIR}/METRICS.md"
@@ -74,5 +84,7 @@ Next steps:
        REPO_ROOT   = ${REPO_ROOT}
        RUN_DIR     = ${RUN_DIR}
   4. After grading: fill METRICS.md yaml block (incl. verdict + score),
-     then ./scripts/build-report.py to update the global ranking HTML.
+     then ./scripts/build-report.py to regenerate results/RESULTS.md (markdown).
+  5. Before the next run: ./scripts/archive-results.sh — moves this run out
+     of the working tree so future agents cannot read it (isolation).
 EOF
