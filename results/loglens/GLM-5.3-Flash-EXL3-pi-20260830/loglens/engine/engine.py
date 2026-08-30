@@ -50,6 +50,7 @@ class Engine:
         self._first_ts: datetime | None = None
         self._last_ts: datetime | None = None
         self._incidents = []
+        self._current_source: str | None = None
         self._open_windows: dict[BaseRule, EventWindow | None] = {rule: None for rule in self.rules}
 
     def run(self, events: Iterable[LogEvent], *, inputs: Sequence[str] = ()) -> Report:
@@ -79,6 +80,10 @@ class Engine:
         if event.is_parse_error:
             self._parse_errors += 1
         self._level_counts[event.level.value] += 1
+        if event.source != self._current_source:
+            # Each source is its own timeline: flush open windows on boundary.
+            self._close_all_windows()
+            self._current_source = event.source
         if event.timestamp is not None:
             if self._first_ts is None or event.timestamp < self._first_ts:
                 self._first_ts = event.timestamp
@@ -115,6 +120,10 @@ class Engine:
             elif event.timestamp >= window.end:
                 self._incidents.extend(rule.evaluate(window))
                 window = self._open_window(rule, event.timestamp, duration)
+            elif event.timestamp < window.start:
+                # Late arrival from an unordered region: counted in report
+                # stats but outside the open window, so rules never see it.
+                continue
             window.add(event)
             self._held_high_water = max(self._held_high_water, len(window))
 

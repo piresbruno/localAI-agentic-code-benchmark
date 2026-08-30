@@ -29,33 +29,33 @@ class LineRecord:
 
 
 @dataclass(frozen=True)
-class _ResolvedInput:
+class SourceInput:
     """A concrete origin to read from: a file path or standard input."""
 
     source: str
     path: str | None  # None means stdin
 
 
-def resolve_inputs(inputs: Sequence[str]) -> list[_ResolvedInput]:
+def resolve_inputs(inputs: Sequence[str]) -> list[SourceInput]:
     """Expand inputs into concrete origins, failing fast on missing files.
 
     ``-`` reads standard input; arguments containing glob characters expand
     to the sorted list of matches (empty expansion is an error); anything
     else must be an existing readable file.
     """
-    resolved: list[_ResolvedInput] = []
+    resolved: list[SourceInput] = []
     for raw in inputs:
         if raw == "-":
-            resolved.append(_ResolvedInput(source=STDIN_SOURCE, path=None))
+            resolved.append(SourceInput(source=STDIN_SOURCE, path=None))
             continue
         if any(ch in raw for ch in _GLOB_CHARS):
             matches = sorted(globlib.glob(raw, recursive=True))
             if not matches:
                 raise InputError(f"no files matched pattern '{raw}'")
-            resolved.extend(_ResolvedInput(source=match, path=match) for match in matches)
+            resolved.extend(SourceInput(source=match, path=match) for match in matches)
             continue
         _ensure_readable_file(raw)
-        resolved.append(_ResolvedInput(source=raw, path=raw))
+        resolved.append(SourceInput(source=raw, path=raw))
     if not resolved:
         raise InputError("no input sources given")
     return resolved
@@ -64,10 +64,11 @@ def resolve_inputs(inputs: Sequence[str]) -> list[_ResolvedInput]:
 def read_lines(inputs: Sequence[str], *, encoding: str = "utf-8") -> Iterator[LineRecord]:
     """Yield :class:`LineRecord` lazily from every input, in order."""
     for origin in resolve_inputs(inputs):
-        yield from _read_one(origin, encoding=encoding)
+        yield from read_source(origin, encoding=encoding)
 
 
-def _read_one(origin: _ResolvedInput, *, encoding: str) -> Iterator[LineRecord]:
+def read_source(origin: SourceInput, *, encoding: str = "utf-8") -> Iterator[LineRecord]:
+    """Yield lines lazily from one resolved origin (file or stdin)."""
     if origin.path is None:
         yield from _read_stdin()
         return

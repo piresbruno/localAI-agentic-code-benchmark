@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from loglens.models._time import ensure_utc
 
@@ -70,6 +70,9 @@ class LogEvent(BaseModel):
     line: int = 0
     attributes: dict[str, Any] = Field(default_factory=dict)
     raw: str = ""
+
+    # Parsers mutate events after construction; keep validators active.
+    model_config = ConfigDict(validate_assignment=True)
 
     @field_validator("timestamp")
     @classmethod
