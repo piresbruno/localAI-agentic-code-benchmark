@@ -1,23 +1,27 @@
 # DeskBoard — Meeting Room Booking App
 
-**Version**: 1.0.0
+**Version**: 2.0.0 (reduced-scope edition; supersedes v1)
 **Stack**: TypeScript, Node 20+, Express 5, JWT, in-memory persistence; React 18 + Vite frontend
 **Audience**: AI coding agents evaluated on building a full-stack TypeScript app end-to-end.
+
+> **v2 scope.** Compared to v1 this edition drops weekly recurrence, the admin usage
+> report, the admin all-bookings listing, and the password-change endpoint. Everything
+> specified here is required; nothing from v1 carries over implicitly.
 
 ---
 
 ## 1. Overview & Goals
 
-Build **DeskBoard**, an internal meeting-room booking app for a single office: employees book rooms for meetings, admins manage rooms and view usage. It ships a **REST API** and a **browser UI** backed by the same API.
+Build **DeskBoard**, an internal meeting-room booking app for a single office: employees book rooms for meetings, admins manage rooms. It ships a **REST API** and a **browser UI** backed by the same API.
 
 **Why this exists.** This project grades an agent's ability to:
 - Translate a written spec into a working full-stack TypeScript app (server + client).
 - Implement JWT auth with role-based authorization (employee/admin).
-- Express business rules (conflict detection, business hours, recurrence, cancellation windows).
+- Express business rules (conflict detection, business hours, cancellation windows).
 - Build a usable, responsive UI on top of the API.
 - Produce docs and tests meeting a coverage gate.
 
-**LOC expectation.** ~2,000–3,000 lines of TypeScript (server + client + shared). Significantly less usually means features are missing; significantly more usually means over-engineering.
+**LOC expectation.** 600–1,000 lines of production TypeScript (server + client + shared), **hard cap 1,000**. Tests are excluded from the cap but belong in the repo. Significantly less than 600 usually means features are missing; significantly more than 1,000 usually means over-engineering.
 
 ## 2. Success criterion (pass/fail)
 
@@ -25,10 +29,10 @@ ALL of the following must be true:
 
 1. **Sandboxed** — no dependencies on anything outside the run directory.
 2. **Ready to run** — from a clean checkout: `npm install`, then `npm start` boots the API, seeds default data, and serves the UI. `GET /health` → 200. No manual DB, no hand-seeding. Env vars have safe local defaults (documented in README).
-3. **UI works** — a user can register/login, view the room grid for a day, create a booking via the form, see conflicts rejected, cancel a booking, and admins can add/edit rooms. (Verified manually by the grader via SMOKE_CHECK + clicking through.)
+3. **UI works** — a user can register/login, view the room grid for a day, create a booking via the form, see conflicts rejected, cancel a booking, and admins can add/edit/deactivate rooms. (Verified by the grader via SMOKE_CHECK + clicking through.)
 4. **Design system conformance** — tokens + shared UI components exist per §7, and every data view implements loading/empty/error states. Spot-checked manually; scored in the rubric's UI/UX category.
 5. **OpenAPI** — `GET /api-docs` serves Swagger UI describing every endpoint in §5.
-6. **All tests pass**, and **line coverage ≥ 75%** of `server/src/**` and `shared/**` (UI components excluded from the gate but need at least 8 meaningful React Testing Library tests).
+6. **All tests pass**, and **line coverage ≥ 75%** of `server/src/**` and `shared/**` (UI components are excluded from the coverage gate but need at least 6 meaningful React Testing Library tests).
 
 ## 3. Architecture (REQUIRED — deviations = fail)
 
@@ -63,30 +67,27 @@ Rules:
 
 ## 4. Domain model
 
-**Roles**: `admin`, `employee`. Anyone can register as `employee` (name, email, password). Seeded admin: `admin@deskboard.local` / `admin123` (must be changeable via `PUT /api/users/me/password`).
+**Roles**: `admin`, `employee`. Anyone can register as `employee` (name, email, password). Seeded admin: `admin@deskboard.local` / `admin123`.
 
 **Room**: `id`, `name` (unique, case-insensitive), `capacity` (1–100), `floor` (1–30), `features` ⊆ {`screen`, `whiteboard`, `videoconf`, `phone`}, `active`.
 
-**Booking**: `id`, `roomId`, `title` (1–100 chars), `organizerId`, `start`/`end` (ISO-8601, minutes precision), `recurrence` (`none` | `weekly{count}`), `status` (`confirmed` | `cancelled` | `completed`), `attendees` (count ≤ room capacity), `createdAt`.
+**Booking**: `id`, `roomId`, `title` (1–100 chars), `organizerId`, `start`/`end` (ISO-8601, minutes precision), `status` (`confirmed` | `cancelled` | `completed`), `attendees` (count ≤ room capacity), `createdAt`.
 
 **Business rules (each needs a test named for it):**
 - `rejects_booking_outside_business_hours` — bookings only Mon–Fri 08:00–19:00 local; end > start; ≤ 4h duration.
-- `rejects_booking_when_room_already_booked` — overlap on same room at any occurrence = 409 `ROOM_CONFLICT` (adjacent bookings back-to-back allowed).
-- `expands_weekly_recurrence` — `weekly{count}` creates `count` occurrences 7 days apart; conflict in ANY occurrence rejects the whole booking.
+- `rejects_booking_when_room_already_booked` — overlap on the same room = 409 `ROOM_CONFLICT` (adjacent bookings back-to-back allowed).
 - `rejects_booking_over_capacity` — attendees > room capacity = 422.
+- `rejects_bookings_for_inactive_rooms` — deactivated rooms reject new bookings (409); existing bookings and cancellations are unaffected.
 - `enforces_cancellation_window` — organizer may cancel up to 1h before start; admin anytime; others never (403).
 - `marks_completed_bookings` — on read, bookings whose end passed are shown as `completed` (never mutate history on read; compute status).
-- `admins_manage_rooms_only` — create/update/deactivate rooms = admin only; deactivate blocks new bookings, not existing ones.
 - `rejects_duplicate_room_name` — case-insensitive uniqueness = 409.
 
 ## 5. API surface (all `/api` prefixed)
 
 - `POST /auth/register`, `POST /auth/login` → JWT (12h expiry), `GET /auth/me`
-- `GET /rooms` (public within app: auth required), `POST /rooms`, `PUT /rooms/:id`, `DELETE /rooms/:id` (soft-deactivate) — admin only for mutations
+- `GET /rooms` (auth required), `POST /rooms`, `PUT /rooms/:id`, `DELETE /rooms/:id` (soft-deactivate) — admin only for mutations
 - `GET /rooms/:id/availability?date=YYYY-MM-DD` → free/busy grid
-- `POST /bookings`, `GET /bookings/mine`, `GET /bookings?date=&roomId=` (admin: all; employee: own), `DELETE /bookings/:id` (cancel)
-- `PUT /users/me/password`
-- `GET /admin/usage?from=&to=` — per-room: total booked hours, #bookings, top organizer (admin only)
+- `POST /bookings`, `GET /bookings/mine`, `DELETE /bookings/:id` (cancel)
 - `GET /health`
 - Errors: `{ error: { code, message, details? } }` — 400 validation, 401 unauthenticated, 403 forbidden, 404 unknown, 409 conflict, 422 rule violation. One shared error mapper.
 
@@ -94,11 +95,11 @@ Rules:
 
 - **Login/Register page** — token stored in memory/localStorage, attached to API calls; logout.
 - **RoomGrid (home)** — pick a date (default today); grid of rooms × hourly slots 08:00–19:00 showing bookings; click empty slot → prefilled booking form.
-- **BookingForm** — room (locked when prefilled), title, date, start time, duration (30/60/90/120 min), attendees, recurrence (none/weekly ×N). Inline validation errors from the API error contract.
-- **MyBookings** — list own upcoming/past bookings; cancel button (respecting window; disabled + tooltip otherwise).
-- **AdminRooms** — table of rooms; add/edit modal; deactivate; usage report table (from `/admin/usage`).
+- **BookingForm** — room (locked when prefilled), title, date, start time, duration (30/60/90/120 min), attendees. Inline validation errors from the API error contract.
+- **MyBookings** — list own upcoming/past bookings; cancel button (respecting the window; disabled + tooltip otherwise).
+- **AdminRooms** — table of rooms; add/edit modal; deactivate.
 - Styling: plain CSS (or CSS modules) on top of the design system in §7, responsive ≥ 360px, visible focus states. No component libraries.
-- UI logic that embeds business rules (e.g., computing free slots) should live in `client/src` modules that are unit-tested; components stay presentational.
+- UI logic that embeds business rules (e.g., computing free slots) lives in `client/src` modules that are unit-tested; components stay presentational.
 
 ## 7. Design system & UX quality (REQUIRED — scored, not optional polish)
 
@@ -115,13 +116,12 @@ The grader evaluates UI/UX and design-system quality explicitly (rubric category
 | `TextField` / `Select` | label (visible, tied via `htmlFor`), error message slot, disabled |
 | `Modal` | open/close, focus trap, Esc to close, backdrop click |
 | `Toast` | success/error, auto-dismiss, `aria-live` region |
-| `Badge`/`Tag` | booking status, room features |
-| `Table` | header, zebra/hover rows, empty-state row |
-| `Spinner`/`Skeleton` | used by loading states |
+| `Table` | header, hover rows, empty-state row |
+| `Spinner` | used by loading states |
 
 Every component implements hover, focus-visible, and disabled states. At least 4 of these components have RTL tests (variants render, error state shows).
 
-### 7.3 UX states — every data view (RoomGrid, MyBookings, AdminRooms, usage report) implements all three:
+### 7.3 UX states — every data view (RoomGrid, MyBookings, AdminRooms) implements all three:
 - **Loading**: skeleton or spinner, never an unstyled blank flash.
 - **Empty**: human message + call to action ("No bookings yet — pick a room").
 - **Error**: friendly message + retry action; never a raw stack/JSON.
@@ -129,7 +129,6 @@ Every component implements hover, focus-visible, and disabled states. At least 4
 ### 7.4 Interaction feedback
 - Submit buttons show pending state and are **double-submit safe** (disabled while in flight).
 - Success/failure feedback via toast (or inline), including the API's error message text from the error contract.
-- Optimistic update is allowed but must reconcile on failure.
 
 ### 7.5 Accessibility (WCAG AA basics)
 - All interactive elements reachable and operable by **keyboard**; logical tab order through the booking form and modals; focus visible (focus ring token).
@@ -146,9 +145,9 @@ Grader loads the UI, walks the flows, toggles loading/empty/error (e.g., stoppin
 
 ## 8. Testing requirements
 
-- **Server**: unit-test services with injected `Clock`/`IdGen`; integration-test HTTP layer with `supertest` (fresh app instance per test). Cover every §4 rule + auth paths (401/403) + validation (400/422).
+- **Server**: unit-test services with injected `Clock`/`IdGen`; integration-test HTTP layer with `supertest` (fresh app instance per test). Cover every §4 rule by name + auth paths (401/403) + validation (400/422).
 - **Client**: React Testing Library for components (render, fill form, submit, assert call + error display); unit tests for slot-computation and validation modules; ≥ 4 tests on the §7 design-system components (variants, disabled, error state).
-- **Coverage**: `npx vitest run --coverage` — the gates are those in §2 (coverage gate = §2 item 6). Coverage-gaming (assert-true tests) is a rubric violation.
+- **Coverage**: `npx vitest run --coverage` — the gates are those in §2 item 6. Coverage-gaming (assert-true tests) is a rubric violation.
 
 ## 9. Commands
 
@@ -162,4 +161,4 @@ Grader loads the UI, walks the flows, toggles loading/empty/error (e.g., stoppin
 
 ## 10. Documentation
 
-README: goal, quickstart (≤ 3 cmds), architecture overview, env vars + defaults, seeded accounts, API summary (link Swagger), known deviations. `docs/DECISIONS.md`: one line per non-obvious decision (auth approach, error mapping, recurrence model).
+README: goal, quickstart (≤ 3 cmds), architecture overview, env vars + defaults, seeded accounts, API summary (link Swagger), known deviations. `docs/DESIGN.md`: tokens + component reference. `docs/DECISIONS.md`: one line per non-obvious decision (auth approach, error mapping).
