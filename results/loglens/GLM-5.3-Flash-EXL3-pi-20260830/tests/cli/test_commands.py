@@ -113,6 +113,15 @@ class TestReportCommand:
         assert result.exit_code == 0
         assert (tmp_path / "report.html").exists()
 
+    def test_out_html_extension_implies_html_format(self, log_file: Path, tmp_path: Path):
+        """Spec SMOKE_CHECK: `report <input> --out report.html` yields valid HTML."""
+        out = tmp_path / "report.html"
+        result = runner.invoke(app, ["report", str(log_file), "--out", str(out)])
+        assert result.exit_code == 0
+        html = out.read_text(encoding="utf-8")
+        assert html.startswith("<!DOCTYPE html>")
+        assert "<style>" in html and "<svg" in html
+
     def test_multiple_inputs_and_glob(self, tmp_path: Path, log_file: Path):
         second = tmp_path / "app.jsonl"
         second.write_text(

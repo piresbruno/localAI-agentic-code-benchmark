@@ -84,7 +84,11 @@ def report(
     out: Path | None = typer.Option(
         None, "--out", help="Write the report to this file (html defaults to report.html)."
     ),
-    format: str = typer.Option("terminal", "--format", help=_FORMAT_HELP),
+    format: str | None = typer.Option(
+        None,
+        "--format",
+        help="Report format: terminal, json, or html (default: html when --out ends in .html).",
+    ),
     config: Path | None = typer.Option(
         None, "--config", help="TOML or JSON config: enable/disable rules, override thresholds."
     ),
@@ -92,6 +96,8 @@ def report(
     until: str | None = typer.Option(None, "--until", help=_UNTIL_HELP),
 ) -> None:
     """Analyze one or more inputs and produce an actionable report."""
+    if format is None:
+        format = "html" if out is not None and out.suffix.lower() == ".html" else "terminal"
     if format not in ("terminal", "json", "html"):
         _fail(f"invalid --format '{format}' (use terminal, json, or html)", EXIT_USAGE)
     rules = _rules_or_exit(config)
