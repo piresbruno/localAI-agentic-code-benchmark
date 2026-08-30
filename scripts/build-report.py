@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Build/append the global benchmark results HTML with ranking.
+"""Build the global benchmark results as Markdown: results/RESULTS.md.
 
-Scans results/<project>/<run>/METRICS.md machine-readable yaml blocks,
+Scans the METRICS.md machine-readable yaml blocks of every run found under
+  results/<project>/<run>/METRICS.md          (active run)
+  results-archive/<project>/<run>/METRICS.md  (archived runs, still ranked)
 ranks models per project (score desc, then fewer tokens, then higher t/s),
-computes an overall leaderboard, and regenerates results/index.html.
+computes an overall leaderboard, and regenerates results/RESULTS.md.
 
-Every execution re-reads ALL completed runs, so previously graded models
-remain in the ranking — new results are effectively appended.
+Every execution re-reads ALL runs — archived ones included — so previously
+graded results stay in the ranking. No HTML, no JSON companion: Markdown only.
 
 Usage: scripts/build-report.py [--repo-root PATH]
 """
@@ -14,8 +16,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import html
-import json
 import re
 import sys
 from pathlib import Path
@@ -71,72 +71,43 @@ def rank_key(run):
 
 
 def esc(v) -> str:
-    return html.escape(str(v)) if v not in (None, "") else "—"
+    """Escape pipes for a Markdown table cell; em-dash for empty."""
+    if v in (None, ""):
+        return "—"
+    return str(v).replace("|", "\\|")
 
 
-VERDICT_COLOR = {"PASS": "#1a7f37", "PASS-WITH-NOTES": "#9a6700", "FAIL": "#cf222e"}
+VERDICT_LABEL = {"PASS": "✅ PASS", "PASS-WITH-NOTES": "🟡 PASS-WITH-NOTES", "FAIL": "❌ FAIL"}
 
 
-def table(runs, show_rank=True) -> str:
-    head = ("<tr><th>#</th><th>Model</th><th>Harness</th><th>Date</th>"
-            "<th>Verdict</th><th>Score /100</th><th>Total tokens</th>"
-            "<th>Avg t/s</th><th>Wall time</th><th>Run dir</th></tr>")
+def md_table(headers: list[str], rows: list[list[str]]) -> str:
+    out = ["| " + " | ".join(headers) + " |",
+           "|" + "|".join("---" for _ in headers) + "|"]
+    out.extend("| " + " | ".join(r) + " |" for r in rows)
+    return "\n".join(out)
+
+
+def project_section(project: str, runs: list[dict]) -> str:
+    parts = [f"## Project: {esc(project)}", ""]
+    headers = ["#", "Model", "Harness", "Date", "Verdict", "Score /100",
+               "Total tokens", "Avg t/s", "Wall time", "Run", "Status"]
     rows = []
     for i, r in enumerate(runs, 1):
         verdict = r.get("verdict", "").upper()
-        color = VERDICT_COLOR.get(verdict, "#57606a")
-        # Run dir name is <model>-<harness>-<YYYYMMDD>[-vN]; model names may
-        # contain dashes, so find the date with a regex instead of splitting.
         dm = re.search(r"(\d{8})(-v\d+)?$", r["_run_id"])
         date = dm.group(1) if dm else ""
-        rows.append(
-            "<tr>"
-            f"<td>{i}</td><td><strong>{esc(r.get('model'))}</strong></td>"
-            f"<td>{esc(r.get('agent'))}</td><td>{esc(date)}</td>"
-            f"<td style='color:{color};font-weight:600'>{esc(verdict or '—')}</td>"
-            f"<td>{esc(r.get('score'))}</td>"
-            f"<td>{fmt_int(r.get('total_tokens'))}</td>"
-            f"<td>{esc(r.get('avg_tps'))}</td>"
-            f"<td>{esc(r.get('wall_time'))}</td>"
-            f"<td><code>{esc(r['_run_id'])}</code></td>"
-            "</tr>")
-    rank_col = "" if show_rank else head.replace("<th>#</th>", "")
-    return f"<table>{head if show_rank else rank_col}{''.join(rows)}</table>"
+        status = "🗄 archived" if "results-archive" in r["_dir"] else "● active"
+        rows.append([
+            str(i), f"**{esc(r.get('model'))}**", esc(r.get("agent")), date,
+            esc(VERDICT_LABEL.get(verdict, verdict or "—")), esc(r.get("score")),
+            fmt_int(r.get("total_tokens")), esc(r.get("avg_tps")),
+            esc(r.get("wall_time")), f"`{esc(r['_run_id'])}`", status,
+        ])
+    parts.append(md_table(headers, rows))
+    return "\n".join(parts)
 
 
-def build_html(runs: list[dict], repo_root: Path) -> str:
-    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
-    projects = sorted({r["project"] for r in runs})
-    css = """
-    body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1100px;
-         margin:2rem auto;padding:0 1rem;color:#1f2328;line-height:1.5}
-    h1{border-bottom:2px solid #1f2328;padding-bottom:.4rem}
-    h2{margin-top:2.5rem;border-bottom:1px solid #d0d7de;padding-bottom:.3rem}
-    table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.92rem}
-    th,td{border:1px solid #d0d7de;padding:.45rem .6rem;text-align:left}
-    th{background:#f6f8fa;position:sticky;top:0}
-    tr:nth-child(even) td{background:#fbfcfd}
-    code{background:#eff2f5;padding:.1rem .35rem;border-radius:4px;font-size:.85em}
-    .meta{color:#57606a;font-size:.9rem}
-    .podium td:first-child{font-weight:700}
-    """
-    parts = [
-        "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>",
-        "<meta name='viewport' content='width=device-width,initial-scale=1'>",
-        "<title>code-benchmark — global results</title>",
-        f"<style>{css}</style></head><body>",
-        "<h1>code-benchmark — global results</h1>",
-        f"<p class='meta'>Generated {esc(now)} · {len(runs)} graded run(s) · "
-        f"{len(projects)} project(s) · ranking: score ↓, tokens ↑, t/s ↓ · "
-        "regenerated by <code>scripts/build-report.py</code> after every execution</p>",
-    ]
-
-    for project in projects:
-        pruns = sorted([r for r in runs if r["project"] == project], key=rank_key)
-        parts.append(f"<h2>Project: {esc(project)}</h2>")
-        parts.append(table(pruns))
-
-    # Overall leaderboard: average score across projects attempted per model
+def leaderboard_section(runs: list[dict]) -> str:
     models: dict[str, list[dict]] = {}
     for r in runs:
         models.setdefault(r["model"], []).append(r)
@@ -159,32 +130,44 @@ def build_html(runs: list[dict], repo_root: Path) -> str:
             "avg_tps": round(sum(tps) / len(tps), 1) if tps else None,
         })
     board.sort(key=lambda b: (-(b["avg_score"] or -1), b["total_tokens"] or sys.maxsize))
-    parts.append("<h2>Overall model ranking</h2>")
-    parts.append("<table><tr><th>#</th><th>Model</th><th>Projects</th>"
-                 "<th>Runs</th><th>Pass rate</th><th>Avg score</th>"
-                 "<th>Total tokens (all runs)</th><th>Avg t/s</th></tr>")
-    for i, b in enumerate(board, 1):
-        parts.append(
-            f"<tr class='podium'><td>{i}</td><td><strong>{esc(b['model'])}</strong></td>"
-            f"<td>{b['projects']}</td><td>{b['runs']}</td>"
-            f"<td>{esc(b['pass_rate'])}</td><td>{esc(b['avg_score'])}</td>"
-            f"<td>{fmt_int(b['total_tokens'])}</td><td>{esc(b['avg_tps'])}</td></tr>")
-    parts.append("</table>")
+    headers = ["#", "Model", "Projects", "Runs", "Pass rate", "Avg score",
+               "Total tokens (all runs)", "Avg t/s"]
+    rows = [[str(i), f"**{esc(b['model'])}**", str(b["projects"]), str(b["runs"]),
+             esc(b["pass_rate"]), esc(b["avg_score"]), fmt_int(b["total_tokens"]),
+             esc(b["avg_tps"])] for i, b in enumerate(board, 1)]
+    return "\n".join(["## Overall model ranking", "", md_table(headers, rows)])
 
-    # Chronological run log — newest appended at the bottom
-    parts.append("<h2>Run log (chronological)</h2>")
-    chrono = sorted(runs, key=lambda r: (r["_run_id"]))
-    log_rows = "".join(
-        f"<tr><td>{esc(r['project'])}</td><td>{esc(r['model'])}</td>"
-        f"<td>{esc(r.get('verdict'))}</td><td>{esc(r.get('score'))}</td>"
-        f"<td><code>{esc(r['_run_id'])}</code></td>"
-        f"<td><code>{esc(r['_dir'])}</code></td></tr>"
-        for r in chrono)
-    parts.append("<table><tr><th>Project</th><th>Model</th><th>Verdict</th>"
-                 f"<th>Score</th><th>Run</th><th>Directory</th></tr>{log_rows}</table>")
 
-    parts.append("</body></html>")
-    return "".join(parts)
+def run_log_section(runs: list[dict]) -> str:
+    headers = ["Project", "Model", "Verdict", "Score", "Run", "Directory"]
+    rows = [[esc(r["project"]), esc(r["model"]),
+             esc(r.get("verdict") or "—"), esc(r.get("score") or "—"),
+             f"`{esc(r['_run_id'])}`", f"`{esc(r['_dir'])}`"]
+            for r in sorted(runs, key=lambda r: r["_run_id"])]
+    return "\n".join(["## Run log (chronological)", "", md_table(headers, rows)])
+
+
+def build_markdown(runs: list[dict]) -> str:
+    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
+    projects = sorted({r["project"] for r in runs})
+    parts = [
+        "# code-benchmark — global results",
+        "",
+        f"_Generated {esc(now)} · {len(runs)} graded run(s) · {len(projects)} project(s) · "
+        "ranking: score ↓, tokens ↑, t/s ↓ · regenerated by `scripts/build-report.py` "
+        "after every execution. Archived runs (moved out of the working tree by "
+        "`scripts/archive-results.sh`) stay ranked._",
+        "",
+    ]
+    for project in projects:
+        pruns = sorted([r for r in runs if r["project"] == project], key=rank_key)
+        parts.append(project_section(project, pruns))
+        parts.append("")
+    parts.append(leaderboard_section(runs))
+    parts.append("")
+    parts.append(run_log_section(runs))
+    parts.append("")
+    return "\n".join(parts)
 
 
 def main() -> int:
@@ -192,20 +175,18 @@ def main() -> int:
     ap.add_argument("--repo-root", default=str(Path(__file__).resolve().parent.parent))
     args = ap.parse_args()
     root = Path(args.repo_root)
-    results_dir = root / "results"
-    metrics_files = sorted(results_dir.glob("*/*/METRICS.md"))
+    metrics_files = sorted(root.glob("results/*/*/METRICS.md"))
+    metrics_files += sorted(root.glob("results-archive/*/*/METRICS.md"))
     runs = [m for m in (parse_metrics(p) for p in metrics_files) if m]
 
     if not runs:
-        print("No graded runs found (results/*/*/METRICS.md with a filled yaml block).")
+        print("No graded runs found (results/ or results-archive/ with a filled METRICS.md yaml block).")
         print("Scaffold with scripts/new-run.sh, run, grade, fill the yaml block, retry.")
         return 1
 
-    out = root / "results" / "index.html"
-    out.write_text(build_html(runs, root), encoding="utf-8")
-    # machine-readable companion for CI / tooling
-    (root / "results" / "index.json").write_text(
-        json.dumps(runs, indent=2, default=str), encoding="utf-8")
+    out = root / "results" / "RESULTS.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(build_markdown(runs), encoding="utf-8")
     print(f"Global results updated: {out}")
     print(f"  runs ranked: {len(runs)} across {len({r['project'] for r in runs})} project(s)")
     for project in sorted({r["project"] for r in runs}):

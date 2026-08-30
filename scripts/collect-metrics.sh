@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Aggregate per-project benchmark metrics (tokens, avg t/s, wall time) from graded runs.
 # Usage: ./scripts/collect-metrics.sh [run-dir ...]
-# With no args, scans results/*/*/METRICS.md.
+# With no args, scans results/*/*/METRICS.md and results-archive/*/*/METRICS.md.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DIRS=(${@:-${REPO_ROOT}/results/*/*/METRICS.md})
+DIRS=(${@:-${REPO_ROOT}/results/*/*/METRICS.md ${REPO_ROOT}/results-archive/*/*/METRICS.md})
 
 if ! ls "${DIRS[@]}" >/dev/null 2>&1; then
   echo "No METRICS.md files found. Run scripts/new-run.sh, execute a run, fill METRICS.md." >&2
