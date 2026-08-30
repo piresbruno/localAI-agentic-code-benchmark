@@ -15,6 +15,18 @@
   {
     "project": "deskboard",
     "agent": "pi",
+    "model": "GLM-5.3-Flash-EXL3",
+    "wall_time": "01:08:34",
+    "total_tokens": "164391",
+    "output_tokens": "110776",
+    "avg_tps": "27.4",
+    "cost": "0",
+    "_run_id": "GLM-5.3-Flash-EXL3-pi-20260830",
+    "_dir": "/home/piresbruno/developer/code-benchmark/results/deskboard/GLM-5.3-Flash-EXL3-pi-20260830"
+  },
+  {
+    "project": "deskboard",
+    "agent": "pi",
     "model": "deepseek-v4-flash",
     "wall_time": "01:11:48",
     "total_tokens": "26508376",
