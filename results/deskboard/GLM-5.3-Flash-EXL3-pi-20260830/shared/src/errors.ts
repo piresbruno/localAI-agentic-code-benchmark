@@ -11,6 +11,7 @@ export type ErrorCode =
   | 'ROOM_CONFLICT' // 409 — overlapping booking
   | 'DUPLICATE_ROOM_NAME' // 409 — case-insensitive room name clash
   | 'BOOKING_ALREADY_CANCELLED' // 409 — cancel on a cancelled booking
+  | 'EMAIL_IN_USE' // 409 — registration with an existing email
   | 'RULE_VIOLATION'; // 422 — business rule rejection
 
 const STATUS_BY_CODE: Record<ErrorCode, number> = {
@@ -21,6 +22,7 @@ const STATUS_BY_CODE: Record<ErrorCode, number> = {
   ROOM_CONFLICT: 409,
   DUPLICATE_ROOM_NAME: 409,
   BOOKING_ALREADY_CANCELLED: 409,
+  EMAIL_IN_USE: 409,
   RULE_VIOLATION: 422
 };
 

@@ -94,6 +94,11 @@ export const createApp = (config: AppConfig): App => {
   app.use('/api/users', usersRouter({ ...usersRepo, users: services.users, tokens }));
   app.use('/api/admin', adminRouter({ ...usersRepo, usage: services.usage, tokens }));
 
+  // Unknown API routes → 404 with the error contract.
+  app.use('/api', (req, res) => {
+    res.status(404).json({ error: { code: 'NOT_FOUND', message: `No route for ${req.path}` } });
+  });
+
   registerDocsRoutes(app);
 
   const clientDist = config.clientDist === undefined ? defaultClientDist() : config.clientDist;

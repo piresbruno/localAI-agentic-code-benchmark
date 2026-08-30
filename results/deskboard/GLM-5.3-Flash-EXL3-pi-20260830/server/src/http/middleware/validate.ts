@@ -18,12 +18,12 @@ export const validateBody =
 export const validateQuery =
   (schema: z.ZodTypeAny) =>
   (req: Request, _res: Response, next: NextFunction): void => {
+    // Express 5 exposes `query` as a getter — validate only, don't reassign.
     const result = schema.safeParse(req.query);
     if (!result.success) {
       next(validationError('Invalid query parameters', flatten(result.error)));
       return;
     }
-    req.query = result.data as typeof req.query;
     next();
   };
 

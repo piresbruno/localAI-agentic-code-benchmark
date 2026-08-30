@@ -28,7 +28,7 @@ export class UserService {
     return this.#users.create({
       id: this.#ids.next(),
       name: input.name,
-      email: input.email,
+      email: input.email.toLowerCase(),
       role: 'employee',
       passwordHash: hashPassword(input.password),
       createdAt: this.#clock.now().toISOString()
