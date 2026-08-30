@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <Description>Request/response DTOs and error contracts shared across ParkWise layers.</Description>
-  </PropertyGroup>
-
-</Project>
