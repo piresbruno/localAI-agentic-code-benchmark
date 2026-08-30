@@ -27,7 +27,7 @@ def render_terminal(report: Report, out: object | None = None) -> None:
     if report.incidents:
         table = Table(title="Incidents", expand=True)
         for column in ("Severity", "Rule", "Window", "Summary", "Suggested action"):
-            table.add_column(column)
+            table.add_column(column, overflow="fold")
         for incident in report.incidents:
             table.add_row(
                 _severity_text(incident.severity.value),
@@ -41,7 +41,9 @@ def render_terminal(report: Report, out: object | None = None) -> None:
     if report.top_messages:
         messages = Table(title="Top messages", expand=True)
         for column in ("Count", "Level", "Message (normalized)"):
-            messages.add_column(column, justify="right" if column == "Count" else "left")
+            messages.add_column(
+                column, justify="right" if column == "Count" else "left", overflow="fold"
+            )
         for row in report.top_messages:
             messages.add_row(str(row.count), row.level, row.message)
         console.print(messages)
