@@ -22,21 +22,21 @@ traffic). The library core must be importable without the CLI; the CLI is a thin
 - [ ] T1 — Scaffold: pyproject (PEP 621, entry point `loglens = "loglens.cli:app"`), package dirs
       per spec §3, .gitignore, ruff config; `pip install -e ".[dev]"` works, `loglens --help` runs.
       Accept: BUILD_CHECK green on empty skeleton, entry point resolves.
-- [ ] T2 — models/: `LogLevel`, `LogEvent`, `Incident`, `Report`, `RuleConfig`, report sub-models;
+- [x] T2 — models/: `LogLevel`, `LogEvent`, `Incident`, `Report`, `RuleConfig`, report sub-models;
       UTC normalization, `parse_error` attribute convention.
       Accept: unit tests green for model validation & tz normalization.
-- [ ] T3 — parsers/: `JsonLinesParser` (key aliases, ISO/unix-s/unix-ms timestamps, level aliases,
+- [x] T3 — parsers/: `JsonLinesParser` (key aliases, ISO/unix-s/unix-ms timestamps, level aliases,
       extra keys → attributes), `PlainTextParser` (≥ 3 configurable regex patterns incl. spec
       example), per-file format auto-detection (probe first 10 lines), registry.
       Accept: unit tests green incl. malformed lines → UNKNOWN events, never dropped.
-- [ ] T4 — io/readers.py: lazy line readers for file / glob set / stdin, utf-8 replace policy,
+- [x] T4 — io/readers.py: lazy line readers for file / glob set / stdin, utf-8 replace policy,
       `InputError` for missing files / empty globs.
       Accept: unit tests green; generator laziness asserted.
-- [ ] T5 — engine/: per-rule tumbling correlation windows, time filtering (`--since/--until`:
+- [x] T5 — engine/: per-rule tumbling correlation windows, time filtering (`--since/--until`:
       relative `30m` / ISO), report stats (levels, parse errors, top messages, error-rate series),
       health-score formula in scoring.py, `Engine` facade + streaming O(1) accounting.
       Accept: engine unit tests green; 100k-event streaming test asserts held ≪ processed.
-- [ ] T6 — rules/: Rule protocol (`name`, `configure`, `evaluate(window) -> list[Incident]`),
+- [x] T6 — rules/: Rule protocol (`name`, `configure`, `evaluate(window) -> list[Incident]`),
       registry, five built-ins with per-rule windows and incident metadata (severity, summary,
       suggested action).
       Accept: every rule has a positive AND negative test with injected event timestamps.
