@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import jwt from 'jsonwebtoken';
 import type { Express } from 'express';
 import { describe, expect, it } from 'vitest';
 import request from 'supertest';
@@ -274,6 +277,32 @@ describe('error contract & 404', () => {
       .send('{"broken":');
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('tokens with malformed claims are rejected (401)', async () => {
+    const a = app();
+    const bogus = jwt.sign({ sub: 42, role: 'wizard', name: 'x' }, SECRET);
+    const res = await request(a).get('/api/auth/me').set('Authorization', `Bearer ${bogus}`);
+    expect(res.status).toBe(401);
+  });
+
+  it('serves the built SPA with a history-API fallback when clientDist exists', async () => {
+    const dir = path.join(__dirname, 'tmp-spa-fixture');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.html'), '<html><body>DeskBoard SPA</body></html>');
+    try {
+      const a = createApp({ jwtSecret: SECRET, clientDist: dir, clock: { now: () => NOW } });
+      const root = await request(a).get('/');
+      expect(root.status).toBe(200);
+      expect(root.text).toContain('DeskBoard SPA');
+      const deep = await request(a).get('/admin/rooms');
+      expect(deep.status).toBe(200);
+      expect(deep.text).toContain('DeskBoard SPA');
+      const api = await request(a).get('/api/rooms');
+      expect(api.status).toBe(401); // API still guarded, never falls back to HTML
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
