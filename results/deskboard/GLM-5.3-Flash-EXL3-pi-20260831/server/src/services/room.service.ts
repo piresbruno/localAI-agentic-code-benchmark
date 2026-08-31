@@ -16,7 +16,7 @@ export class RoomService {
   create(actor: AuthUser, input: RoomCreateInput): RoomDto {
     requireAdmin(actor);
     assertNameFree(this.rooms, input.name);
-    const room: RoomEntity = { id: this.ids.next(), ...input };
+    const room: RoomEntity = { id: this.ids.next(), ...input, active: input.active ?? true };
     return toRoomDto(this.rooms.create(room));
   }
 

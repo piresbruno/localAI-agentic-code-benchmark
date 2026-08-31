@@ -3,7 +3,7 @@ import type { LoginInput, RegisterInput } from '@deskboard/shared';
 import { hashPassword, verifyPassword } from '../auth/password';
 import { issueToken, type AuthUser } from '../auth/jwt';
 import type { Clock, IdGen } from './clock';
-import { conflict, notFound, unauthenticated } from './errors';
+import { AppError, conflict, notFound } from './errors';
 import type { UserEntity, UserRepository } from '../repositories/types';
 
 /** Registration/login/me — issues 12h JWTs; role assignment fixed to employee on register. */
@@ -16,13 +16,14 @@ export class AuthService {
   ) {}
 
   register(input: RegisterInput): AuthResponseDto {
-    if (this.users.findByEmail(input.email)) {
+    const email = input.email.trim().toLowerCase();
+    if (this.users.findByEmail(email)) {
       throw conflict('EMAIL_TAKEN', 'An account with this email already exists.');
     }
     const user: UserEntity = {
       id: this.ids.next(),
       name: input.name,
-      email: input.email,
+      email,
       role: 'employee',
       passwordHash: hashPassword(input.password),
       createdAt: this.clock.now().toISOString(),
@@ -32,9 +33,9 @@ export class AuthService {
   }
 
   login(input: LoginInput): AuthResponseDto {
-    const user = this.users.findByEmail(input.email);
+    const user = this.users.findByEmail(input.email.trim().toLowerCase());
     if (!user || !verifyPassword(input.password, user.passwordHash)) {
-      throw unauthenticated('Invalid email or password.');
+      throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password.');
     }
     return { token: this.token(user), user: toUserDto(user) };
   }
