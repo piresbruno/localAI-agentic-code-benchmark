@@ -23,7 +23,7 @@ function buildWorld() {
 }
 
 async function seedRoom(roomService: RoomService, over = {}) {
-  return roomService.create({
+  return roomService.create('admin', {
     name: 'Board Room',
     capacity: 10,
     floor: 3,
@@ -141,7 +141,7 @@ describe('BookingService', () => {
     const { bookingService, roomService } = buildWorld();
     const room = await seedRoom(roomService);
     const booking = await bookingService.create('u1', bookingInput({ roomId: room.id }));
-    await roomService.update(room.id, { active: false });
+    await roomService.update('admin', room.id, { active: false });
 
     await expect(
       bookingService.create(
@@ -300,7 +300,7 @@ describe('RoomService', () => {
     const { roomService } = buildWorld();
     await seedRoom(roomService, { name: 'Board Room' });
     await expect(
-      roomService.create({ name: '  board room ', capacity: 4, floor: 2, features: [] }),
+      roomService.create('admin', { name: '  board room ', capacity: 4, floor: 2, features: [] }),
     ).rejects.toMatchObject({ code: 'ROOM_NAME_TAKEN', status: 409 });
   });
 
@@ -308,18 +308,22 @@ describe('RoomService', () => {
     const { roomService } = buildWorld();
     await seedRoom(roomService, { name: 'Board Room' });
     const pod = await seedRoom(roomService, { name: 'Focus Pod', id: 'ignored' });
-    await expect(roomService.update(pod.id, { name: 'BOARD ROOM' })).rejects.toMatchObject({
-      code: 'ROOM_NAME_TAKEN',
-    });
-    await expect(roomService.update(pod.id, { name: 'Focus POD' })).resolves.toMatchObject({
-      name: 'Focus POD',
-    });
+    await expect(roomService.update('admin', pod.id, { name: 'BOARD ROOM' })).rejects.toMatchObject(
+      {
+        code: 'ROOM_NAME_TAKEN',
+      },
+    );
+    await expect(roomService.update('admin', pod.id, { name: 'Focus POD' })).resolves.toMatchObject(
+      {
+        name: 'Focus POD',
+      },
+    );
   });
 
   it('updates rooms partially', async () => {
     const { roomService } = buildWorld();
     const room = await seedRoom(roomService);
-    const updated = await roomService.update(room.id, {
+    const updated = await roomService.update('admin', room.id, {
       capacity: 20,
       features: ['screen', 'phone'],
     });
@@ -333,7 +337,7 @@ describe('RoomService', () => {
   it('deactivates softly instead of deleting', async () => {
     const { roomService } = buildWorld();
     const room = await seedRoom(roomService);
-    await roomService.deactivate(room.id);
+    await roomService.deactivate('admin', room.id);
     await expect(roomService.list()).resolves.toMatchObject([
       { active: false, name: 'Board Room' },
     ]);
@@ -341,9 +345,27 @@ describe('RoomService', () => {
 
   it('throws NOT_FOUND for unknown rooms on update and deactivate', async () => {
     const { roomService } = buildWorld();
-    await expect(roomService.update('ghost', { capacity: 5 })).rejects.toMatchObject({
+    await expect(roomService.update('admin', 'ghost', { capacity: 5 })).rejects.toMatchObject({
       code: 'NOT_FOUND',
     });
-    await expect(roomService.deactivate('ghost')).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    await expect(roomService.deactivate('admin', 'ghost')).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    });
+  });
+});
+
+describe('RoomService authorization (service layer)', () => {
+  it('rejects employee-initiated create, update, and deactivate with FORBIDDEN', async () => {
+    const { roomService } = buildWorld();
+    await expect(
+      roomService.create('employee', { name: 'Sneaky Room', capacity: 5, floor: 1, features: [] }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN', status: 403 });
+    const room = await seedRoom(roomService);
+    await expect(roomService.update('employee', room.id, { capacity: 8 })).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    await expect(roomService.deactivate('employee', room.id)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
   });
 });

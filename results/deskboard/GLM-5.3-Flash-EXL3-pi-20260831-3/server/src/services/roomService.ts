@@ -1,9 +1,9 @@
-import type { Room, RoomCreateInput, RoomUpdateInput } from '@deskboard/shared';
+import type { Role, Room, RoomCreateInput, RoomUpdateInput } from '@deskboard/shared';
 import type { RoomRepository } from '../repositories/roomRepository.js';
 import type { IdGen } from './clock.js';
 import { DomainError } from './errors.js';
 
-/** Room business rules: case-insensitive name uniqueness, create/update/deactivate. */
+/** Room business rules: admin authorization, case-insensitive name uniqueness. */
 export class RoomService {
   constructor(
     private readonly rooms: RoomRepository,
@@ -14,7 +14,8 @@ export class RoomService {
     return this.rooms.list();
   }
 
-  async create(input: RoomCreateInput): Promise<Room> {
+  async create(actorRole: Role, input: RoomCreateInput): Promise<Room> {
+    this.assertAdmin(actorRole);
     await this.assertNameAvailable(input.name);
     return this.rooms.create({
       id: this.ids.next(),
@@ -26,7 +27,8 @@ export class RoomService {
     });
   }
 
-  async update(id: string, input: RoomUpdateInput): Promise<Room> {
+  async update(actorRole: Role, id: string, input: RoomUpdateInput): Promise<Room> {
+    this.assertAdmin(actorRole);
     const room = await this.requireRoom(id);
     if (input.name !== undefined && input.name.toLowerCase() !== room.name.toLowerCase()) {
       await this.assertNameAvailable(input.name);
@@ -43,9 +45,17 @@ export class RoomService {
   }
 
   /** Soft delete: the room stays in the grid with its history but rejects new bookings. */
-  async deactivate(id: string): Promise<Room> {
+  async deactivate(actorRole: Role, id: string): Promise<Room> {
+    this.assertAdmin(actorRole);
     const room = await this.requireRoom(id);
     return this.rooms.update({ ...room, active: false });
+  }
+
+  /** Authorization lives in the service layer (engineering standards §4). */
+  private assertAdmin(actorRole: Role): void {
+    if (actorRole !== 'admin') {
+      throw new DomainError('FORBIDDEN', 'Admin access required');
+    }
   }
 
   private async requireRoom(id: string): Promise<Room> {

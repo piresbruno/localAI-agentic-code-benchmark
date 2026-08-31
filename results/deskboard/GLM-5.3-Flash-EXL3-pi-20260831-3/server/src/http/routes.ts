@@ -62,7 +62,7 @@ export function registerRoutes(services: AppServices, secret: string): Router {
     validateBody(roomCreateSchema),
     async (req, res, next) => {
       try {
-        res.status(201).json(await services.rooms.create(req.body));
+        res.status(201).json(await services.rooms.create(req.user!.role, req.body));
       } catch (err) {
         next(err);
       }
@@ -75,7 +75,7 @@ export function registerRoutes(services: AppServices, secret: string): Router {
     validateBody(roomUpdateSchema),
     async (req: IdRequest, res, next) => {
       try {
-        res.json(await services.rooms.update(req.params.id, req.body));
+        res.json(await services.rooms.update(req.user!.role, req.params.id, req.body));
       } catch (err) {
         next(err);
       }
@@ -83,7 +83,7 @@ export function registerRoutes(services: AppServices, secret: string): Router {
   );
   roomsRouter.delete('/:id', auth, requireAdmin, async (req: IdRequest, res, next) => {
     try {
-      res.json(await services.rooms.deactivate(req.params.id));
+      res.json(await services.rooms.deactivate(req.user!.role, req.params.id));
     } catch (err) {
       next(err);
     }
