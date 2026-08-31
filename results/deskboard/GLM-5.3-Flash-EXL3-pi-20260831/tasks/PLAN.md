@@ -21,9 +21,10 @@ tight; (5) coverage ≥ 75% on `server/src/**` + `shared/**` measured by vitest.
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold npm workspaces (root, shared, server, client), tsconfigs, root vitest config,
+- [x] T1 — Scaffold npm workspaces (root, shared, server, client), tsconfigs, root vitest config,
       eslint/prettier, .env.example; implement `shared` (types, zod schemas, error codes).
       Accept: `npm run build` green with an empty server/client skeleton; shared compiles.
+      Result: build + lint green (express 5.2.1, vitest 4.1.11, react 18.3.1, vite 7.3.6, zod 3.25.76).
 - [ ] T2 — Server domain core: Clock/IdGen interfaces + real impls, AppError hierarchy,
       repository interfaces + in-memory impls, auth (JWT issue/verify, scrypt password hashing),
       seed (4 rooms + admin@deskboard.local/admin123).
