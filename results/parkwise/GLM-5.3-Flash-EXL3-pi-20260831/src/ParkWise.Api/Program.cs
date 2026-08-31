@@ -107,10 +107,7 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-}
+app.UseSwagger(); // Swagger UI available in every environment (spec §2: /swagger must serve)
 app.UseSwaggerUI();
 
 app.MapControllers();
