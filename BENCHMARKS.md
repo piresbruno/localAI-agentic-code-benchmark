@@ -32,4 +32,5 @@ One line per completed run for quick reference — appended by the agent at clos
 |------|---------|---------------|---------|----------|--------------|---------|-----------|-------|
 | 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 98.86% lines (server/src + shared/src) | 15,206,298 | 30.6 | 01:18:00 | 109 tests green; LOC 2,609 (above 1,000 cap, full feature set kept — see README deviations) |
 | 2026-08-31 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 90.32% lines (Services + Api, coverlet) | 26,883,283 | 20.3 | 01:09:56 | 41 tests green; C# LOC 1,081 (81 over cap, full feature set kept — see README/DECISIONS) |
+| 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 96.62% lines (server/src + shared/src, v8) | 21,231,973 | 25.3 | 01:30:35 | 129 tests green; production TS 2,862 (above 1,000 cap, full feature set kept — see docs/DECISIONS.md) |
 | 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 97.74% lines (server/src + shared/src, v8) | 12,598,747 | 31.9 | 01:06:54 | 115 tests green; LOC 2,911 production TS (above 1,000 cap, full feature set kept — see README/DECISIONS) |
