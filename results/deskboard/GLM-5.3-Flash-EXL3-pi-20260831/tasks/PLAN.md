@@ -41,19 +41,22 @@ tight; (5) coverage ≥ 75% on `server/src/**` + `shared/**` measured by vitest.
 - [x] T5 — Server/shared coverage hardening.
       Accept: `npx vitest run --coverage` ≥ 75% lines on server/src + shared/src, 0 failing tests.
       Result: 97.34% lines (257/264) on server/src + shared/src.
-- [ ] T6 — Client foundation: Vite + tokens.css design system, typed fetch api wrapper over shared
+- [x] T6 — Client foundation: Vite + tokens.css design system, typed fetch api wrapper over shared
       DTOs, useAuth/useResource hooks, ui components (Button, TextField, Select, Modal, Toast,
       Table, Spinner) with RTL tests on ≥ 4 of them.
       Accept: client tests green; components implement hover/focus-visible/disabled/loading states.
-- [ ] T7 — Pages + client logic: Login/Register, RoomGrid (grid from slots lib, click empty slot →
+      Result: 50 client tests green (6 ui components + pages + lib modules); React pinned to 18.3.1 via overrides.
+- [x] T7 — Pages + client logic: Login/Register, RoomGrid (grid from slots lib, click empty slot →
       prefilled form), BookingForm (prefill, durations, inline API errors, double-submit safe),
       MyBookings (upcoming/past, cancel window button state), AdminRooms (modal CRUD, deactivate);
       slots/validation client modules unit-tested; loading/empty/error everywhere.
       Accept: client tests green incl. slots + cancel-window logic; all flows reachable.
-- [ ] T8 — Quality gates + docs: full build, all tests, coverage run, boot smoke (health 200, UI at /,
+      Result: all 5 pages + App scaffold built; 109 total tests green.
+- [x] T8 — Quality gates + docs: full build, all tests, coverage run, boot smoke (health 200, UI at /,
       Swagger at /api-docs), lint zero warnings, README (quickstart/env/seeded accounts), docs/DESIGN.md,
       docs/DECISIONS.md.
       Accept: §2 success criteria 1–6 all verifiable from clean checkout.
+      Result: build ✓, 109 tests ✓, coverage 98.86% lines ✓, smoke: /health + / + /api-docs + SPA fallback 200 ✓, lint 0 warnings ✓, README + DESIGN.md + DECISIONS.md ✓.
 - [ ] T9 — Closing bookkeeping: METRICS.md yaml from harness session log, BENCHMARKS.md row update,
       final commit.
 
@@ -73,9 +76,9 @@ tight; (5) coverage ≥ 75% on `server/src/**` + `shared/**` measured by vitest.
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: (filled at closing bookkeeping from harness session log)
+- Total tokens consumed (in + out) + avg output t/s: (from pi session log, see METRICS.md)
+- Errors/retries (build/test/lint): 5 test-iteration failures fixed forward (email normalization, login error code, React dedupe, SPA dot-dir send bug, mock-history leaks); 1 tsc config round-trip; 0 unexplained
+- Final coverage: 98.86% lines (261/264) via `npm run coverage` (vitest --coverage, server/src + shared/src)
+- Line counts per directory: server/src 1,068 · shared/src 150 · client/src 1,391 · total 2,609 (tests excluded)
+- Deviations from spec: LOC above the 1,000 cap — full §5/§6/§7 feature set kept instead; see README + DECISIONS.md
