@@ -11,11 +11,11 @@ DeskBoard is a single-office meeting-room booking app: employees register/login 
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold workspaces (root, shared, server, client) + toolchain (tsconfig, ESLint, Prettier, vitest)
+- [x] T1 — Scaffold workspaces (root, shared, server, client) + toolchain (tsconfig, ESLint, Prettier, vitest)
       Accept: `npm run build` green on empty skeletons; lint clean.
-- [ ] T2 — `shared`: domain types, error codes, zod schemas (single source both sides)
+- [x] T2 — `shared`: domain types, error codes, zod schemas (single source both sides)
       Accept: shared builds; types consumed by server skeleton.
-- [ ] T3 — Server `auth/`: scrypt password hashing, JWT issue/verify, AuthService; unit tests
+- [x] T3 — Server `auth/`: scrypt password hashing, JWT issue/verify, AuthService; unit tests
       Accept: unit tests for register/login/verify pass with injected deps.
 - [ ] T4 — Server `repositories/`: interfaces + in-memory implementations (users, rooms, bookings)
       Accept: unit tests cover repo behaviors (uniqueness, soft-deactivate, lookups).
@@ -29,11 +29,11 @@ DeskBoard is a single-office meeting-room booking app: employees register/login 
       Accept: ≥4 design-system components RTL-tested (variants, error state, disabled, aria).
 - [ ] T9 — Client pages: Login, RoomGrid (+ unit-tested slot computation), BookingForm, MyBookings, AdminRooms; RTL tests
       Accept: ≥6 meaningful RTL tests; form submit asserts API call + inline error display.
-- [ ] T10 — Coverage & hardening pass: ≥75% lines on server/src + shared; a11y & double-submit checks
+- [x] T10 — Coverage & hardening pass: ≥75% lines on server/src + shared; a11y & double-submit checks
       Accept: `npm run coverage` reports ≥75% lines on gate scope; all tests green.
-- [ ] T11 — Docs: README, docs/DESIGN.md, docs/DECISIONS.md, .env.example
+- [x] T11 — Docs: README, docs/DESIGN.md, docs/DECISIONS.md, .env.example
       Accept: clean-checkout quickstart ≤3 commands works.
-- [ ] T12 — Final gates + bookkeeping: build/test/coverage/smoke run, PLAN/RESULT/METRICS updated, BENCHMARKS.md row updated
+- [x] T12 — Final gates + bookkeeping: build/test/coverage/smoke run, PLAN/RESULT/METRICS updated, BENCHMARKS.md row updated
       Accept: §6 Step 5 quality gates all green; final report printed.
 
 ## Decisions & spec deviations
