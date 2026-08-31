@@ -98,6 +98,10 @@ public sealed class ParkingService(
         try
         {
             var ticket = await FindTicketAsync(ticketId, ct);
+            if (ticket.Status == TicketStatus.Exited)
+            {
+                throw new AppException(ErrorCodes.AlreadyExited, 409, "This ticket has already exited.");
+            }
             var quote = fees.Calculate(ticket.EntryAtUtc, clock.UtcNow, ticket.VehicleType, ticket.Status == TicketStatus.Lost);
 
             if (ticket.Status == TicketStatus.Paid)
@@ -169,8 +173,12 @@ public sealed class ParkingService(
     /// <summary>frees_bay_on_exit: exited tickets leave the active set, so capacity recovers.</summary>
     private async Task<Ticket> FindTicketAsync(string ticketId, CancellationToken ct)
     {
-        if (!Guid.TryParse(ticketId, out var id)) throw AppException.NotFound("Ticket");
-        return await tickets.FindByIdAsync(id, ct) ?? throw new AppException(ErrorCodes.TicketNotFound, 404, "Ticket not found.");
+        if (!Guid.TryParse(ticketId, out var id))
+        {
+            throw new AppException(ErrorCodes.TicketNotFound, 404, "Ticket not found.");
+        }
+        return await tickets.FindByIdAsync(id, ct)
+               ?? throw new AppException(ErrorCodes.TicketNotFound, 404, "Ticket not found.");
     }
 
     private TicketDto ToDto(Ticket ticket) => new(
