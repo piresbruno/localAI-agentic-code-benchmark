@@ -4,7 +4,7 @@ Execute **top to bottom**. One project per language. Each row links to its self-
 
 | # | Project ID | Language | Shape | UI | LOC target | Coverage gate | Spec | Status |
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
-| 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | ⬜ not run |
+| 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | 🟨 implemented, awaiting grading |
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 | ≥ 75% (Services + Api) | [specs/02-csharp-parkwise/SPEC.md](specs/02-csharp-parkwise/SPEC.md) | ⬜ not run |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
@@ -30,3 +30,4 @@ One line per completed run for quick reference — appended by the agent at clos
 
 | date | project | model/harness | verdict | coverage | total_tokens | avg t/s | wall_time | notes |
 |------|---------|---------------|---------|----------|--------------|---------|-----------|-------|
+| 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 98.86% lines (server/src + shared/src) | 15,206,298 | 30.6 | 01:18:00 | 109 tests green; LOC 2,609 (above 1,000 cap, full feature set kept — see README deviations) |
