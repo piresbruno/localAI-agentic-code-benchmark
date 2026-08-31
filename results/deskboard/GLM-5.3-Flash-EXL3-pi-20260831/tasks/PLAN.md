@@ -25,19 +25,22 @@ tight; (5) coverage ≥ 75% on `server/src/**` + `shared/**` measured by vitest.
       eslint/prettier, .env.example; implement `shared` (types, zod schemas, error codes).
       Accept: `npm run build` green with an empty server/client skeleton; shared compiles.
       Result: build + lint green (express 5.2.1, vitest 4.1.11, react 18.3.1, vite 7.3.6, zod 3.25.76).
-- [ ] T2 — Server domain core: Clock/IdGen interfaces + real impls, AppError hierarchy,
+- [x] T2 — Server domain core: Clock/IdGen interfaces + real impls, AppError hierarchy,
       repository interfaces + in-memory impls, auth (JWT issue/verify, scrypt password hashing),
       seed (4 rooms + admin@deskboard.local/admin123).
       Accept: `tsc` compiles; no express/jsonwebtoken imports outside http//auth layers.
-- [ ] T3 — Services (business rules) TDD: AuthService, RoomService, BookingService,
+- [x] T3 — Services (business rules) TDD: AuthService, RoomService, BookingService,
       AvailabilityService with injected Clock/IdGen.
       Accept: unit tests green for all 7 §4-named rules incl. adjacent-slot and window edges.
-- [ ] T4 — HTTP layer: auth middleware, one shared error mapper, thin routers
+      Result: 38 service unit tests green (fixed email normalization + login error code along the way).
+- [x] T4 — HTTP layer: auth middleware, one shared error mapper, thin routers
       (auth/rooms/bookings/health), app.ts factory, main.ts boot, OpenAPI + Swagger UI at /api-docs,
       static UI serving with SPA fallback.
       Accept: supertest integration tests green for every §5 endpoint incl. 401/403/400/404/409/422 paths.
-- [ ] T5 — Server/shared coverage hardening.
+      Result: 59 server tests green; /api-docs + SPA fallback verified.
+- [x] T5 — Server/shared coverage hardening.
       Accept: `npx vitest run --coverage` ≥ 75% lines on server/src + shared/src, 0 failing tests.
+      Result: 97.34% lines (257/264) on server/src + shared/src.
 - [ ] T6 — Client foundation: Vite + tokens.css design system, typed fetch api wrapper over shared
       DTOs, useAuth/useResource hooks, ui components (Button, TextField, Select, Modal, Toast,
       Table, Spinner) with RTL tests on ≥ 4 of them.
