@@ -3,46 +3,41 @@ using ParkWise.Services.Options;
 
 namespace ParkWise.Api.Options;
 
-/// <summary>Boot-time config validation (spec §7): invalid config = clear boot failure.</summary>
-public sealed class GarageOptionsValidator : IValidateOptions<GarageOptions>
+/// <summary>Shared rule: every listed value must be at least `min`, else boot fails listing offenders.</summary>
+internal static class OptionsRules
 {
-    public ValidateOptionsResult Validate(string? name, GarageOptions options)
+    internal static ValidateOptionsResult FailIfAny(params (string Name, decimal Value, decimal Min)[] rules)
     {
-        var errors = new List<string>();
-        foreach (var (name2, count) in new (string, int)[]
-                 {
-                     ("MotorcycleBays", options.MotorcycleBays),
-                     ("CompactBays", options.CompactBays),
-                     ("StandardBays", options.StandardBays),
-                     ("EvBays", options.EvBays),
-                 })
-        {
-            if (count < 0) errors.Add($"Garage:{name2} must be >= 0 (got {count}).");
-        }
+        var errors = rules
+            .Where(r => r.Value < r.Min)
+            .Select(r => $"{r.Name} must be >= {r.Min} (got {r.Value}).")
+            .ToList();
         return errors.Count > 0 ? ValidateOptionsResult.Fail(errors) : ValidateOptionsResult.Success;
     }
 }
 
+/// <summary>Boot-time config validation (spec §7): invalid config = clear boot failure.</summary>
+public sealed class GarageOptionsValidator : IValidateOptions<GarageOptions>
+{
+    public ValidateOptionsResult Validate(string? name, GarageOptions options) =>
+        OptionsRules.FailIfAny(
+            ("Garage:MotorcycleBays", options.MotorcycleBays, 0),
+            ("Garage:CompactBays", options.CompactBays, 0),
+            ("Garage:StandardBays", options.StandardBays, 0),
+            ("Garage:EvBays", options.EvBays, 0));
+}
+
 public sealed class FeeOptionsValidator : IValidateOptions<FeeOptions>
 {
-    public ValidateOptionsResult Validate(string? name, FeeOptions options)
-    {
-        var errors = new List<string>();
-        if (options.GraceMinutes < 0) errors.Add("Fees:GraceMinutes must be >= 0.");
-        if (options.DailyCap <= 0) errors.Add("Fees:DailyCap must be > 0.");
-        if (options.LostTicketFee <= 0) errors.Add("Fees:LostTicketFee must be > 0.");
-        foreach (var (rateName, rate) in new (string, decimal)[]
-                 {
-                     ("MotorcyclePerHour", options.MotorcyclePerHour),
-                     ("CompactPerHour", options.CompactPerHour),
-                     ("StandardPerHour", options.StandardPerHour),
-                     ("EvPerHour", options.EvPerHour),
-                 })
-        {
-            if (rate <= 0) errors.Add($"Fees:{rateName} must be > 0.");
-        }
-        return errors.Count > 0 ? ValidateOptionsResult.Fail(errors) : ValidateOptionsResult.Success;
-    }
+    public ValidateOptionsResult Validate(string? name, FeeOptions options) =>
+        OptionsRules.FailIfAny(
+            ("Fees:GraceMinutes", options.GraceMinutes, 0),
+            ("Fees:MotorcyclePerHour", options.MotorcyclePerHour, 0.01m),
+            ("Fees:CompactPerHour", options.CompactPerHour, 0.01m),
+            ("Fees:StandardPerHour", options.StandardPerHour, 0.01m),
+            ("Fees:EvPerHour", options.EvPerHour, 0.01m),
+            ("Fees:DailyCap", options.DailyCap, 0.01m),
+            ("Fees:LostTicketFee", options.LostTicketFee, 0.01m));
 }
 
 public sealed class AuthOptionsValidator : IValidateOptions<AuthOptions>
@@ -54,13 +49,12 @@ public sealed class AuthOptionsValidator : IValidateOptions<AuthOptions>
         if (options.Secret.Length < 16) errors.Add("Auth:Secret must be at least 16 characters.");
         if (options.ExpiryHours <= 0) errors.Add("Auth:ExpiryHours must be > 0.");
         if (options.Users.Length == 0) errors.Add("Auth:Users must contain at least one seeded account.");
-        foreach (var user in options.Users)
-        {
-            if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password))
-                errors.Add($"Auth:Users entry '{user.Username}' must have username and password.");
-            if (user.Role is not ("admin" or "attendant"))
-                errors.Add($"Auth:Users entry '{user.Username}' must have role 'admin' or 'attendant'.");
-        }
+        errors.AddRange(options.Users
+            .Where(u => string.IsNullOrWhiteSpace(u.Username) || string.IsNullOrWhiteSpace(u.Password))
+            .Select(u => $"Auth:Users entry '{u.Username}' must have username and password."));
+        errors.AddRange(options.Users
+            .Where(u => u.Role is not ("admin" or "attendant"))
+            .Select(u => $"Auth:Users entry '{u.Username}' must have role 'admin' or 'attendant'."));
         return errors.Count > 0 ? ValidateOptionsResult.Fail(errors) : ValidateOptionsResult.Success;
     }
 }
