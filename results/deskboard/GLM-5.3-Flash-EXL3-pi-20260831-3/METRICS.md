@@ -1,8 +1,8 @@
 # METRICS — deskboard / pi
 
 **Run dir**: results/deskboard/GLM-5.3-Flash-EXL3-pi-20260831-3
-**Started**: 2026-08-31 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-08-31 — time: `12:46:29`
+**Ended**: `14:17:04`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,14 +12,14 @@
 project: deskboard
 agent: pi
 model: GLM-5.3-Flash-EXL3
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
-verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
-score:                  # normalized 0–100 (from RESULT.md)
+wall_time: 01:30:35
+total_tokens: 21231973
+input_tokens: 21094622
+output_tokens: 137351
+avg_tps: 25.3
+cost: 0
+verdict:
+score:
 ```
 
 ## Derivation notes
@@ -32,10 +32,21 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 185 usage events in session JSONL |
+| Errors/retries visible in transcript (build/test failures) | ~12 fixed-forward rounds (see PLAN.md final report) |
+| Cache-read tokens (if reported) | 0 (not reported) |
+| Harness + version | pi coding agent, Node 22.22.3, model GLM-5.3-Flash-EXL3 |
+
+## Where the numbers came from
+
+```bash
+SESSION=~/.pi/agent/sessions/--home-piresbruno-developer-code-benchmark--/2026-08-31T12-46-29-200Z_01a057db-5d50-7428-b81f-e943ec47a9b3.jsonl
+jq -s 'map(select(.message.usage)) | map(.message.usage) | {events: length, input: (map(.input) | add), output: (map(.output) | add)}' "$SESSION"
+head -1 "$SESSION" | jq -r .timestamp; tail -1 "$SESSION" | jq -r .timestamp
+```
+
+- **wall_time**: first → last session-JSONL timestamp (12:46:29 → 14:17:04, UTC+1). Includes the operator-attended scaffold kickoff.
+- **avg_tps**: output_tokens ÷ wall_time (per-message generation latency not exposed by this harness).
 
 ## Where to find the numbers (by harness)
 

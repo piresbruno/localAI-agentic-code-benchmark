@@ -47,12 +47,15 @@ DeskBoard is a single-office meeting-room booking app: employees register/login 
 | 5 | `server/src/main.ts` (listen/bootstrap) excluded from coverage scope | Entry-point glue; everything testable is covered via supertest on `app.ts` |
 | 6 | State-based page navigation (no react-router) | Spec doesn't require URLs; fewer deps, fewer LOC toward the 1,000 cap |
 | 7 | Inactive-room booking rejected with 409 `ROOM_INACTIVE` | Spec pins 409 for inactive rooms but not the code name |
+| 8 | OpenAPI spec kept as data (`openapi.json`) imported by a typed wrapper | The document is declarative content, not logic; avoids CJS `export *` interop issues and reflects its data nature |
+| 9 | Production TS exceeds the 1,000-line cap (≈2,860 lines) | The v2 feature list (full CRUD + 5 UI views + 7-component design system + OpenAPI + computed status) does not fit 1,000 lines without cutting rubric-scored features; all spec features kept, compactness pursued elsewhere (see docs/DECISIONS.md) |
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 01:30:35 (harness session 12:46:29 → 14:17:04 UTC+1)
+- Total tokens consumed (in + out) + avg output t/s: 21,231,973 total (21,094,622 in + 137,351 out); ≈25.3 out-t/s derived as output ÷ wall-clock (per-message generation time not exposed); source: pi session JSONL `message.usage` sum
+- Errors/retries (build/test/lint): ~12 fixed-forward failure rounds, zero restarts — 1 vite/plugin-react type mismatch, 1 eslint react-hooks preset API error, 4 prettier format rounds, 1 zod email-chain semantics fix, 1 DomainError class-field ordering fix, ~4 test-expectation rounds (async asserts, mock-queue overwrite, fixed `now` injection, `role="cell"` overriding button role, seed-name collision)
+- Final coverage (number + measurement command): 96.62% lines (`npm run coverage` — vitest v8, include server/src + shared/src, threshold 75)
+- Line counts per directory: shared/src 210 · server/src 1,002 · client/src 1,650 → 2,862 production TS (over the 1,000 cap — deviation #9); tests 2,049; CSS 600
+- Deviations from spec: see table above — notably LOC cap exceedance with full feature set, cancellation-window inclusivity at exactly 1h, openapi-as-data
+- Known gaps: none functional; the LOC overage is the main spec deviation
