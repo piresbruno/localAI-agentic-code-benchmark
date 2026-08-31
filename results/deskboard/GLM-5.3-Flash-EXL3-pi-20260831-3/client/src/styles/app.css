@@ -1,0 +1,319 @@
+/* Base layout and shared classes — every value comes from tokens.css. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--text-md-line);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-5) var(--space-7);
+}
+
+.page-title {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl-line);
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.section-title {
+  font-size: var(--text-lg);
+  line-height: var(--text-lg-line);
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm-line);
+}
+
+/* --- header --- */
+.app-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-1);
+}
+
+.app-header-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.app-name {
+  font-size: var(--text-lg);
+  line-height: var(--text-lg-line);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.app-nav {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.user-menu {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* --- data-state blocks (loading/empty/error) --- */
+.data-state {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.data-state--error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+/* --- room grid --- */
+.grid-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.room-grid {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 720px;
+}
+
+.room-grid-row {
+  display: grid;
+  grid-template-columns: 160px repeat(11, minmax(56px, 1fr));
+}
+
+.room-grid-head {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs-line);
+  color: var(--color-text-muted);
+  padding: var(--space-1) var(--space-2);
+  text-align: center;
+}
+
+.room-grid-room {
+  font-weight: 600;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.slot {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: var(--space-1);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs-line);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+
+.slot--bookable:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.slot--busy {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  cursor: default;
+}
+
+.slot--offhours {
+  background: var(--color-bg);
+  cursor: default;
+}
+
+.grid-scroll {
+  overflow-x: auto;
+}
+
+/* --- forms --- */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 480px;
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.form-row > * {
+  flex: 1;
+  min-width: 140px;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm-line);
+  margin: var(--space-1) 0 0;
+}
+
+/* --- tables --- */
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* --- toasts --- */
+.toast-region {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 100;
+  max-width: min(360px, calc(100vw - var(--space-8)));
+}
+
+.toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm-line);
+  border: 1px solid;
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.toast--success {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: var(--color-text);
+}
+
+.toast--error {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: var(--color-text);
+}
+
+/* --- booking list cards --- */
+.booking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.booking-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.booking-card-main {
+  flex: 1;
+  min-width: 200px;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs-line);
+  border: 1px solid;
+}
+
+.status-chip--confirmed {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: var(--color-text);
+}
+
+.status-chip--completed {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: var(--color-text);
+}
+
+.status-chip--cancelled {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: var(--color-text);
+}
+
+/* --- auth page --- */
+.auth-page {
+  max-width: 420px;
+  margin: var(--space-7) auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+}
+
+/* --- responsive (≥ 360px) --- */
+@media (max-width: 640px) {
+  .container {
+    padding: var(--space-3) var(--space-3) var(--space-6);
+  }
+
+  .user-menu {
+    margin-left: 0;
+    width: 100%;
+  }
+}
