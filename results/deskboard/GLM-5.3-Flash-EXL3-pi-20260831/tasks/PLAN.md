@@ -57,7 +57,7 @@ tight; (5) coverage ≥ 75% on `server/src/**` + `shared/**` measured by vitest.
       docs/DECISIONS.md.
       Accept: §2 success criteria 1–6 all verifiable from clean checkout.
       Result: build ✓, 109 tests ✓, coverage 98.86% lines ✓, smoke: /health + / + /api-docs + SPA fallback 200 ✓, lint 0 warnings ✓, README + DESIGN.md + DECISIONS.md ✓.
-- [ ] T9 — Closing bookkeeping: METRICS.md yaml from harness session log, BENCHMARKS.md row update,
+- [x] T9 — Closing bookkeeping: METRICS.md yaml from harness session log, BENCHMARKS.md row update,
       final commit.
 
 ## Decisions & spec deviations
