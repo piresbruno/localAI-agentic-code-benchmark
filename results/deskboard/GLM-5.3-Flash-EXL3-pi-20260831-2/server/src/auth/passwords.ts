@@ -24,3 +24,12 @@ export async function verifyPassword(password: string, stored: string): Promise<
   const expected = Buffer.from(hash, 'hex');
   return derived.length === expected.length && timingSafeEqual(derived, expected);
 }
+
+/** Port used by AuthService so services never import node:crypto directly. */
+export interface PasswordHasher {
+  hash(plain: string): Promise<string>;
+  verify(plain: string, stored: string): Promise<boolean>;
+}
+
+/** Production PasswordHasher backed by scrypt. */
+export const scryptPasswordHasher: PasswordHasher = { hash: hashPassword, verify: verifyPassword };

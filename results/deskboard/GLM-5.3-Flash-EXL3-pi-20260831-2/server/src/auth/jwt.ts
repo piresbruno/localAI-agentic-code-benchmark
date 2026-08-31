@@ -25,3 +25,13 @@ export function verifyToken(token: string, secret: string): TokenPayload | null 
     return null;
   }
 }
+
+/** Port used by AuthService so services never import jsonwebtoken directly. */
+export interface TokenIssuer {
+  issue(payload: TokenPayload): string;
+}
+
+/** Production TokenIssuer backed by HS256 JWTs with a 12h expiry. */
+export function jwtTokenIssuer(secret: string): TokenIssuer {
+  return { issue: (payload) => issueToken(payload, secret) };
+}
