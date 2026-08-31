@@ -1,4 +1,4 @@
-import { AvailabilityDTO, Booking, BUSINESS, ERROR_CODES, SlotDTO } from '@deskboard/shared';
+import { AvailabilityDTO, Booking, BUSINESS, ERROR_CODES, Room, SlotDTO } from '@deskboard/shared';
 import { BookingRepository, RoomRepository, StoredBooking } from '../repositories/types';
 import { AppError } from './errors';
 import { Clock, IdGen } from './ports';

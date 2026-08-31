@@ -7,7 +7,7 @@ import {
   User,
 } from '@deskboard/shared';
 import { PasswordHasher } from '../auth/passwords';
-import { TokenIssuer, TokenPayload } from '../auth/jwt';
+import { TokenIssuer } from '../auth/jwt';
 import { StoredUser, UserRepository } from '../repositories/types';
 import { AppError } from './errors';
 import { IdGen } from './ports';

@@ -1,4 +1,4 @@
-import { Room, Role, User } from '@deskboard/shared';
+import { Room, User } from '@deskboard/shared';
 
 /** User as persisted: password hash never leaves the data layer. */
 export interface StoredUser extends User {
