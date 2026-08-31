@@ -4,7 +4,7 @@
 
 You may have arrived in one of two places. **Detect your mode first:**
 
-- **Mode A — repo root**: your cwd contains `BENCHMARKS.md`, `specs/`, `scripts/`. The operator said only *"execute the task"*. Start at **§1 Autonomous bootstrap**.
+- **Mode A — repo root**: your cwd contains `BENCHMARKS.md`, `specs/`, `scripts/`. The operator said only _"execute the task"_. Start at **§1 Autonomous bootstrap**.
 - **Mode B — inside a run directory**: your cwd contains `METRICS.md`, `RESULT.md`, `tasks/`. Your operator already scaffolded the run and gave you the prompt with the spec path. Skip to **§3 Your assignment**.
 
 ---
@@ -32,11 +32,11 @@ If you are running attended, present your picked project + plan summary and wait
 
 ## 2. Reference map
 
-| Document | Path | Why |
-|---|---|---|
-| **Spec** | `specs/<nn-...>/SPEC.md` (given by scaffold output or your prompt) | the single source of truth for WHAT to build |
-| **Engineering standards** | `docs/ENGINEERING_STANDARDS.md` | binding rules for HOW to build it |
-| **Plan template** | `templates/task-template.md` | format for `tasks/PLAN.md` |
+| Document                  | Path                                                               | Why                                          |
+| ------------------------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| **Spec**                  | `specs/<nn-...>/SPEC.md` (given by scaffold output or your prompt) | the single source of truth for WHAT to build |
+| **Engineering standards** | `docs/ENGINEERING_STANDARDS.md`                                    | binding rules for HOW to build it            |
+| **Plan template**         | `templates/task-template.md`                                       | format for `tasks/PLAN.md`                   |
 
 Reading those three is allowed and expected. Everything else at the repo root (other specs, past results, this file's siblings) is **off-limits** for implementation input.
 
@@ -73,15 +73,19 @@ This is a git repository and **your commit history is part of the deliverable** 
 ## 6. The process you must follow (in order)
 
 ### Step 1 — Read
+
 Read the spec twice, end to end. Note every named business rule and edge case — the grader looks for tests named after them. Read the engineering standards: layering, validation, error handling, security, testing pyramid.
 
 ### Step 2 — Plan
+
 Write `tasks/PLAN.md` from the template. Countable tasks, each with an acceptance criterion. Sequence: scaffold → domain logic → persistence → boundary (HTTP/CLI/UI) → tests hardening → docs. **Commit the plan.**
 
 ### Step 3 — Confirm
+
 Attended: present the plan summary and wait. Unattended: record "unattended: plan self-approved" in PLAN.md and continue.
 
 ### Step 4 — Execute task by task
+
 - TDD where practical: failing test first, then implementation.
 - Update PLAN.md as you go (check off tasks). A plan updated only at the end is a process failure.
 - Small, simple changes. No speculative features. No clever code.
@@ -89,6 +93,7 @@ Attended: present the plan summary and wait. Unattended: record "unattended: pla
 - If a task reveals a plan error, revise the plan and note why.
 
 ### Step 5 — Quality gates (all mandatory before you claim done)
+
 - **Build**: zero errors (spec §Commands gives the command).
 - **Tests**: 100% pass, none skipped.
 - **Coverage**: ≥ 75% lines on the spec's scope, measured with the spec's coverage command. Run it yourself; record the real number.
@@ -97,9 +102,11 @@ Attended: present the plan summary and wait. Unattended: record "unattended: pla
 - **Lint/format clean**: zero warnings.
 
 ### Step 6 — Document
+
 README.md: project goal, quickstart (≤ 3 commands from clean checkout), architecture overview, env vars + defaults, seeded accounts, test/coverage instructions, decisions & deviations. Public surface documented (OpenAPI/Swagger, `--help`). Deep dives in `docs/` per the spec (e.g. `docs/DESIGN.md` for deskboard). **Commit docs.**
 
 ### Step 7 — Final report (print this; it is graded)
+
 ```
 == FINAL REPORT ==
 - Project & status: <project-id>, implemented / partial
@@ -112,6 +119,7 @@ README.md: project goal, quickstart (≤ 3 commands from clean checkout), archit
 - Deviations from spec: <list or "none">
 - Known gaps: <what you would fix with more time, or "none">
 ```
+
 Honest gaps score better than silence — the grader will find them anyway.
 
 ## 7. Closing bookkeeping (after the final report, before stopping)
