@@ -17,9 +17,9 @@ DeskBoard is a single-office meeting-room booking app: employees register/login 
       Accept: shared builds; types consumed by server skeleton.
 - [x] T3 — Server `auth/`: scrypt password hashing, JWT issue/verify, AuthService; unit tests
       Accept: unit tests for register/login/verify pass with injected deps.
-- [ ] T4 — Server `repositories/`: interfaces + in-memory implementations (users, rooms, bookings)
+- [x] T4 — Server `repositories/`: interfaces + in-memory implementations (users, rooms, bookings)
       Accept: unit tests cover repo behaviors (uniqueness, soft-deactivate, lookups).
-- [ ] T5 — Server `services/`: BookingService (all 7 §4 rules) + RoomService with injected Clock/IdGen; unit tests named per spec
+- [x] T5 — Server `services/`: BookingService (all 7 §4 rules) + RoomService with injected Clock/IdGen; unit tests named per spec
       Accept: all 7 named rule tests green, plus cancellation-window matrix (organizer/admin/other).
 - [ ] T6 — Server `http/`: routers, auth middleware, shared error mapper, OpenAPI doc, `app.ts`/`main.ts`; supertest integration tests (fresh app per test)
       Accept: every §5 endpoint tested incl. 401/403/400/404/409/422 paths; `GET /api-docs` serves Swagger UI.
