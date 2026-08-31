@@ -3,7 +3,7 @@ import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { act } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Button } from '../src/components/ui/Button';
 import { Modal } from '../src/components/ui/Modal';
 import { Select } from '../src/components/ui/Select';

@@ -5,11 +5,13 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   /** Inline validation message rendered below the select. */
   error?: string | null;
+  /** Static helper text shown below the control (e.g. why it is locked). */
+  hint?: string;
   children: React.ReactNode;
 }
 
 /** Select input with a visible, programmatically-tied label and an error slot. */
-export function Select({ label, error, className, id, children, ...rest }: SelectProps) {
+export function Select({ label, error, hint, className, id, children, ...rest }: SelectProps) {
   const autoId = useId();
   const selectId = id ?? autoId;
   return (
@@ -26,6 +28,11 @@ export function Select({ label, error, className, id, children, ...rest }: Selec
       >
         {children}
       </select>
+      {hint && !error && (
+        <p className="field-hint" id={`${selectId}-hint`}>
+          {hint}
+        </p>
+      )}
       {error && (
         <p className="field-error" id={`${selectId}-error`} role="alert">
           {error}

@@ -1,4 +1,4 @@
-import { BUSINESS } from '@deskboard/shared';
+import { Booking, BUSINESS, Room } from '@deskboard/shared';
 
 /** Bookable slot start hours (local), 08:00 … 18:00 — the grid's columns. */
 export const SLOT_HOURS: number[] = Array.from(
@@ -7,6 +7,15 @@ export const SLOT_HOURS: number[] = Array.from(
 );
 
 export const DURATION_OPTIONS = [30, 60, 90, 120];
+
+/** Bookable start times: every 30 min from 08:00 to 18:30 (last slot ends 19:00). */
+export function startTimeOptions(): string[] {
+  const out: string[] = [];
+  for (let minutes = BUSINESS.OPEN_HOUR * 60; minutes <= BUSINESS.CLOSE_HOUR * 60 - 30; minutes += 30) {
+    out.push(hourLabel(Math.floor(minutes / 60), minutes % 60));
+  }
+  return out;
+}
 
 export interface GridSlot {
   start: string; // 'HH:mm'

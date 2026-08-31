@@ -1,0 +1,352 @@
+/* Layout + page styles — every value comes from tokens.css. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-tight);
+  margin: 0 0 var(--space-4);
+}
+h2 {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-snug);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* ---- shell ---- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app-boot {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8);
+}
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-1);
+  flex-wrap: wrap;
+}
+.brand {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+.app-nav {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.nav-link {
+  border: none;
+  background: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.nav-link:hover {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+.nav-link-active {
+  background: var(--color-info-bg);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.nav-link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.user-menu {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+}
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-7);
+  flex: 1;
+}
+.app-footer {
+  padding: var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---- page scaffolding ---- */
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+.date-picker {
+  min-width: 160px;
+}
+
+/* ---- auth ---- */
+.auth-card {
+  max-width: 420px;
+  margin: var(--space-8) auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+  padding: var(--space-6);
+}
+.form-error {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+/* ---- room grid ---- */
+.grid-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+.booking-grid .slot-head {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+.room-name {
+  min-width: 140px;
+  font-weight: var(--font-weight-medium);
+}
+.room-meta {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
+.slot {
+  padding: var(--space-1);
+  min-width: 64px;
+}
+.slot-free {
+  background: var(--color-surface);
+}
+.slot-busy {
+  background: var(--color-info-bg);
+}
+.slot-title {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90px;
+}
+.slot-button {
+  width: 100%;
+  padding: var(--space-1) 0;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: var(--font-size-md);
+}
+.slot-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-info-bg);
+}
+.slot-button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ---- data view states ---- */
+.data-loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  justify-content: center;
+}
+.data-error {
+  padding: var(--space-5);
+  border: 1px solid var(--color-danger);
+  background: var(--color-danger-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.data-error p {
+  margin: 0;
+}
+.data-empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+}
+.data-empty p {
+  margin: 0;
+}
+.table-block {
+  margin-bottom: var(--space-6);
+}
+.table-heading {
+  margin: 0 0 var(--space-2);
+}
+.table-block .table {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* ---- badges (status never by color alone: icon + text) ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+.badge-confirmed {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+.badge-cancelled {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+.badge-completed {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+/* ---- forms ---- */
+.booking-form {
+  max-width: 460px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.field-hint {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+.feature-picker {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin: 0 0 var(--space-4);
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.feature-picker legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 0 var(--space-1);
+}
+.feature-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+.actions-cell {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ---- responsive ≥ 360px ---- */
+@media (max-width: 640px) {
+  .app-header {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+  .user-menu {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .container {
+    padding: var(--space-4) var(--space-3) var(--space-6);
+  }
+  .auth-card {
+    margin: var(--space-5) var(--space-3);
+    padding: var(--space-5);
+  }
+  .booking-form {
+    padding: var(--space-4);
+  }
+  .actions-cell {
+    flex-direction: column;
+  }
+}
