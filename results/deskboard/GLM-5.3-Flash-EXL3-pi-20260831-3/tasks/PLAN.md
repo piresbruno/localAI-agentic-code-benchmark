@@ -25,9 +25,9 @@ DeskBoard is a single-office meeting-room booking app: employees register/login 
       Accept: every §5 endpoint tested incl. 401/403/400/404/409/422 paths; `GET /api-docs` serves Swagger UI.
 - [x] T7 — `seed/`: default rooms + seeded admin; wire boot; smoke via `npm start`
       Accept: `npm start` → `GET /health` 200; admin@deskboard.local can login.
-- [ ] T8 — Client foundation: `tokens.css`, typed api wrapper, auth/data hooks, ui components (Button, TextField, Select, Modal, Toast, Table, Spinner) + RTL design-system tests
+- [x] T8 — Client foundation: `tokens.css`, typed api wrapper, auth/data hooks, ui components (Button, TextField, Select, Modal, Toast, Table, Spinner) + RTL design-system tests
       Accept: ≥4 design-system components RTL-tested (variants, error state, disabled, aria).
-- [ ] T9 — Client pages: Login, RoomGrid (+ unit-tested slot computation), BookingForm, MyBookings, AdminRooms; RTL tests
+- [x] T9 — Client pages: Login, RoomGrid (+ unit-tested slot computation), BookingForm, MyBookings, AdminRooms; RTL tests
       Accept: ≥6 meaningful RTL tests; form submit asserts API call + inline error display.
 - [x] T10 — Coverage & hardening pass: ≥75% lines on server/src + shared; a11y & double-submit checks
       Accept: `npm run coverage` reports ≥75% lines on gate scope; all tests green.

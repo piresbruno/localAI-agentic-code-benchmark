@@ -147,7 +147,6 @@ function SlotCell({
     <button
       type="button"
       className="slot slot--bookable"
-      role="cell"
       onClick={() => onBookSlot(slot.start)}
       aria-label={`Book ${room.name} at ${slot.start}`}
     >

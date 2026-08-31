@@ -8,7 +8,7 @@ import { useApiData } from '../hooks/useApiData.js';
 import { canCancel, cancelDisabledReason, splitUpcoming } from '../lib/slots.js';
 
 /** My bookings: upcoming and past lists, cancel respecting the 1h window. */
-export function MyBookingsPage({ onChanged }: { onChanged: () => void }) {
+export function MyBookingsPage({ onChanged, now }: { onChanged: () => void; now?: Date }) {
   const toast = useToast();
   const fetcher = useCallback(() => api.get<BookingDto[]>('/bookings/mine'), []);
   const { data, loading, error, retry } = useApiData(fetcher);
@@ -24,9 +24,9 @@ export function MyBookingsPage({ onChanged }: { onChanged: () => void }) {
     }
   }
 
-  const now = new Date();
+  const current = now ?? new Date();
   const bookings = data ?? [];
-  const { upcoming, past } = splitUpcoming(bookings, now);
+  const { upcoming, past } = splitUpcoming(bookings, current);
 
   return (
     <main className="container">
@@ -64,7 +64,7 @@ export function MyBookingsPage({ onChanged }: { onChanged: () => void }) {
                   </span>
                   <CancelButton
                     booking={booking}
-                    now={now}
+                    now={current}
                     onCancel={() => cancelBooking(booking.id)}
                   />
                 </li>

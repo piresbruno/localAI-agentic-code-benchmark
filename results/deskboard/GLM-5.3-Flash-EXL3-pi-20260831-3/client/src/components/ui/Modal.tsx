@@ -23,8 +23,12 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
     if (!open) return;
     previouslyFocused.current = document.activeElement as HTMLElement;
     const dialog = dialogRef.current;
-    const first = dialog?.querySelector<HTMLElement>(FOCUSABLE);
-    first?.focus();
+    // Prefer the first field/control in the body; skip the close button.
+    const body = dialog?.querySelector<HTMLElement>('.modal-body');
+    const first = body?.querySelector<HTMLElement>(FOCUSABLE) ?? dialog;
+    if (first) {
+      first.focus();
+    }
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
