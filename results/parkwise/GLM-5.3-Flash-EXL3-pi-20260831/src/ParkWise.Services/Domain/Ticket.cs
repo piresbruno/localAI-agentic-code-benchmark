@@ -30,7 +30,7 @@ public sealed class Ticket
             throw new AppException(
                 ErrorCodes.PlateInvalid, 422,
                 "Plate must match the format AA-000-BB (two letters, three digits, two letters).",
-                new Dictionary<string, object?> { ["details"] = new[] { new { field = "plate", message = "Invalid plate format." } } });
+                new Dictionary<string, object?> { ["issues"] = new[] { new { field = "plate", message = "Invalid plate format." } } });
         }
         if (string.IsNullOrWhiteSpace(bayId)) throw new AppException(ErrorCodes.ValidationError, 400, "A bay must be allocated.");
 

@@ -24,5 +24,6 @@ public class AppException : Exception
         new(ErrorCodes.NotFound, 404, $"{what} not found.");
 
     public static AppException Validation(string message, string field) =>
-        new(ErrorCodes.ValidationError, 400, message, new Dictionary<string, object?> { ["details"] = new[] { new { field, message } } });
+        new(ErrorCodes.ValidationError, 400, message,
+            new Dictionary<string, object?> { ["issues"] = new[] { new { field, message } } });
 }
