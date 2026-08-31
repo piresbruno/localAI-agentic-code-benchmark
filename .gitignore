@@ -21,7 +21,6 @@ coverage/
 .coverage
 *.egg-info/
 
-# results/ holds the ACTIVE run only. Completed runs are archived (untracked) to
-# results-archive/ so future agents never see prior implementations; the permanent
-# record is the results log in BENCHMARKS.md + results/RESULTS.md.
-results-archive/
+# results/ holds the ACTIVE run only. Completed runs move to results-archive/
+# (tracked, so local and origin stay identical). Agents must not read
+# results-archive/ during a run (RUBRIC gate G6); new-run.sh only checks results/.

@@ -1,6 +1,6 @@
 # METRICS — parkwise / pi
 
-**Run dir**: results/parkwise/GLM-5.3-Flash-EXL3-pi-20260831
+**Run dir**: results/parkwise/GLM-5.3-Flash-EXL3-pi-20260831-1
 **Started**: 2026-08-31 — time: `04:22` (scaffold commit 8f91bc5)
 **Ended**: `05:32`
 

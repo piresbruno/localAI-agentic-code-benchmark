@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # Scaffold a new benchmark run directory. The tested MODEL is always identified
-# in the directory name: results/<project>/<model>-<harness>-<date>/
+# in the directory name: results/<project>/<model>-<harness>-<date>-<run-number>
 #
-# Multiple runs of the same model/harness on the same day are supported: if the
-# base directory already exists, a version suffix is appended automatically
-# (-v2, -v3, ...), e.g. results/deskboard/gpt-5.3-pi-20260829-v2
+# <run-number> is the count of prior runs of the same project+model+harness
+# (searched in results/ AND results-archive/), so the same model can be run
+# many times — even several times a day — with stable, comparable ids:
+#   results/deskboard/gpt-5.3-pi-20260829-1
+#   results/deskboard/gpt-5.3-pi-20260829-2   (second run, e.g. after tuning)
+#   results/deskboard/gpt-5.3-pi-20260902-3   (third run, a later day)
 #
 # Usage: ./scripts/new-run.sh <project-id> <model> [harness]
 set -euo pipefail
@@ -14,20 +17,20 @@ PROJECT_ID="${1:?usage: new-run.sh <project-id> <model> [harness]}"
 MODEL="${2:?usage: new-run.sh <project-id> <model> [harness]}"
 HARNESS="${3:-agent}"
 DATE="$(date +%Y%m%d)"
-RUN_ID="${MODEL}-${HARNESS}-${DATE}"
+# Run number = # of prior runs of this project+model+harness (+1), searched in
+# both results/ and results-archive/ so archived runs keep counting.
+count=0
+for base in "${REPO_ROOT}/results" "${REPO_ROOT}/results-archive"; do
+  while IFS= read -r d; do
+    count=$((count + 1))
+  done < <(find "${base}/${PROJECT_ID}" -maxdepth 1 -mindepth 1 -type d -name "${MODEL}-${HARNESS}-*" 2>/dev/null || true)
+done
+N=$((count + 1))
+while [[ -e "${REPO_ROOT}/results/${PROJECT_ID}/${MODEL}-${HARNESS}-${DATE}-${N}" ]]; do
+  N=$((N + 1))
+done
+RUN_ID="${MODEL}-${HARNESS}-${DATE}-${N}"
 RUN_DIR="${REPO_ROOT}/results/${PROJECT_ID}/${RUN_ID}"
-
-# Version bump when the same model/harness is run again: -v2, -v3, ...
-VERSION=""
-if [[ -e "${RUN_DIR}" ]]; then
-  v=2
-  while [[ -e "${RUN_DIR}-v${v}" ]]; do
-    v=$((v + 1))
-  done
-  VERSION="-v${v}"
-  RUN_DIR="${RUN_DIR}${VERSION}"
-  RUN_ID="${RUN_ID}${VERSION}"
-fi
 
 SPEC_DIR="$(ls -d "${REPO_ROOT}"/specs/*-"${PROJECT_ID}" 2>/dev/null | head -1 || true)"
 if [[ -z "${SPEC_DIR}" ]]; then
@@ -85,6 +88,6 @@ Next steps:
        RUN_DIR     = ${RUN_DIR}
   4. After grading: fill METRICS.md yaml block (incl. verdict + score),
      then ./scripts/build-report.py to regenerate results/RESULTS.md (markdown).
-  5. Before the next run: ./scripts/archive-results.sh — moves this run out
-     of the working tree so future agents cannot read it (isolation).
+  5. Before the next run: ./scripts/archive-results.sh — moves this run into
+     results-archive/ (kept in git; the active-run isolation gate only checks results/).
 EOF

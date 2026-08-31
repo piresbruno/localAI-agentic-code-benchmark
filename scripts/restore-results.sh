@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Inverse of archive-results.sh: move archived runs back into results/.
-# Restored runs come back UNTRACKED — `git add results/` if you want them
-# tracked again (e.g. to push a graded artifact).
+# Runs come back tracked (git mv) when they were tracked in results-archive/.
 #
 # Usage: ./scripts/restore-results.sh
 set -euo pipefail
@@ -27,7 +26,11 @@ for run_dir in "${runs[@]}"; do
     exit 1
   fi
   mkdir -p "$(dirname "${dest}")"
-  mv "${run_dir}" "${dest}"
+  if git -C "${REPO_ROOT}" ls-files --error-unmatch "${rel_arch}" >/dev/null 2>&1; then
+    git -C "${REPO_ROOT}" mv "${rel_arch}" "${dest_rel}"
+  else
+    mv "${run_dir}" "${dest}"
+  fi
   echo "restored: ${rel_arch} -> ${dest_rel}"
 done
 
@@ -37,4 +40,4 @@ for proj_dir in "${ARCHIVE_ROOT}"/*/; do
 done
 rmdir "${ARCHIVE_ROOT}" 2>/dev/null || true
 
-echo "Note: restored runs are untracked — git add results/ to re-track them."
+echo "Note: runs restored with their tracking state preserved."

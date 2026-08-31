@@ -20,7 +20,7 @@ Everything you need is discoverable. Execute exactly this sequence:
    ```bash
    ./scripts/new-run.sh <project-id> <model-id> <harness>
    ```
-   This creates `results/<project>/<model>-<harness>-<date>-<run-number>/` (run-number = # of prior runs of the same project+model+harness) containing `AGENTS.md`, `CLAUDE.md`, `METRICS.md`, `RESULT.md`, and `tasks/`. It prints the exact spec path — use it.
+   This creates `results/<project>/<model>-<harness>-<date>/` containing `AGENTS.md`, `CLAUDE.md`, `METRICS.md`, `RESULT.md`, and `tasks/`. It prints the exact spec path — use it.
 5. **Commit the scaffold** (see §5 Commit discipline):
    `git add results/<project>/ && git commit -m "chore(<project-id>): scaffold run for <model-id>"`
 6. **`cd` into the run directory.** All implementation work happens there. Nothing may be created anywhere else.
@@ -42,7 +42,7 @@ Reading those three is allowed and expected. Everything else at the repo root (o
 
 ## 3. Your assignment
 
-- **Working directory**: your run directory (`results/<project>/<model>-<harness>-<date>-<run-number>/`).
+- **Working directory**: your run directory (`results/<project>/<model>-<harness>-<date>/`).
 - **Deliverable**: a complete, runnable project implementing the spec, plus updated plan, metrics, and commits.
 - **Only stop** when: all tests pass, ≥ 75% line coverage on the spec's scope, the project builds and runs from a clean checkout, docs are written, bookkeeping is done (§7), and you printed the final report (§6 Step 7).
 
