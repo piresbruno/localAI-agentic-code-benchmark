@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ParkWise.Contracts\ParkWise.Contracts.csproj" />
+  </ItemGroup>
+</Project>
