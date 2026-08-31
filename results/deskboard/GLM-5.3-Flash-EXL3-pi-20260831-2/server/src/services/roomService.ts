@@ -5,7 +5,10 @@ import { IdGen } from './ports';
 
 /** Room management: uniqueness, updates and soft deactivation. */
 export class RoomService {
-  constructor(private readonly rooms: RoomRepository, private readonly ids: IdGen) {}
+  constructor(
+    private readonly rooms: RoomRepository,
+    private readonly ids: IdGen,
+  ) {}
 
   list(): Promise<Room[]> {
     return this.rooms.list();

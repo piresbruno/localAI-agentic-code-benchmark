@@ -16,15 +16,12 @@ export interface BookingPrefill {
 export function RoomGrid({ onBook }: { onBook: (prefill: BookingPrefill) => void }) {
   const [date, setDate] = useState(todayLocal);
 
-  const { data, loading, error, retry } = useAsync(
-    async () => {
-      const rooms = await api.listRooms();
-      const active = rooms.filter((room) => room.active);
-      const grids = await Promise.all(active.map((room) => api.availability(room.id, date)));
-      return { rooms: active, grids };
-    },
-    [date],
-  );
+  const { data, loading, error, retry } = useAsync(async () => {
+    const rooms = await api.listRooms();
+    const active = rooms.filter((room) => room.active);
+    const grids = await Promise.all(active.map((room) => api.availability(room.id, date)));
+    return { rooms: active, grids };
+  }, [date]);
 
   const rows = data ? buildRoomRows(data.rooms, data.grids) : [];
 

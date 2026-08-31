@@ -96,7 +96,11 @@ function BookingTable({
   return (
     <div className="table-block">
       <h2 className="table-heading">{heading}</h2>
-      <Table headers={['Room', 'Title', 'When', 'Status', 'Attendees', 'Actions']} count={bookings.length} emptyMessage={`No ${heading.toLowerCase()} bookings.`}>
+      <Table
+        headers={['Room', 'Title', 'When', 'Status', 'Attendees', 'Actions']}
+        count={bookings.length}
+        emptyMessage={`No ${heading.toLowerCase()} bookings.`}
+      >
         {bookings.map((booking) => {
           const blocker = cancellationBlocker(booking, now, isAdmin);
           const meta = STATUS_META[booking.status];

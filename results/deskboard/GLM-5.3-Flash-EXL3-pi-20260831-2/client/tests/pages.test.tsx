@@ -142,9 +142,7 @@ describe('RoomGrid', () => {
     expect(screen.getByText('Standup')).toBeInTheDocument(); // busy slot shows booking title
 
     await userEvent.click(screen.getByRole('button', { name: 'Book Hudson at 10:00' }));
-    expect(onBook).toHaveBeenCalledWith(
-      expect.objectContaining({ roomId: 'r1', start: '10:00' }),
-    );
+    expect(onBook).toHaveBeenCalledWith(expect.objectContaining({ roomId: 'r1', start: '10:00' }));
   });
 
   it('shows a friendly error with retry when the API fails', async () => {
@@ -163,7 +161,10 @@ describe('BookingForm', () => {
     vi.mocked(api.createBooking).mockResolvedValue(booking());
     const onBooked = vi.fn();
     renderInProviders(
-      <BookingForm prefill={{ roomId: 'r1', date: '2026-09-01', start: '10:00' }} onBooked={onBooked} />,
+      <BookingForm
+        prefill={{ roomId: 'r1', date: '2026-09-01', start: '10:00' }}
+        onBooked={onBooked}
+      />,
     );
 
     const roomSelect = await screen.findByLabelText('Room');
@@ -190,13 +191,14 @@ describe('BookingForm', () => {
       new ApiError(422, { code: 'RULE_VIOLATION', message: 'Bookings may last at most 4 hours' }),
     );
     renderInProviders(
-      <BookingForm prefill={{ roomId: 'r1', date: '2026-09-01', start: '09:00' }} onBooked={vi.fn()} />,
+      <BookingForm
+        prefill={{ roomId: 'r1', date: '2026-09-01', start: '09:00' }}
+        onBooked={vi.fn()}
+      />,
     );
     await userEvent.type(await screen.findByLabelText('Title'), 'Too long');
     await userEvent.click(screen.getByRole('button', { name: 'Book room' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Bookings may last at most 4 hours',
-    );
+    expect(await screen.findByRole('alert')).toHaveTextContent('Bookings may last at most 4 hours');
   });
 });
 
@@ -236,7 +238,9 @@ describe('MyBookings', () => {
 describe('AdminRooms', () => {
   it('blocks non-admin users with a notice', async () => {
     renderInProviders(<AdminRooms />);
-    expect(await screen.findByText('⚠ Admin access is required to manage rooms.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('⚠ Admin access is required to manage rooms.'),
+    ).toBeInTheDocument();
     expect(api.listRooms).not.toHaveBeenCalled();
   });
 

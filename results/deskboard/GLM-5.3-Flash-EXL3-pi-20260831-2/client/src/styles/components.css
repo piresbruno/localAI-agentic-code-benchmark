@@ -13,7 +13,9 @@
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 .btn:disabled {
   opacity: 0.55;

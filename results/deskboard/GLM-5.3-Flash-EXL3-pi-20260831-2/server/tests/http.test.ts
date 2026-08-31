@@ -42,7 +42,8 @@ async function employeeToken(email = 'dana@deskboard.local'): Promise<string> {
   return res.body.token as string;
 }
 
-const authed = (token: string) => request(app).get('/api/rooms').set('Authorization', `Bearer ${token}`);
+const authed = (token: string) =>
+  request(app).get('/api/rooms').set('Authorization', `Bearer ${token}`);
 const firstRoom = async (token: string): Promise<Room> => {
   const res = await authed(token);
   return res.body[0] as Room;
@@ -66,9 +67,11 @@ describe('GET /health', () => {
 
 describe('POST /api/auth/register', () => {
   it('creates an employee and returns a JWT', async () => {
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({ name: 'Dana Employee', email: 'dana@deskboard.local', password: 'long-enough-password' });
+    const res = await request(app).post('/api/auth/register').send({
+      name: 'Dana Employee',
+      email: 'dana@deskboard.local',
+      password: 'long-enough-password',
+    });
     expect(res.status).toBe(201);
     expect(res.body.user.role).toBe('employee');
     expect(res.body.token).toBeDefined();
@@ -217,8 +220,11 @@ describe('/api/rooms', () => {
       ).status,
     ).toBe(403);
     expect(
-      (await request(app).delete(`/api/rooms/${room.id}`).set('Authorization', `Bearer ${employee}`))
-        .status,
+      (
+        await request(app)
+          .delete(`/api/rooms/${room.id}`)
+          .set('Authorization', `Bearer ${employee}`)
+      ).status,
     ).toBe(403);
   });
 });
@@ -242,7 +248,9 @@ describe('GET /api/rooms/:id/availability', () => {
       available: false,
       title: 'Standup',
     });
-    expect(res.body.slots.find((s: { start: string }) => s.start === '10:00')?.available).toBe(true);
+    expect(res.body.slots.find((s: { start: string }) => s.start === '10:00')?.available).toBe(
+      true,
+    );
   });
 
   it('validates the date parameter (400) and unknown rooms (404)', async () => {
@@ -269,7 +277,13 @@ describe('/api/bookings', () => {
     const created = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${token}`)
-      .send({ roomId: room.id, title: 'Design review', start: iso(1, 14), end: iso(1, 15), attendees: 5 });
+      .send({
+        roomId: room.id,
+        title: 'Design review',
+        start: iso(1, 14),
+        end: iso(1, 15),
+        attendees: 5,
+      });
     expect(created.status).toBe(201);
     const booking = created.body as Booking;
     expect(booking.roomName).toBe(room.name);
@@ -305,7 +319,13 @@ describe('/api/bookings', () => {
     const res = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${token}`)
-      .send({ roomId: room.id, title: 'All hands', start: iso(1, 9), end: iso(1, 10), attendees: 9 });
+      .send({
+        roomId: room.id,
+        title: 'All hands',
+        start: iso(1, 9),
+        end: iso(1, 10),
+        attendees: 9,
+      });
     expect(res.status).toBe(422);
     expectErrorShape(res.body, 'RULE_VIOLATION');
   });
@@ -316,7 +336,13 @@ describe('/api/bookings', () => {
     const weekend = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${token}`)
-      .send({ roomId: room.id, title: 'Weekend', start: iso(5, 10), end: iso(5, 11), attendees: 2 });
+      .send({
+        roomId: room.id,
+        title: 'Weekend',
+        start: iso(5, 10),
+        end: iso(5, 11),
+        attendees: 2,
+      });
     expect(weekend.status).toBe(422);
     const late = await request(app)
       .post('/api/bookings')
@@ -343,7 +369,13 @@ describe('/api/bookings', () => {
     const created = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${organizer}`)
-      .send({ roomId: room.id, title: 'To cancel', start: iso(1, 12), end: iso(1, 13), attendees: 2 });
+      .send({
+        roomId: room.id,
+        title: 'To cancel',
+        start: iso(1, 12),
+        end: iso(1, 13),
+        attendees: 2,
+      });
 
     const stranger = await employeeToken('someone-else@deskboard.local');
     const forbidden = await request(app)
@@ -366,8 +398,11 @@ describe('/api/bookings', () => {
     expect(ok.body.status).toBe('cancelled');
 
     expect(
-      (await request(app).delete('/api/bookings/missing').set('Authorization', `Bearer ${organizer}`))
-        .status,
+      (
+        await request(app)
+          .delete('/api/bookings/missing')
+          .set('Authorization', `Bearer ${organizer}`)
+      ).status,
     ).toBe(404);
   });
 
@@ -377,7 +412,13 @@ describe('/api/bookings', () => {
     const created = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${organizer}`)
-      .send({ roomId: room.id, title: 'Admin cancels', start: iso(1, 9), end: iso(1, 10), attendees: 2 });
+      .send({
+        roomId: room.id,
+        title: 'Admin cancels',
+        start: iso(1, 9),
+        end: iso(1, 10),
+        attendees: 2,
+      });
     now = new Date(2026, 8, 1, 16, 0); // long after start
     const admin = await adminToken();
     const res = await request(app)

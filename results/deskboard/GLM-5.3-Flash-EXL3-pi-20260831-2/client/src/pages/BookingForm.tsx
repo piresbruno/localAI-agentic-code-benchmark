@@ -18,10 +18,12 @@ export function BookingForm({
   onBooked: () => void;
 }) {
   const showToast = useToast();
-  const { data: rooms, loading: roomsLoading, error: roomsError, retry } = useAsync(
-    () => api.listRooms(),
-    [],
-  );
+  const {
+    data: rooms,
+    loading: roomsLoading,
+    error: roomsError,
+    retry,
+  } = useAsync(() => api.listRooms(), []);
 
   const [roomId, setRoomId] = useState(prefill?.roomId ?? '');
   const [title, setTitle] = useState('');

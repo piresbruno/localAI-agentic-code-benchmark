@@ -1,9 +1,6 @@
 import { ERROR_CODES, Room } from '@deskboard/shared';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  MemoryBookingRepository,
-  MemoryRoomRepository,
-} from '../src/repositories/memory';
+import { MemoryBookingRepository, MemoryRoomRepository } from '../src/repositories/memory';
 import { StoredBooking } from '../src/repositories/types';
 import { AppError } from '../src/services/errors';
 import { BookingService, CreateBookingCommand } from '../src/services/bookingService';
@@ -69,11 +66,7 @@ beforeEach(async () => {
   service = new BookingService(bookings, rooms, clock, ids);
 });
 
-const expectError = (
-  promise: Promise<unknown>,
-  code: string,
-  status: number,
-): Promise<void> =>
+const expectError = (promise: Promise<unknown>, code: string, status: number): Promise<void> =>
   promise.then(
     () => Promise.reject(new Error('expected the call to fail')),
     (error: unknown) => {
@@ -140,10 +133,7 @@ describe('BookingService.create', () => {
   });
 
   it('accepts boundary bookings: 08:00 start, 19:00 end, exactly 4 hours', async () => {
-    const created = await service.create(
-      'user-1',
-      cmd({ start: iso(1, 15), end: iso(1, 19) }),
-    );
+    const created = await service.create('user-1', cmd({ start: iso(1, 15), end: iso(1, 19) }));
     expect(created.status).toBe('confirmed');
   });
 
@@ -158,10 +148,7 @@ describe('BookingService.create', () => {
 
   it('allows back-to-back bookings (adjacent slots do not overlap)', async () => {
     await seedBooking({ start: new Date(2026, 8, 1, 9, 0), end: new Date(2026, 8, 1, 10, 0) });
-    const created = await service.create(
-      'user-2',
-      cmd({ start: iso(1, 10), end: iso(1, 11) }),
-    );
+    const created = await service.create('user-2', cmd({ start: iso(1, 10), end: iso(1, 11) }));
     expect(created.status).toBe('confirmed');
   });
 
@@ -201,11 +188,7 @@ describe('BookingService.create', () => {
 
   it('rejects_bookings_for_inactive_rooms with a 409', async () => {
     await rooms.update({ ...room, active: false });
-    await expectError(
-      service.create('user-1', cmd()),
-      ERROR_CODES.ROOM_INACTIVE,
-      409,
-    );
+    await expectError(service.create('user-1', cmd()), ERROR_CODES.ROOM_INACTIVE, 409);
   });
 
   it('rejects bookings for unknown rooms with a 404', async () => {
@@ -259,11 +242,7 @@ describe('BookingService.cancel — enforces_cancellation_window', () => {
 
   it('forbids a non-organizer employee from cancelling with a 403', async () => {
     const seeded = await seedBooking();
-    await expectError(
-      service.cancel('user-2', 'employee', seeded.id),
-      ERROR_CODES.FORBIDDEN,
-      403,
-    );
+    await expectError(service.cancel('user-2', 'employee', seeded.id), ERROR_CODES.FORBIDDEN, 403);
   });
 
   it('rejects cancelling an already-cancelled booking with a 422', async () => {
@@ -277,11 +256,7 @@ describe('BookingService.cancel — enforces_cancellation_window', () => {
   });
 
   it('rejects cancelling an unknown booking with a 404', async () => {
-    await expectError(
-      service.cancel('user-1', 'employee', 'missing'),
-      ERROR_CODES.NOT_FOUND,
-      404,
-    );
+    await expectError(service.cancel('user-1', 'employee', 'missing'), ERROR_CODES.NOT_FOUND, 404);
   });
 
   it('keeps cancellations working for bookings on a deactivated room', async () => {

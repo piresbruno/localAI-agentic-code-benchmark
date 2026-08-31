@@ -47,7 +47,8 @@ export function Login() {
     <section className="auth-card" aria-labelledby="auth-heading">
       <h1 id="auth-heading">{mode === 'login' ? 'Sign in to DeskBoard' : 'Create your account'}</h1>
       <p className="muted">
-        Book meeting rooms for your team. {mode === 'login' ? 'No account yet?' : 'Already registered?'}{' '}
+        Book meeting rooms for your team.{' '}
+        {mode === 'login' ? 'No account yet?' : 'Already registered?'}{' '}
         <button
           type="button"
           className="link"

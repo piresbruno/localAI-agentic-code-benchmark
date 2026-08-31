@@ -11,7 +11,11 @@ export const DURATION_OPTIONS = [30, 60, 90, 120];
 /** Bookable start times: every 30 min from 08:00 to 18:30 (last slot ends 19:00). */
 export function startTimeOptions(): string[] {
   const out: string[] = [];
-  for (let minutes = BUSINESS.OPEN_HOUR * 60; minutes <= BUSINESS.CLOSE_HOUR * 60 - 30; minutes += 30) {
+  for (
+    let minutes = BUSINESS.OPEN_HOUR * 60;
+    minutes <= BUSINESS.CLOSE_HOUR * 60 - 30;
+    minutes += 30
+  ) {
     out.push(hourLabel(Math.floor(minutes / 60), minutes % 60));
   }
   return out;
@@ -71,7 +75,10 @@ export function slotsFromAvailability(slots: GridSlot[] | undefined): GridSlot[]
 }
 
 /** Assemble the RoomGrid matrix: active rooms × hourly slots. */
-export function buildRoomRows(rooms: Room[], grids: { roomId: string; slots: GridSlot[] }[]): RoomRow[] {
+export function buildRoomRows(
+  rooms: Room[],
+  grids: { roomId: string; slots: GridSlot[] }[],
+): RoomRow[] {
   const byRoom = new Map(grids.map((grid) => [grid.roomId, grid.slots]));
   return rooms
     .filter((room) => room.active)
@@ -101,9 +108,7 @@ export function cancellationBlocker(
   if (booking.status === 'cancelled') return 'Already cancelled';
   if (isAdmin) return null;
   const deadline = new Date(booking.start).getTime() - BUSINESS.CANCEL_WINDOW_MIN * 60_000;
-  return now.getTime() > deadline
-    ? 'Cancellations close 1 hour before the start'
-    : null;
+  return now.getTime() > deadline ? 'Cancellations close 1 hour before the start' : null;
 }
 
 /** 'Mon, Sep 1 · 09:00–10:00' for list rendering (locale-stable, en-US). */

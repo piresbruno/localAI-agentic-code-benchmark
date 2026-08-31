@@ -99,7 +99,9 @@ describe('Modal', () => {
     await userEvent.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalledTimes(1);
 
-    fireEvent.mouseDown(screen.getByTestId('modal-backdrop'), { target: screen.getByTestId('modal-backdrop') });
+    fireEvent.mouseDown(screen.getByTestId('modal-backdrop'), {
+      target: screen.getByTestId('modal-backdrop'),
+    });
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 

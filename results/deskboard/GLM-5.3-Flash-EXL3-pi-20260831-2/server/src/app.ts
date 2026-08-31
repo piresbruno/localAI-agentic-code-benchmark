@@ -54,7 +54,9 @@ export async function createApp(config: AppConfig, overrides: AppOverrides = {})
 
   app.use('/api', buildApiRouter(config.jwtSecret, users, services));
   app.use('/api', (_req: Request, res: Response) =>
-    res.status(404).json({ error: { code: ERROR_CODES.NOT_FOUND, message: 'Unknown API endpoint' } }),
+    res
+      .status(404)
+      .json({ error: { code: ERROR_CODES.NOT_FOUND, message: 'Unknown API endpoint' } }),
   );
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));

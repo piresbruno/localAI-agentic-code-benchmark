@@ -26,11 +26,11 @@
 
   /* ---- typography scale (4+ sizes, consistent line-heights) ---- */
   --font-family-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --font-size-xs: 0.75rem;   /* 12px */
-  --font-size-sm: 0.875rem;  /* 14px */
-  --font-size-md: 1rem;      /* 16px */
-  --font-size-lg: 1.25rem;   /* 20px */
-  --font-size-xl: 1.75rem;   /* 28px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem; /* 16px */
+  --font-size-lg: 1.25rem; /* 20px */
+  --font-size-xl: 1.75rem; /* 28px */
   --line-height-tight: 1.2;
   --line-height-snug: 1.35;
   --line-height-normal: 1.5;

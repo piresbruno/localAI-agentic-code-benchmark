@@ -45,7 +45,10 @@ export const openApiSpec = {
             properties: {
               code: { type: 'string', example: 'ROOM_CONFLICT' },
               message: { type: 'string' },
-              details: { type: 'object', additionalProperties: { type: 'array', items: { type: 'string' } } },
+              details: {
+                type: 'object',
+                additionalProperties: { type: 'array', items: { type: 'string' } },
+              },
             },
             required: ['code', 'message'],
           },
@@ -71,7 +74,10 @@ export const openApiSpec = {
           name: { type: 'string' },
           capacity: { type: 'integer', minimum: 1, maximum: 100 },
           floor: { type: 'integer', minimum: 1, maximum: 30 },
-          features: { type: 'array', items: { type: 'string', enum: ['screen', 'whiteboard', 'videoconf', 'phone'] } },
+          features: {
+            type: 'array',
+            items: { type: 'string', enum: ['screen', 'whiteboard', 'videoconf', 'phone'] },
+          },
           active: { type: 'boolean' },
         },
       },
@@ -150,7 +156,9 @@ export const openApiSpec = {
         responses: {
           '201': {
             description: 'Account created; returns a JWT (12h expiry)',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } } },
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } },
+            },
           },
           '400': { $ref: '#/components/responses/ValidationError' },
           '409': {
@@ -179,7 +187,9 @@ export const openApiSpec = {
         responses: {
           '200': {
             description: 'JWT issued',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } } },
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/AuthResponse' } },
+            },
           },
           '401': {
             description: 'Invalid credentials',
@@ -194,7 +204,10 @@ export const openApiSpec = {
         tags: ['Auth'],
         security: [{ bearerAuth: [] }],
         responses: {
-          '200': { description: 'The user', content: { 'application/json': { schema: { $ref: '#/components/schemas/User' } } } },
+          '200': {
+            description: 'The user',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/User' } } },
+          },
           '401': { $ref: '#/components/responses/Unauthenticated' },
         },
       },
@@ -207,7 +220,11 @@ export const openApiSpec = {
         responses: {
           '200': {
             description: 'Room list',
-            content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Room' } } } },
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { $ref: '#/components/schemas/Room' } },
+              },
+            },
           },
           '401': { $ref: '#/components/responses/Unauthenticated' },
         },
@@ -216,9 +233,15 @@ export const openApiSpec = {
         summary: 'Create a room (admin only)',
         tags: ['Rooms'],
         security: [{ bearerAuth: [] }],
-        requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+        },
         responses: {
-          '201': { description: 'Room created', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          '201': {
+            description: 'Room created',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           '400': { $ref: '#/components/responses/ValidationError' },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '403': { $ref: '#/components/responses/Forbidden' },
@@ -235,23 +258,36 @@ export const openApiSpec = {
         tags: ['Rooms'],
         security: [{ bearerAuth: [] }],
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+        },
         responses: {
-          '200': { description: 'Room updated', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          '200': {
+            description: 'Room updated',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '403': { $ref: '#/components/responses/Forbidden' },
           '404': { $ref: '#/components/responses/NotFound' },
-          '409': { description: 'Duplicate room name', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '409': {
+            description: 'Duplicate room name',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+          },
         },
       },
       delete: {
         summary: 'Soft-deactivate a room (admin only)',
-        description: 'The room stays listed but rejects new bookings. Existing bookings and cancellations are unaffected.',
+        description:
+          'The room stays listed but rejects new bookings. Existing bookings and cancellations are unaffected.',
         tags: ['Rooms'],
         security: [{ bearerAuth: [] }],
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: {
-          '200': { description: 'Deactivated room', content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } } },
+          '200': {
+            description: 'Deactivated room',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Room' } } },
+          },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '403': { $ref: '#/components/responses/Forbidden' },
           '404': { $ref: '#/components/responses/NotFound' },
@@ -265,10 +301,20 @@ export const openApiSpec = {
         security: [{ bearerAuth: [] }],
         parameters: [
           { name: 'id', in: 'path', required: true, schema: { type: 'string' } },
-          { name: 'date', in: 'query', required: true, schema: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' } },
+          {
+            name: 'date',
+            in: 'query',
+            required: true,
+            schema: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' },
+          },
         ],
         responses: {
-          '200': { description: 'Availability grid', content: { 'application/json': { schema: { $ref: '#/components/schemas/Availability' } } } },
+          '200': {
+            description: 'Availability grid',
+            content: {
+              'application/json': { schema: { $ref: '#/components/schemas/Availability' } },
+            },
+          },
           '400': { $ref: '#/components/responses/ValidationError' },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '404': { $ref: '#/components/responses/NotFound' },
@@ -278,7 +324,8 @@ export const openApiSpec = {
     '/api/bookings': {
       post: {
         summary: 'Create a booking',
-        description: 'Enforces business hours (Mon–Fri 08:00–19:00 local, ≤ 4h), room conflicts (409), capacity (422) and room activity (409).',
+        description:
+          'Enforces business hours (Mon–Fri 08:00–19:00 local, ≤ 4h), room conflicts (409), capacity (422) and room activity (409).',
         tags: ['Bookings'],
         security: [{ bearerAuth: [] }],
         requestBody: {
@@ -300,12 +347,21 @@ export const openApiSpec = {
           },
         },
         responses: {
-          '201': { description: 'Booking created', content: { 'application/json': { schema: { $ref: '#/components/schemas/Booking' } } } },
+          '201': {
+            description: 'Booking created',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Booking' } } },
+          },
           '400': { $ref: '#/components/responses/ValidationError' },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '404': { $ref: '#/components/responses/NotFound' },
-          '409': { description: 'ROOM_CONFLICT or ROOM_INACTIVE', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
-          '422': { description: 'Business-rule violation', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '409': {
+            description: 'ROOM_CONFLICT or ROOM_INACTIVE',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+          },
+          '422': {
+            description: 'Business-rule violation',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+          },
         },
       },
     },
@@ -317,7 +373,11 @@ export const openApiSpec = {
         responses: {
           '200': {
             description: 'Own bookings, oldest first',
-            content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Booking' } } } },
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { $ref: '#/components/schemas/Booking' } },
+              },
+            },
           },
           '401': { $ref: '#/components/responses/Unauthenticated' },
         },
@@ -326,16 +386,23 @@ export const openApiSpec = {
     '/api/bookings/{id}': {
       delete: {
         summary: 'Cancel a booking',
-        description: 'Organizer may cancel up to 1h before start; admin anytime; others never (403).',
+        description:
+          'Organizer may cancel up to 1h before start; admin anytime; others never (403).',
         tags: ['Bookings'],
         security: [{ bearerAuth: [] }],
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: {
-          '200': { description: 'Cancelled booking', content: { 'application/json': { schema: { $ref: '#/components/schemas/Booking' } } } },
+          '200': {
+            description: 'Cancelled booking',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Booking' } } },
+          },
           '401': { $ref: '#/components/responses/Unauthenticated' },
           '403': { $ref: '#/components/responses/Forbidden' },
           '404': { $ref: '#/components/responses/NotFound' },
-          '422': { description: 'Cancellation window passed or already cancelled', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '422': {
+            description: 'Cancellation window passed or already cancelled',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+          },
         },
       },
     },

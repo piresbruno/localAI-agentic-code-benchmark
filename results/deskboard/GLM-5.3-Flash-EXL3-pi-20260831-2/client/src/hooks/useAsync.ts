@@ -34,8 +34,7 @@ export function useAsync<T>(fetcher: () => Promise<T>, deps: unknown[]): AsyncSt
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, attempt]);
+  }, [...deps, attempt]); // deps are caller-controlled; attempt powers retry
 
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
   return { data, loading, error, retry };

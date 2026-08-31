@@ -41,16 +41,18 @@ describe('RoomService.create', () => {
   });
 
   it('rejects_duplicate_room_name on create (case-insensitive)', async () => {
-    await expect(
-      service.create(input({ name: 'hudson' })),
-    ).rejects.toMatchObject({ code: ERROR_CODES.DUPLICATE_ROOM_NAME, status: 409 } satisfies Partial<AppError>);
+    await expect(service.create(input({ name: 'hudson' }))).rejects.toMatchObject({
+      code: ERROR_CODES.DUPLICATE_ROOM_NAME,
+      status: 409,
+    } satisfies Partial<AppError>);
   });
 
   it('rejects_duplicate_room_name on update when another room owns the name', async () => {
     await service.create(input());
-    await expect(
-      service.update('room-1', input({ name: 'ONTARIO' })),
-    ).rejects.toMatchObject({ code: ERROR_CODES.DUPLICATE_ROOM_NAME, status: 409 });
+    await expect(service.update('room-1', input({ name: 'ONTARIO' }))).rejects.toMatchObject({
+      code: ERROR_CODES.DUPLICATE_ROOM_NAME,
+      status: 409,
+    });
   });
 
   it('allows a room to keep its own name on update', async () => {

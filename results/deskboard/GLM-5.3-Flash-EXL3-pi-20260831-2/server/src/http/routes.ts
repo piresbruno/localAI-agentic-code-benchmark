@@ -28,7 +28,11 @@ function param(req: { params: Record<string, string | string[]> }, name: string)
  * HTTP boundary: parse input, delegate to services, format output.
  * No business rules live here (they live in the services).
  */
-export function buildApiRouter(secret: string, users: UserRepository, services: ApiServices): Router {
+export function buildApiRouter(
+  secret: string,
+  users: UserRepository,
+  services: ApiServices,
+): Router {
   const router = Router();
   const auth = requireAuth(secret, users);
 

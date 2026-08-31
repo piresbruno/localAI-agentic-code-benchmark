@@ -7,8 +7,7 @@ export interface ModalProps {
   children: ReactNode;
 }
 
-const FOCUSABLE =
-  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 /**
  * Accessible dialog: role="dialog" + aria-modal, Esc to close, backdrop click

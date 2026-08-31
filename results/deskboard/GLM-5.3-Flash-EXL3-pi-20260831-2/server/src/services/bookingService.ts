@@ -28,7 +28,10 @@ export class BookingService {
     const room = await this.rooms.findById(cmd.roomId);
     if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found');
     if (!room.active) {
-      throw new AppError(ERROR_CODES.ROOM_INACTIVE, 'This room is deactivated and cannot be booked');
+      throw new AppError(
+        ERROR_CODES.ROOM_INACTIVE,
+        'This room is deactivated and cannot be booked',
+      );
     }
     const start = this.parseTime(cmd.start, 'start');
     const end = this.parseTime(cmd.end, 'end');
@@ -62,7 +65,10 @@ export class BookingService {
     const booking = await this.bookings.findById(bookingId);
     if (!booking) throw new AppError(ERROR_CODES.NOT_FOUND, 'Booking not found');
     if (role !== 'admin' && booking.organizerId !== userId) {
-      throw new AppError(ERROR_CODES.FORBIDDEN, 'Only the organizer or an admin can cancel a booking');
+      throw new AppError(
+        ERROR_CODES.FORBIDDEN,
+        'Only the organizer or an admin can cancel a booking',
+      );
     }
     if (booking.status === 'cancelled') {
       throw new AppError(ERROR_CODES.RULE_VIOLATION, 'Booking is already cancelled');
@@ -150,7 +156,10 @@ export class BookingService {
       (b) => b.status !== 'cancelled' && start < b.end && end > b.start,
     );
     if (clash) {
-      throw new AppError(ERROR_CODES.ROOM_CONFLICT, 'Room is already booked for the requested time');
+      throw new AppError(
+        ERROR_CODES.ROOM_CONFLICT,
+        'Room is already booked for the requested time',
+      );
     }
   }
 
