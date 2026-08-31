@@ -1,0 +1,16 @@
+{
+  "name": "@deskboard/shared",
+  "version": "2.0.0",
+  "description": "DTOs, domain types and validation schemas shared by server and client",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
