@@ -26,7 +26,10 @@ export const setToken = (token: string): void => localStorage.setItem(TOKEN_KEY,
 export const clearToken = (): void => localStorage.removeItem(TOKEN_KEY);
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const headers: Record<string, string> = { 'content-type': 'application/json', ...(init.headers ?? {}) };
+  const headers: Record<string, string> = {
+    'content-type': 'application/json',
+    ...Object.fromEntries(new Headers(init.headers).entries()),
+  };
   const token = getToken();
   if (token) headers.authorization = `Bearer ${token}`;
   let res: Response;
