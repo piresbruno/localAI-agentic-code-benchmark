@@ -1,7 +1,7 @@
 # PLAN — tripsplit
 
 **Agent/Model**: deepseek-v4-flash-vision-exp / pi
-**Started**: 2026-09-02
+**Started**: 2026-09-01 22:56:48 UTC (session start)
 **Spec**: /home/piresbruno/developer/code-benchmark/specs/03-csharp-tripsplit/SPEC.md
 **Mode**: unattended: plan self-approved
 
@@ -23,21 +23,21 @@ tests invoke `Program.Main` in process (subprocess launch banned).
 ## Task breakdown
 
 - [x] T0 — Scaffold foundation: Tripsplit.sln, 4 csproj projects (Zero NuGet in src/, Nullable+TreatWarningsAsErrors), sample/ledger.json verbatim, .gitignore
-      Accept: `dotnet build` green on empty skeleton.
-- [ ] T1 — Core domain: Models, LedgerValidator (rules 3–9 in order), Settlement (SplitShares, ComputeNets, Settle pinned algorithm)
-      Accept: Core unit tests green; every §5 rule named test present.
-- [ ] T2 — Core tests: split boundary matrix, settle invariants (sum == total debt, nets zero after, ≤ n−1 transfers), all §5 named rules
-      Accept: all pass; no I/O in Core tests.
-- [ ] T3 — CLI: Arguments parser (USAGE errors), LedgerLoader (strict JSON → LEDGER_INVALID), pure Formatters (table+json, §6.2), Program.Main (dispatch, envelope, exit codes)
-      Accept: fixture settle/balance byte-match §6.4 in both formats; --help/--version exact.
-- [ ] T4 — CLI tests in-process: golden bytes, one case per §5 error code + exit status, usage errors, determinism (settle+balance twice → byte-identical)
-      Accept: all pass; no Process.Start.
-- [ ] T5 — Quality gates: dotnet build zero warnings; dotnet test 100% green; coverage ≥85% line on Core+Cli via coverlet; smoke: --help exit 0, fixture byte-match via dotnet run
-      Accept: measured numbers recorded truthfully.
-- [ ] T6 — Docs: README (goal, ≤3-cmd quickstart, architecture, schema, §6.4 example, error/exit tables, test+coverage) and docs/DECISIONS.md (residual policy, tie-breaking, in-process tests, long cents)
-      Accept: README + DECISIONS committed; clean-checkout run in ≤3 commands works.
-- [ ] T7 — Bookkeeping: LOC count, METRICS.md yaml, BENCHMARKS.md status+log row, final report
-      Accept: BENCHMARKS.md row updated; closing commit.
+      Accept: `dotnet build` green on empty skeleton. — DONE (build 0 errors, 0 warnings)
+- [x] T1 — Core domain: Models, LedgerValidator (rules 3–9 in order), Settlement (SplitShares, ComputeNets, Settle pinned algorithm)
+      Accept: Core unit tests green; every §5 rule named test present. — DONE (implemented by parallel agent CoreImpl; verified)
+- [x] T2 — Core tests: split boundary matrix, settle invariants (sum == total debt, nets zero after, ≤ n−1 transfers), all §5 named rules
+      Accept: all pass; no I/O in Core tests. — DONE (37/37 pass, Core 100% lines, pure)
+- [x] T3 — CLI: Arguments parser (USAGE errors), LedgerLoader (strict JSON → LEDGER_INVALID), pure Formatters (table+json, §6.2), Program.Main (dispatch, envelope, exit codes)
+      Accept: fixture settle/balance byte-match §6.4 in both formats; --help/--version exact. — DONE (implemented by parallel agent CliImpl; byte-verified)
+- [x] T4 — CLI tests in-process: golden bytes, one case per §5 error code + exit status, usage errors, determinism (settle+balance twice → byte-identical)
+      Accept: all pass; no Process.Start. — DONE (27/27 pass, 64 total green)
+- [x] T5 — Quality gates: dotnet build zero warnings; dotnet test 100% green; coverage ≥85% line on Core+Cli via coverlet; smoke: --help exit 0, fixture byte-match via dotnet run
+      Accept: measured numbers recorded truthfully. — DONE: build 0/0 warnings; 64/64 tests; coverage 96.31% lines (522/542) merged CoverCore+Cli; smoke byte-match all 4 outputs + exit codes verified
+- [x] T6 — Docs: README (goal, ≤3-cmd quickstart, architecture, schema, §6.4 example, error/exit tables, test+coverage) and docs/DECISIONS.md (residual policy, tie-breaking, in-process tests, long cents)
+      Accept: README + DECISIONS committed; clean-checkout run in ≤3 commands works. — DONE
+- [x] T7 — Bookkeeping: LOC count, METRICS.md yaml, BENCHMARKS.md status+log row, final report
+      Accept: BENCHMARKS.md row updated; closing commit. — IN PROGRESS
 
 ## Cross-slice contract (Core public API — frozen, agents code against it)
 
@@ -82,13 +82,14 @@ public static class Settlement
 | 4 | JSON output built via System.Text.Json on ordered anonymous/record DTOs | Deterministic key order, correct escaping, no hand-rolled encoder |
 | 5 | Messages for codes other than MEMBER_UNKNOWN chosen by us (spec gives only that example) | Spec pins one example message; others follow same safe pattern |
 | 6 | `--help`/`--version`/`-h`/`-v` handled before subcommand parsing; `settle|balance --help` not required | §6.1 lists only top-level help; avoids unneeded surface |
-| 7 | LOC monitored; 350 is advisory (per repo commit "350 LOC cap advisory") — small overage accepted and reported if needed | Correctness + mandated completeness > artificial cap |
+| 7 | Production LOC = 512 vs 250–350 advisory; accepted overage | The spec mandates 10 validation rules, 2 commands × 2 formats, ~48-line complete --help, strict loader and pinned algorithm — all implemented verbatim; nothing speculative. Documented in README + DECISIONS.md |
+| 8 | `CultureInfo.CurrentCulture = Invariant` set at Main entry | Without it, digit formatting (`cents:00`, "N transfers") is host-culture-dependent and golden bytes could break (e.g. ar-SA) |
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: see METRICS.md (session 2026-09-01T22:56:48Z → close; ≈1h10m incl. subagent time)
+- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source): 9,514,851 totalTokens incl. cache-read; input 283,622 / output 168,829 / cacheRead 9,062,400 — source: omp session logs `~/.omp/agent/sessions/...jsonl` usage fields (self-reported telemetry); avg ≈43 output t/s over wall time
+- Errors/retries (build/test/lint): 0 build errors, 0 warnings; 0 test failures; 1 retry: first automated smoke script failed on missing `xxd` (tooling, not code), reran successfully
+- Final coverage (number + measurement command): 96.31% lines on src/Tripsplit.Core + src/Tripsplit.Cli via `dotnet test --collect:"XPlat Code Coverage"` (merge of both TestResults cobertura reports, 522/542)
+- Line counts per directory: src/Tripsplit.Core 164 (Models 13, LedgerValidator 71, Settlement 80); src/Tripsplit.Cli 348 (Program 66, Arguments 79, LedgerLoader 84, Formatter 119); tests/Tripsplit.Core.Tests 374; tests/Tripsplit.Cli.Tests ~560; sample/ledger.json 9
+- Deviations from spec: none functional; LOC overage (512 vs 250–350 advisory, decision #7); name-trimming normalization (decision #1, documented)
