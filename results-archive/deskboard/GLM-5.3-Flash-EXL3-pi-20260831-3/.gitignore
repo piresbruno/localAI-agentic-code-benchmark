@@ -1,8 +1,0 @@
-node_modules/
-dist/
-coverage/
-*.tsbuildinfo
-.env
-client/dist/
-server/dist/
-shared/dist/
