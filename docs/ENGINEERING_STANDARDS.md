@@ -39,7 +39,7 @@ These standards apply to **every** benchmark project, in addition to each spec's
 - Every test name states behavior: `rejects_booking_when_room_already_booked` — not `test1`.
 - Cover the **edge cases named in the spec** explicitly; graders look for them by name.
 - No test may depend on execution order, wall-clock time (inject a clock), or network.
-- Coverage gate: **≥ 75% lines** on the scope defined per spec. Gaming coverage with trivial assertions (e.g., `expect(true)`) is a rubric violation, not a pass.
+- Coverage gate: the **per-spec gate** — ≥ 75% lines unless the spec's probe tier raises it — on the scope defined per spec. Gaming coverage with trivial assertions (e.g., `expect(true)`) is a rubric violation, not a pass.
 
 ## 6. Asynchrony & I/O
 

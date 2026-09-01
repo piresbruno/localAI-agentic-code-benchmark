@@ -21,7 +21,7 @@
 | G1 Sandboxed | ✅/❌ | |
 | G2 Clean checkout → run (≤ 3 cmds) | ✅/❌ | commands used: |
 | G3 All tests pass | ✅/❌ | N passed / N failed |
-| G4 Coverage ≥ 75% | ✅/❌ | number + command: |
+| G4 Coverage ≥ spec gate (75% full / 85% `tripsplit`) | ✅/❌ | number + command: |
 | G5 Architecture matches spec | ✅/❌ | modules reviewed: |
 | G6 No contamination | ✅/❌ | reads outside run dir checked: |
 
@@ -34,7 +34,7 @@
 | Code quality | ×2 | | | |
 | Testing quality | ×2 | | | |
 | Security & validation | ×1.5 | | | |
-| UI/UX & design system (all projects; depth per spec UI section) | ×1.5 | | | |
+| UI/UX & design system (all projects; depth per spec UI/CLI-UX section) | ×1.5 | | | |
 | Documentation | ×1 | | | |
 | Process discipline | ×0.5 | | | |
 | **Total** | | | **/135 → /100** | |
@@ -46,7 +46,7 @@ List the spec's named edge-case tests and whether they exist:
 - [ ] …
 - [ ] …
 
-## UI/UX & design system check (all projects — evidence for the ×1.5 category; depth per each spec's UI section)
+## UI/UX & design system check (deskboard / parkwise — evidence for the ×1.5 category; depth per each spec's UI section)
 
 | Check | Result | Evidence (path / observation) |
 |-------|--------|-------------------------------|
@@ -62,6 +62,19 @@ List the spec's named edge-case tests and whether they exist:
 | Design docs present and match implementation (deskboard `docs/DESIGN.md`; parkwise: UI rationale in `docs/DECISIONS.md`) | ✅/❌ | |
 
 UI/UX score: __ / 10
+
+## CLI/UX check (tripsplit — evidence for the ×1.5 category)
+
+| Check | Result | Evidence (path / observation) |
+|-------|--------|-------------------------------|
+| `--help` complete: subcommands, flags + defaults, exit codes, error envelope, ledger schema, worked example | ✅/❌ | |
+| Golden outputs byte-match spec §6.4 (settle + balance, table + JSON) | ✅/❌ | |
+| Stream discipline: data on stdout, errors on stderr (pipe test) | ✅/❌ | |
+| Determinism: byte-identical output across repeated runs | ✅/❌ | |
+| Every §5 error code reachable with correct exit code (0/1/2) | ✅/❌ | |
+| Piped-stable output: no ANSI codes, no culture-dependent formatting | ✅/❌ | |
+
+CLI/UX score: __ / 10
 
 ## Verdict
 

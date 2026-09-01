@@ -81,7 +81,7 @@ Hard fail gates (any one fails the whole run):
 1. Sandbox breach
 2. Does not build/run from clean checkout
 3. Any test failing
-4. Coverage < 75% (on the spec's scope)
+4. Coverage below the spec's gate (on the spec's scope)
 5. Architecture does not match the spec's Required Architecture section
 6. Contamination — the agent read anything outside its run directory beyond the three reference docs (spec, standards, plan template)
 

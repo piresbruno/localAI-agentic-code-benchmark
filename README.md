@@ -2,7 +2,7 @@
 
 A repeatable benchmark for evaluating AI coding agents on **real, useful software** in two languages: **TypeScript** and **C#**.
 
-Each benchmark project targets **600–1,000 lines of production code (hard cap 1,000)**, produces a **working, useful tool with a UI**, and is graded against the same pass/fail gates and the same engineering standards.
+Each benchmark project produces a **working, useful tool**, graded against the same pass/fail gates and the same engineering standards. Full projects target **600–1,000 lines of production code (hard cap 1,000)** and include a UI; the probe tier (`tripsplit`) targets **250–350 lines**, is CLI-only, and raises the coverage gate to 85%.
 
 This is a **git repository** — agents commit their work incrementally as they implement, and the commit history is part of what gets graded.
 
@@ -21,13 +21,14 @@ code-benchmark/
 ├── AGENTS.md                  ← the agent brief: detailed expectations & task (auto-loaded by harnesses)
 ├── PROMPT_TEMPLATE.md         ← the ONE repeatable prompt (parameterized per project)
 ├── PROCESS.md                 ← the repeatable per-project execution & grading process
-├── BENCHMARKS.md              ← the execution list (one project per language, ordered)
+├── BENCHMARKS.md              ← the execution list (ordered)
 ├── docs/
 │   ├── ENGINEERING_STANDARDS.md  ← cross-language code patterns & best practices (binding)
 │   └── RUBRIC.md                 ← scoring rubric + hard fail gates
 ├── specs/                     ← one self-contained spec per benchmark project
 │   ├── 01-typescript-deskboard/   (full-stack app, React UI)
-│   └── 02-csharp-parkwise/        (Web API + attendant console UI, agent-chosen tech)
+│   ├── 02-csharp-parkwise/        (Web API + attendant console UI, agent-chosen tech)
+│   └── 03-csharp-tripsplit/       (expense-settlement CLI, probe tier — 250–350 LOC)
 ├── templates/
 │   ├── task-template.md       ← plan file the agent must keep updated
 │   ├── metrics-template.md    ← per-run metrics: total tokens, avg t/s, wall time
@@ -50,12 +51,13 @@ An agent that can see a previous run's implementation will copy it. Therefore:
 3. **Contamination is a hard fail gate (G6)**: an agent may read nothing outside its run directory except the spec, `docs/ENGINEERING_STANDARDS.md`, and the plan template. Reading other runs' code, other specs, or git-history archaeology fails the run.
 4. The **permanent record** is the results log in `BENCHMARKS.md` + `results/RESULTS.md` — the report generator ranks archived runs too, so nothing is lost.
 
-## The two benchmark projects
+## The benchmark projects
 
 | # | ID | Language | Shape | UI | LOC target | Coverage gate |
 |---|-----|----------|-------|----|-----------|---------------|
 | 1 | `deskboard` | TypeScript (Node + React/Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 (hard cap 1,000) | ≥ 75% (server + shared) |
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 (hard cap 1,000) | ≥ 75% (Services + Api) |
+| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI) | — (CLI/UX) | 250–350 (hard cap 350) | ≥ 85% (Core + Cli) |
 
 Full details: **[BENCHMARKS.md](BENCHMARKS.md)** — this is the list to execute, in order.
 
@@ -95,7 +97,7 @@ A run **fails** unless ALL of the following are true:
 1. **Sandboxed** — no file/network/service dependencies outside the run directory.
 2. **Runs from clean checkout** — documented install → run in ≤ 3 commands, no manual seeding.
 3. **All tests pass.**
-4. **Line coverage ≥ 75%** (measured per the project spec).
+4. **Line coverage meets the spec's gate** — ≥ 75% for full projects, ≥ 85% for `tripsplit`.
 5. **Architecture matches the spec's Required Architecture section.**
 6. **No contamination** — the agent read nothing outside its run directory beyond the three reference docs.
 
@@ -120,4 +122,4 @@ Metrics are **not pass/fail gates** — they are the cost/speed comparison dimen
 
 ## Code patterns & best practices
 
-Every spec contains a **Required Architecture & Patterns** section. Cross-language expectations (error handling, validation, layering, testing pyramid, commit conventions, simplicity) are defined once in **[docs/ENGINEERING_STANDARDS.md](docs/ENGINEERING_STANDARDS.md)** and are **binding** for both projects. Graders must check them explicitly.
+Every spec contains a **Required Architecture & Patterns** section. Cross-language expectations (error handling, validation, layering, testing pyramid, commit conventions, simplicity) are defined once in **[docs/ENGINEERING_STANDARDS.md](docs/ENGINEERING_STANDARDS.md)** and are **binding** for all projects. Graders must check them explicitly.

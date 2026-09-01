@@ -87,7 +87,7 @@ At the end, print a summary containing:
 | `{SPEC_PATH}` | Absolute path to the project spec | `{REPO_ROOT}/specs/01-typescript-deskboard/SPEC.md` |
 | `{REPO_ROOT}` | Absolute path to this benchmark repo | `/home/piresbruno/developer/code-benchmark` |
 | `{RUN_DIR}` | Absolute path to the run directory | `{REPO_ROOT}/results/deskboard/claude-opus-4.6-claude-code-20260115` |
-| `{COVERAGE_GATE}` | Minimum line coverage | `75%` |
+| `{COVERAGE_GATE}` | Minimum line coverage | `75%` (full projects) / `85%` (`tripsplit`) |
 | `{BUILD_CHECK}` | Build command | see per-project row in BENCHMARKS.md |
 | `{TEST_CHECK}` | Test command | see per-project row in BENCHMARKS.md |
 | `{COVERAGE_CHECK}` | Coverage command | see per-project row in BENCHMARKS.md |

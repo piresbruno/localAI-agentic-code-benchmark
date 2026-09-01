@@ -13,7 +13,7 @@ You may have arrived in one of two places. **Detect your mode first:**
 
 Everything you need is discoverable. Execute exactly this sequence:
 
-1. **Read the execution list** `BENCHMARKS.md`. It contains one project per language (TypeScript `deskboard`, C# `parkwise`) with a Status column and a link to each spec.
+1. **Read the execution list** `BENCHMARKS.md`. It lists the projects (TypeScript `deskboard`, C# `parkwise`, and the C# CLI probe `tripsplit`) with a Status column and a link to each spec.
 2. **Pick the next project**: the first row whose Status is "⬜ not run". Decide **only from the Status column** — never inspect `results/` or other runs' code to make this decision (that is contamination, see §4.7; `new-run.sh` auto-version-bumps if a directory collides). If all rows are done, say so and stop.
 3. **Self-identify**: your model id (e.g. `claude-opus-4.6`, `gpt-5.3`, `deepseek-v4`) and your harness (e.g. `claude-code`, `pi`, `codex`). Be honest and precise — this identifies your run forever.
 4. **Scaffold the run**:
@@ -44,7 +44,7 @@ Reading those three is allowed and expected. Everything else at the repo root (o
 
 - **Working directory**: your run directory (`results/<project>/<model>-<harness>-<date>-<run-number>/`).
 - **Deliverable**: a complete, runnable project implementing the spec, plus updated plan, metrics, and commits.
-- **Only stop** when: all tests pass, ≥ 75% line coverage on the spec's scope, the project builds and runs from a clean checkout, docs are written, bookkeeping is done (§7), and you printed the final report (§6 Step 7).
+- **Only stop** when: all tests pass, the spec's coverage gate is met on the spec's scope, the project builds and runs from a clean checkout, docs are written, bookkeeping is done (§7), and you printed the final report (§6 Step 7).
 
 ## 4. Non-negotiable rules
 
@@ -91,7 +91,7 @@ Attended: present the plan summary and wait. Unattended: record "unattended: pla
 ### Step 5 — Quality gates (all mandatory before you claim done)
 - **Build**: zero errors (spec §Commands gives the command).
 - **Tests**: 100% pass, none skipped.
-- **Coverage**: ≥ 75% lines on the spec's scope, measured with the spec's coverage command. Run it yourself; record the real number.
+- **Coverage**: the spec's coverage gate, measured with the spec's coverage command. Run it yourself; record the real number.
 - **Boot & smoke**: start the app, hit the spec's health/UI surface, confirm clean-install behavior.
 - **Security self-review**: validation on every boundary, parameterized queries, no secrets in code/logs, no internal details in error messages, auth on every protected route.
 - **Lint/format clean**: zero warnings.
@@ -131,17 +131,17 @@ Do NOT fill `RESULT.md` — that belongs to the grader.
 1. Sandbox breach (wrote outside run dir / runtime deps outside it)
 2. Does not build & run from clean checkout in ≤ 3 commands
 3. Any test failing
-4. Coverage < 75% on the spec's scope
+4. Coverage below the spec's coverage gate
 5. Architecture does not match the spec's Required Architecture section
 6. Contamination — read anything outside your run directory beyond the §2 reference docs (§4.7)
 
-**Then scored 0–10 per category** (weighted; full detail in `docs/RUBRIC.md`): spec compliance (×3), architecture & patterns (×2), code quality (×2), testing quality (×2), security & validation (×1.5), UI/UX & design system (×1.5, both projects — depth per each spec's UI section), documentation (×1), process discipline (×0.5 — includes commit history quality). Every score cites evidence.
+**Then scored 0–10 per category** (weighted; full detail in `docs/RUBRIC.md`): spec compliance (×3), architecture & patterns (×2), code quality (×2), testing quality (×2), security & validation (×1.5), UI/UX & design system (×1.5, all projects — deskboard/parkwise UI per their specs' UI sections, `tripsplit` CLI/UX per its spec's §7), documentation (×1), process discipline (×0.5 — includes commit history quality). Every score cites evidence.
 
 **Metrics recorded per project** (not gates, but compared): total token count, average output t/s, total wall-clock time. The grader takes these from harness telemetry; report what you see honestly.
 
 ## 9. FAQ
 
-**Q: The spec's LOC target (600–1,000) seems small for the feature list. Should I pad?**
+**Q: The spec's LOC target seems small for the feature list. Should I pad?**
 No. It indicates feature depth. Implement everything; landing short usually means missed features, not verbosity.
 
 **Q: Can I use MCP tools / web search / Context7 for library docs?**
@@ -154,7 +154,7 @@ Decide, document it in PLAN.md's deviations table, move on.
 If attended, yes — about interpretation, never about the solution. If unattended, decide and document.
 
 **Q: I can't finish everything. What do I do?**
-Ship the best coherent subset that still builds, runs, passes its tests, and hits ≥ 75% coverage on the code that exists. List what's missing under "Known gaps" and complete the bookkeeping. A half-built mess that fails gates scores worse than a smaller complete slice.
+Ship the best coherent subset that still builds, runs, passes its tests, and hits the coverage gate on the code that exists. List what's missing under "Known gaps" and complete the bookkeeping. A half-built mess that fails gates scores worse than a smaller complete slice.
 
 **Q: When exactly do I commit?**
 After the scaffold, after every completed task, after docs, and after the closing bookkeeping. Small, conventional, meaningful.
