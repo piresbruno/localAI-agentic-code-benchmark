@@ -57,7 +57,7 @@ An agent that can see a previous run's implementation will copy it. Therefore:
 |---|-----|----------|-------|----|-----------|---------------|
 | 1 | `deskboard` | TypeScript (Node + React/Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 (hard cap 1,000) | ≥ 75% (server + shared) |
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 (hard cap 1,000) | ≥ 75% (Services + Api) |
-| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI) | — (CLI/UX) | 250–350 (hard cap 350) | ≥ 85% (Core + Cli) |
+| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI) | — (CLI/UX) | 250–350 (350 advised) | ≥ 85% (Core + Cli) |
 
 Full details: **[BENCHMARKS.md](BENCHMARKS.md)** — this is the list to execute, in order.
 

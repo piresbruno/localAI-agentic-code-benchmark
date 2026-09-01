@@ -6,7 +6,7 @@ Execute **top to bottom**. Each row links to its self-contained spec. **Spec v2*
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
 | 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | 🟨 implemented, awaiting grading |
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 | ≥ 75% (Services + Api) | [specs/02-csharp-parkwise/SPEC.md](specs/02-csharp-parkwise/SPEC.md) | 🟨 implemented, awaiting grading |
-| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI, pinned greedy settle) | — (CLI/UX) | 250–350 (hard cap 350) | ≥ 85% (Core + Cli) | [specs/03-csharp-tripsplit/SPEC.md](specs/03-csharp-tripsplit/SPEC.md) | ⬜ not run |
+| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI, pinned greedy settle) | — (CLI/UX) | 250–350 (350 advised) | ≥ 85% (Core + Cli) | [specs/03-csharp-tripsplit/SPEC.md](specs/03-csharp-tripsplit/SPEC.md) | ⬜ not run |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
 

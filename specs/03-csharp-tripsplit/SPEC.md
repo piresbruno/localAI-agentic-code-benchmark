@@ -5,7 +5,7 @@
 **Audience**: AI coding agents evaluated on a small, exactness-critical .NET CLI.
 
 > **Probe-tier scope.** Unlike the 600–1,000 LOC projects, this probe targets
-> **250–350 LOC** (hard cap 350). Discrimination comes from edge-case depth,
+> **250–350 LOC** (350 advised). Discrimination comes from edge-case depth,
 > a pinned algorithm, and byte-deterministic output — not feature breadth.
 > Everything specified here is required; nothing is optional.
 
@@ -25,8 +25,8 @@ member's net balance, and emit a **minimal, deterministic settlement plan**.
 - Do money-safe math: integer cents only; floating point = fail.
 - Validate every boundary input into one error model with documented exit codes.
 
-**LOC expectation.** 250–350 lines of production C# under `src/` (hard cap 350).
-Tests and the sample fixture are excluded from the cap but belong in the repo.
+**LOC expectation.** 250–350 lines of production C# under `src/` (350 advised).
+Tests and the sample fixture are excluded from the count but belong in the repo.
 Significantly less than 250 usually means features are missing; significantly
 more than 350 usually means over-engineering. This probe is graded on
 exactness, not volume.
