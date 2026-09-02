@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { parseJsonl } from "../src/parsers/jsonl.js";
 import { parseCsvLine, parseCsvRow } from "../src/parsers/csv.js";
 import { parseSyslog } from "../src/parsers/syslog.js";
+import { fieldsOf } from "./helpers.js";
 
 const CSV_HEADER = ["timestamp", "level", "service", "message", "duration_ms"];
 
@@ -69,8 +70,8 @@ describe("parseJsonl", () => {
     const s = parseJsonl('{"ts":"2026-01-01T00:00:00Z","level":"info","svc":"a","msg":"m","dur_ms":"125"}');
     const nul = parseJsonl('{"ts":"2026-01-01T00:00:00Z","level":"info","svc":"a","msg":"m","dur_ms":null}');
     const absent = parseJsonl('{"ts":"2026-01-01T00:00:00Z","level":"info","svc":"a","msg":"m"}');
-    for (const r of [n, s]) expect((r as { ok: true; fields: unknown }).fields).toMatchObject({ durationMs: "125" });
-    for (const r of [nul, absent]) expect((r as { ok: true; fields: unknown }).fields).toMatchObject({ durationMs: null });
+    for (const r of [n, s]) expect(fieldsOf(r).durationMs).toBe("125");
+    for (const r of [nul, absent]) expect(fieldsOf(r).durationMs).toBeNull();
   });
 
   it("passes a negative duration through as text (semantic validation is normalize's job)", () => {
