@@ -1,8 +1,0 @@
-{
-  "members": ["alice", "bob", "carol", "dave"],
-  "expenses": [
-    { "payer": "alice", "amountCents": 4000, "participants": ["alice", "bob", "carol", "dave"] },
-    { "payer": "bob", "amountCents": 2500, "participants": ["bob", "carol"] },
-    { "payer": "carol", "amountCents": 999, "participants": ["alice", "dave"] }
-  ]
-}
