@@ -14,13 +14,13 @@ public static class Cli
     private const string Help = """
         Usage: fastcrc [options]
 
-        Computes the CRC-32 (IEEE 802.3 / ISO-HDLC) checksum of a file and prints
-        the 8-character lowercase hexadecimal checksum.
+        Computes the CRC-32 (IEEE 802.3 / ISO-HDLC) checksum of a file and
+        prints it as 8 lowercase hexadecimal characters.
 
         Options:
-          --in <file>     Read <file> and print its CRC-32 checksum (required)
-          --help, -h      Show this help and exit
-          --version, -v   Print the version and exit
+          --in <file>     read <file> and print its CRC-32 checksum (required)
+          --help, -h      show this help and exit
+          --version, -v   print the version and exit
 
         Exit codes:
           0  success
