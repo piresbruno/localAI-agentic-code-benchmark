@@ -6,7 +6,7 @@ Execute **top to bottom**. Each row links to its self-contained spec. **Spec v2*
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
 | 1 | `deskboard` | TypeScript (Node 20+, React 18 + Vite) | Full-stack meeting-room booking app | ✅ | 600–1,000 | ≥ 75% (server + shared) | [specs/01-typescript-deskboard/SPEC.md](specs/01-typescript-deskboard/SPEC.md) | 🟨 implemented, awaiting grading |
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 | ≥ 75% (Services + Api) | [specs/02-csharp-parkwise/SPEC.md](specs/02-csharp-parkwise/SPEC.md) | 🟨 implemented, awaiting grading |
-| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI, pinned greedy settle) | — (CLI/UX) | 250–350 (350 advised) | ≥ 85% (Core + Cli) | [specs/03-csharp-tripsplit/SPEC.md](specs/03-csharp-tripsplit/SPEC.md) | ⬜ not run |
+| 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI, pinned greedy settle) | — (CLI/UX) | 250–350 (350 advised) | ≥ 85% (Core + Cli) | [specs/03-csharp-tripsplit/SPEC.md](specs/03-csharp-tripsplit/SPEC.md) | 🟨 implemented, awaiting grading |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
 
@@ -36,3 +36,4 @@ One line per completed run for quick reference — appended by the agent at clos
 | 2026-08-31 | parkwise | GLM-5.3-Flash-EXL3/pi | pending grading | 90.32% lines (Services + Api, coverlet) | 26,883,283 | 20.3 | 01:09:56 | 41 tests green; C# LOC 1,081 (81 over cap, full feature set kept — see README/DECISIONS) |
 | 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 96.62% lines (server/src + shared/src, v8) | 21,231,973 | 25.3 | 01:30:35 | 129 tests green; production TS 2,862 (above 1,000 cap, full feature set kept — see docs/DECISIONS.md) |
 | 2026-08-31 | deskboard | GLM-5.3-Flash-EXL3/pi | pending grading | 97.74% lines (server/src + shared/src, v8) | 12,598,747 | 31.9 | 01:06:54 | 115 tests green; LOC 2,911 production TS (above 1,000 cap, full feature set kept — see README/DECISIONS) |
+| 2026-09-02 | tripsplit | deepseek-v4-flash-vision-exp/pi | pending grading | 96.31% lines (Core + Cli, coverlet) | 9,514,851 | 44.7 | 01:04:00 | 64 tests green; LOC 512 (above 250–350 advisory, full feature set kept — see README/DECISIONS) |
