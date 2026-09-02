@@ -97,7 +97,7 @@ public class CliTests
         Assert.Contains("0xEDB88320", help);
         Assert.Contains("init 0xFFFFFFFF", help);
         Assert.Contains("xorout 0xFFFFFFFF", help);
-        Assert.Contains("{\"error\":{\"code\":\"USAGE\":", help);
+        Assert.Contains("{\"error\":{\"code\":\"USAGE\",\"message\"", help);
         Assert.Contains("0  success", help);
         Assert.Contains("1  data error", help);
         Assert.Contains("2  usage error", help);
