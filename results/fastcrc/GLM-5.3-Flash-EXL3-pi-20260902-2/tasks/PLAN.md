@@ -17,9 +17,9 @@ Fastcrc is a micro-tier .NET 8 console CLI that prints the CRC-32 (IEEE 802.3 / 
       Accept: `computes_pinned_crc32_check_values`, `empty_input_has_zero_crc`, `handles_binary_and_long_input` green; oracle values cross-checked against Python `zlib.crc32`.
 - [x] T3 — TDD the CLI: `CliTests` for R4–R8 red first, then full `Cli.cs` (parsing, envelope, exit codes, help/version)
       Accept: all five named tests green; usage triggers (no args, unknown flag, missing `--in` value, extra positional) → `USAGE`/2; missing file → `INPUT_NOT_FOUND`/1.
-- [ ] T4 — Quality gates: full build (0 warnings), `dotnet test` 100%, coverage ≥85% on the Fastcrc assembly, smoke matrix (`--help`/`-h`/`--version`/`-v`/`--in` golden + every error trigger), layering greps, clean-checkout proof via `git archive`
+- [x] T4 — Quality gates: full build (0 warnings), `dotnet test` 100%, coverage ≥85% on the Fastcrc assembly, smoke matrix (`--help`/`-h`/`--version`/`-v`/`--in` golden + every error trigger), layering greps, clean-checkout proof via `git archive`
       Accept: every gate green with recorded numbers.
-- [ ] T5 — Docs & bookkeeping: README per spec §10, PLAN final report, METRICS.md from harness telemetry, BENCHMARKS.md row
+- [x] T5 — Docs & bookkeeping: README per spec §10, PLAN final report, METRICS.md from harness telemetry, BENCHMARKS.md row
       Accept: README covers goal/quickstart/architecture/algorithm/example/tables/tests; closing commits made.
 
 ## Decisions & spec deviations
@@ -36,9 +36,9 @@ Fastcrc is a micro-tier .NET 8 console CLI that prints the CRC-32 (IEEE 802.3 / 
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:37:41 (session JSONL first→last record, 15:26:46 → 16:04:27 local)
+- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source): 5,510,720 (in 5,455,993 + out 54,727; cacheRead 0) — source: pi harness session JSONL; avg 24.2 t/s (output ÷ wall; generation time not exposed)
+- Errors/retries (build/test/lint): 3 compile errors (2× CS0246 missing `using System;` on T1 stubs, 1× CS0103 missing `using System.Text;` in tests) + 1 coverage-gate miss (84.21%, closed with branch tests) — all fixed forward, zero failing tests at close
+- Final coverage (number + measurement command): 98.48% lines on the `Fastcrc` assembly via `dotnet test --collect:XPlat Code Coverage` (coverlet; cobertura `package name="Fastcrc"`)
+- Line counts per directory: src/Fastcrc 128 non-blank / 154 raw (Program 2/4, Crc 19/21, Io 8/11, Cli 99/118); tests/Fastcrc.Tests 174 non-blank / 195 raw (excluded from spec LOC)
+- Deviations from spec: none functional. LOC 128 vs 120 advised (see decisions/README); decisions #1–#7 are spec-silent choices, not deviations.
