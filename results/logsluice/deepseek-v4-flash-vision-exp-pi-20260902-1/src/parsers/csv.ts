@@ -42,6 +42,12 @@ function normalizeName(name: string): string {
   return n;
 }
 
+/** True when every required column is present in the (case-insensitive) header. */
+export function csvHeaderValid(header: string[]): boolean {
+  const names = new Set(header.map(normalizeName));
+  return REQUIRED.every((name) => names.has(name));
+}
+
 /** First occurrence of a duplicate column name wins. */
 function columnMap(header: string[]): Map<string, number> {
   const map = new Map<string, number>();
