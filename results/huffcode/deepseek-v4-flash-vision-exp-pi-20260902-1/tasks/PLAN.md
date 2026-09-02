@@ -26,9 +26,9 @@ bonus per spec §3.1), so this run fans out three sibling agents in one wave.
 - [x] T4 — S3 io+cli slice (delegated to S3IoCli): Io.ReadAllBytes/WriteAllBytes, Cli.RunCli full behavior (envelope, exit codes, help §7, version)
       Accept: S3 smoke: encode on sample → §6.2 golden bytes exactly; --help exit 0; --version prints huffcode 1.0.0.
 - [x] T5 — Integration: CliTests (golden §6.2 in-process via RunCli with Console capture, exit-code matrix R9/R10, determinism, help coverage), full build/test
-      Accept: `dotnet build` zero warnings; `dotnet test` all green.
-- [ ] T6 — Coverage gate ≥ 85% (coverlet via `dotnet test --collect:"XPlat Code Coverage"`), smoke via `dotnet run`, README + decisions, closing bookkeeping (METRICS + BENCHMARKS + commits)
-      Accept: coverage ≥ 85% on Huffcode assembly; smoke byte-match; README complete.
+      Accept: `dotnet build` zero warnings; `dotnet test` all green.  ✔ done — 19/19 tests green (0 warnings).
+- [x] T6 — Coverage gate ≥ 85% (coverlet via `dotnet test --collect:"XPlat Code Coverage"`), smoke via `dotnet run`, README + decisions, closing bookkeeping (METRICS + BENCHMARKS + commits)
+      Accept: coverage ≥ 85% on Huffcode assembly; smoke byte-match; README complete.  ✔ done — 87.25% lines; smoke byte-matches §6.2.
 
 ## Decisions & spec deviations
 
@@ -42,9 +42,9 @@ bonus per spec §3.1), so this run fans out three sibling agents in one wave.
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: ≈ 00:52 (scaffold 02:24 → close 03:16; slice agents dominated — they took ~20 min each, serial would have been comparable for this size; the parallel design is about the scored bonus, not this micro-probe's speed)
+- Total tokens consumed (in + out) + avg output t/s: not exposed by this harness session — unknown (not fabricated)
+- Errors/retries (build/test/lint): 2 integration-test failures caught in-process (single-symbol empty-code decode, help-heading mismatch) — 1 fixed (R4 decode synthesis in Cli), 1 resolved by aligning test assertions to the spec-required help content; the extra single-symbol CLI test scenario was removed per operator request; 0 build/lint errors, 0 warnings
+- Final coverage: 87.25% lines / 85.65% branches on Huffcode assembly via `dotnet test --collect:"XPlat Code Coverage"` (coverlet)
+- Line counts per directory: src/Huffcode 625 (Cli 179 incl. help text; Codec 173; Format 310; Io 20; Types 31; Program 8) + tests 715 + README/PLAN
+- Deviations from spec: none functional; parseHeader enforces canonical pad formula (§4.4) and the CLI synthesizes payloadLength copies for the empty-code alphabet (R4, pinned).
