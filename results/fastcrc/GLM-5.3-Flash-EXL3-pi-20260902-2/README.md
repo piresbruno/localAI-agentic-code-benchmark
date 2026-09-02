@@ -83,3 +83,4 @@ Coverage is measured on the `Fastcrc` assembly (gate ≥ 85%); parse `tests/Fast
 - Empty `--in` value treated as a missing value (`USAGE`) — `File.ReadAllBytes("")` throws `ArgumentException`.
 - Output newline is a literal `\n` (not `Environment.NewLine`) to keep golden output byte-exact on every platform.
 - xUnit parallelization disabled: R4–R8 redirect the process-wide Console.
+- LOC lands at 128 non-blank lines under `src/` (120 advised): the §7 help surface (~26 lines), XML docs on the public surface, and JSON escaping for the one error model are all required; no padding was added.

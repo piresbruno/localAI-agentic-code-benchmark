@@ -5,23 +5,14 @@ using System.Text;
 
 namespace Fastcrc;
 
-/// <summary>
-/// Argv parsing, error envelope, exit codes, and help text.
-/// The only module that touches the Console; in-process test entry.
-/// </summary>
+/// <summary>Argv parsing, error envelope, exit codes, help; the only Console user; in-process test entry.</summary>
 public static class Cli
 {
     /// <summary>Version reported by --version.</summary>
     public const string Version = "1.0.0";
 
-    /// <summary>Exit code for success.</summary>
-    public const int ExitSuccess = 0;
-
-    /// <summary>Exit code for data errors (input unreadable).</summary>
-    public const int ExitDataError = 1;
-
-    /// <summary>Exit code for command-line usage errors.</summary>
-    public const int ExitUsage = 2;
+    /// <summary>Exit codes: 0 success, 1 data error, 2 usage error.</summary>
+    public const int ExitSuccess = 0, ExitDataError = 1, ExitUsage = 2;
 
     private const string HelpText = """
         fastcrc - print the CRC-32 (IEEE 802.3) checksum of a file.
@@ -49,7 +40,7 @@ public static class Cli
           cbf43926
         """;
 
-    /// <summary>Runs the CLI over <paramref name="args"/> and returns the process exit code.</summary>
+    /// <summary>Runs the CLI over <paramref name="args"/>; returns the process exit code.</summary>
     public static int RunCli(string[] args)
     {
         string? inputPath = null;
@@ -63,17 +54,11 @@ public static class Cli
                 case "--version" or "-v":
                     Console.Out.Write("fastcrc " + Version + "\n");
                     return ExitSuccess;
-                case "--in":
-                    if (inputPath != null)
-                    {
-                        return Usage("duplicate flag: --in");
-                    }
-                    if (i + 1 >= args.Length || args[i + 1].Length == 0)
-                    {
-                        return Usage("missing value for --in");
-                    }
+                case "--in" when inputPath == null && i + 1 < args.Length && args[i + 1].Length > 0:
                     inputPath = args[++i];
                     break;
+                case "--in":
+                    return Usage(inputPath == null ? "missing value for --in" : "duplicate flag: --in");
                 default:
                     return args[i].StartsWith('-')
                         ? Usage("unknown flag: " + args[i])
@@ -100,26 +85,18 @@ public static class Cli
             return DataError("cannot read input file: " + inputPath);
         }
 
-        string checksum = Crc.Crc32(data).ToString("x8", CultureInfo.InvariantCulture);
-        Console.Out.Write(checksum + "\n");
+        Console.Out.Write(Crc.Crc32(data).ToString("x8", CultureInfo.InvariantCulture) + "\n");
         return ExitSuccess;
     }
 
-    private static int Usage(string message)
-    {
-        Console.Error.Write(Envelope("USAGE", message) + "\n");
-        return ExitUsage;
-    }
+    private static int Usage(string message) => Fail("USAGE", message, ExitUsage);
 
-    private static int DataError(string message)
-    {
-        Console.Error.Write(Envelope("INPUT_NOT_FOUND", message) + "\n");
-        return ExitDataError;
-    }
+    private static int DataError(string message) => Fail("INPUT_NOT_FOUND", message, ExitDataError);
 
-    private static string Envelope(string code, string message)
+    private static int Fail(string code, string message, int exit)
     {
-        return "{\"error\":{\"code\":\"" + code + "\",\"message\":\"" + JsonEscape(message) + "\"}}";
+        Console.Error.Write("{\"error\":{\"code\":\"" + code + "\",\"message\":\"" + JsonEscape(message) + "\"}}\n");
+        return exit;
     }
 
     private static string JsonEscape(string value)
@@ -127,22 +104,13 @@ public static class Cli
         var sb = new StringBuilder(value.Length);
         foreach (char c in value)
         {
-            if (c == '"')
+            sb.Append(c switch
             {
-                sb.Append("\\\"");
-            }
-            else if (c == '\\')
-            {
-                sb.Append("\\\\");
-            }
-            else if (c >= 0x20)
-            {
-                sb.Append(c);
-            }
-            else
-            {
-                sb.Append("\\u").Append(((int)c).ToString("x4", CultureInfo.InvariantCulture));
-            }
+                '"' => "\\\"",
+                '\\' => "\\\\",
+                >= ' ' => c.ToString(),
+                _ => "\\u" + ((int)c).ToString("x4", CultureInfo.InvariantCulture),
+            });
         }
         return sb.ToString();
     }
