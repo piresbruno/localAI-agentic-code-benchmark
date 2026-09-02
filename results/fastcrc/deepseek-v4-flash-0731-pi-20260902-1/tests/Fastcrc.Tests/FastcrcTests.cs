@@ -44,7 +44,7 @@ public class FastcrcTests
     [Fact]
     public void golden_check_file_prints_cbf43926()
     {
-        var run = RunCli([]);
+        var run = RunCli(["--in", "sample/check.txt"]);
         Assert.Equal(0, run.ExitCode);
         Assert.Equal("cbf43926\n", run.StdOut);
         Assert.Equal("", run.StdErr);
@@ -55,8 +55,10 @@ public class FastcrcTests
     {
         var run = RunCli(["--in", "sample/check.txt"]);
         Assert.Equal(0, run.ExitCode);
-        Assert.Matches(new Regex("^[0-9a-f]{8}\n$"), run.StdOut);
-        Assert.DoesNotContain("\u001b", run.StdOut); // no ANSI escapes
+                Assert.Matches(new Regex("^[0-9a-f]{8}\n$"), run.StdOut);
+        // no ANSI escapes; char-code comparison is culture-free (xunit's
+        // string DoesNotContain uses culture search, where ESC is ignorable)
+        Assert.DoesNotContain((char)0x1B, run.StdOut);
         Assert.Equal("", run.StdErr);
     }
 
