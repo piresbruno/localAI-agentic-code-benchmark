@@ -46,7 +46,29 @@ score:                  # normalized 0–100 (from RESULT.md)
 Paste the exact command used to extract:
 
 ```bash
-# e.g. jq over the session JSONL …
+# Run AFTER the session closes: pi writes ~/.pi session logs at session end.
+python3 - <<'EOF'
+import json, glob, os
+paths = sorted(glob.glob(os.path.expanduser(
+    '~/.pi/agent/sessions/--home-piresbruno-developer-code-benchmark--/2026-09-02T*.jsonl')))
+if not paths:
+    print('no session log yet — terminate the session first'); raise SystemExit
+f = paths[-1]
+wins = {'logsluice': ('01:31', '02:21'), 'huffcode': ('02:23', '03:16'), 'fastcrc': ('03:25', '03:30')}
+tot = {}
+for line in open(f):
+    try: ev = json.loads(line)
+    except Exception: continue
+    u = ev.get('usage') or {}; ts = ev.get('timestamp') or ''
+    if not u or len(ts) < 11: continue
+    for run, (a, b) in wins.items():
+        if a <= ts[11:16] < b:
+            c = tot.setdefault(run, {'in': 0, 'out': 0, 'total': 0})
+            c['in'] += u.get('input', 0); c['out'] += u.get('output', 0)
+            c['total'] += u.get('totalTokens', 0) + u.get('reasoning', 0)
+for run, c in sorted(tot.items()):
+    print(run, c, 'in+out=%d' % (c['in'] + c['out']))
+EOF
 ```
 
 ## Raw transcript excerpt (evidence)
