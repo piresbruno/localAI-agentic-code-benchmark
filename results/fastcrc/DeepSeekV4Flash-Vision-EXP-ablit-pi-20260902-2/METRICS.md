@@ -1,8 +1,8 @@
 # METRICS — fastcrc / pi
 
 **Run dir**: results/fastcrc/DeepSeekV4Flash-Vision-EXP-ablit-pi-20260902-2
-**Started**: 2026-09-02 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-09-02 — time: `03:52`
+**Ended**: `03:59`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,8 +12,8 @@
 project: fastcrc
 agent: pi
 model: DeepSeekV4Flash-Vision-EXP-ablit
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
+wall_time: 00:07:00        # approx: scaffold 03:52 → close 03:59 (git timestamps; harness session start not observable)
+total_tokens:              # harness did not expose usage this session (see extractor in raw excerpt below)
 input_tokens:
 output_tokens:
 avg_tps:                # output tokens / sec
@@ -32,8 +32,9 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
+| Session/turn count | 6 |
+| Errors/retries visible in transcript (build/test failures) | 0 — first-run green (12/12 tests) |
+| Parallel evidence | max_agents = 1 — serial build, as intended for the micro tier |
 | Cache-read tokens (if reported) | |
 | Harness + version | |
 
