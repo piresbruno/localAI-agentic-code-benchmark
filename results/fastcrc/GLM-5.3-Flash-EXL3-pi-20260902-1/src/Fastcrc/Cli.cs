@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace Fastcrc;
@@ -9,6 +10,11 @@ public static class Cli
     private const int Ok = 0;
     private const int DataError = 1;
     private const int UsageError = 2;
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 
     private const string Help = """
         fastcrc — prints the CRC-32 (IEEE 802.3) checksum of a file.
@@ -81,7 +87,7 @@ public static class Cli
     /// <summary>Prints the single-line JSON error envelope to stderr and returns the mapped exit code.</summary>
     private static int Error(string code, string message, int exit)
     {
-        Console.Error.WriteLine(JsonSerializer.Serialize(new { error = new { code, message } }));
+        Console.Error.WriteLine(JsonSerializer.Serialize(new { error = new { code, message } }, JsonOptions));
         return exit;
     }
 }
