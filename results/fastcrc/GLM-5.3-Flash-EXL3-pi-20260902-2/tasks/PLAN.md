@@ -11,9 +11,9 @@ Fastcrc is a micro-tier .NET 8 console CLI that prints the CRC-32 (IEEE 802.3 / 
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold: classic `fastcrc.sln`, `src/Fastcrc` csproj (net8.0, Nullable enable, TreatWarningsAsErrors), `Program.cs` shim, compiling stubs for `Crc`/`Cli` (`Io` is final), `sample/check.txt` verbatim (9 bytes, no trailing newline), run-dir `.gitignore`
+- [x] T1 — Scaffold: classic `fastcrc.sln`, `src/Fastcrc` csproj (net8.0, Nullable enable, TreatWarningsAsErrors), `Program.cs` shim, compiling stubs for `Crc`/`Cli` (`Io` is final), `sample/check.txt` verbatim (9 bytes, no trailing newline), run-dir `.gitignore`
       Accept: `dotnet build` green from run dir; fixture is byte-exact.
-- [ ] T2 — TDD the algorithm: `CrcTests` for R1–R3 red first, then table-driven `Crc32`
+- [x] T2 — TDD the algorithm: `CrcTests` for R1–R3 red first, then table-driven `Crc32`
       Accept: `computes_pinned_crc32_check_values`, `empty_input_has_zero_crc`, `handles_binary_and_long_input` green; oracle values cross-checked against Python `zlib.crc32`.
 - [ ] T3 — TDD the CLI: `CliTests` for R4–R8 red first, then full `Cli.cs` (parsing, envelope, exit codes, help/version)
       Accept: all five named tests green; usage triggers (no args, unknown flag, missing `--in` value, extra positional) → `USAGE`/2; missing file → `INPUT_NOT_FOUND`/1.
