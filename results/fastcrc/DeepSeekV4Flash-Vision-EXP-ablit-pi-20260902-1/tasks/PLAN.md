@@ -21,17 +21,17 @@ golden outputs.
 
 - [x] T1 — Scaffold run directory per benchmark workflow; commit scaffold
       Accept: results/fastcrc/<run-id>/ exists with AGENTS.md/CLAUDE.md/METRICS.md/RESULT.md/tasks/, committed.
-- [ ] T2 — Write tasks/PLAN.md and commit it
+- [x] T2 — Write tasks/PLAN.md and commit it
       Accept: PLAN.md present, tasks enumerated, committed.
-- [ ] T3 — Create solution + src modules (Program/Crc/Io/Cli) + sample/check.txt; `dotnet build` zero errors/warnings
-      Accept: BUILD_CHECK green (dotnet build, no warnings).
-- [ ] T4 — Write xUnit tests named R1–R8 per spec §5; all pass in-process
-      Accept: `dotnet test` all green, no skips.
-- [ ] T5 — Meet coverage gate: line coverage ≥85% on Fastcrc assembly (coverlet)
-      Accept: coverage report shows ≥85% on src/Fastcrc.
-- [ ] T6 — Smoke: `--help` exit 0, `--version` = fastcrc 1.0.0, `--in sample/check.txt` prints cbf43926 byte-exact
-      Accept: SMOKE_CHECK outputs match spec §6.2.
-- [ ] T7 — Write README.md (goal, quickstart ≤3 commands, architecture, algorithm, exit/error table, test/coverage)
+- [x] T3 — Create solution + src modules (Program/Crc/Io/Cli) + sample/check.txt; `dotnet build` zero errors/warnings
+      Accept: BUILD_CHECK green (dotnet build, no warnings). Verified: 0 warnings, 0 errors.
+- [x] T4 — Write xUnit tests named R1–R8 per spec §5; all pass in-process
+      Accept: `dotnet test` all green, no skips. Verified: 9/9 passed.
+- [x] T5 — Meet coverage gate: line coverage ≥85% on Fastcrc assembly (coverlet)
+      Accept: coverage report shows ≥85% on src/Fastcrc. Verified: 98.14% lines (Fastcrc assembly).
+- [x] T6 — Smoke: `--help` exit 0, `--version` = fastcrc 1.0.0, `--in sample/check.txt` prints cbf43926 byte-exact
+      Accept: SMOKE_CHECK outputs match spec §6.2. Verified byte-exact (see below).
+- [x] T7 — Write README.md (goal, quickstart ≤3 commands, architecture, algorithm, exit/error table, test/coverage)
       Accept: README complete; committed.
 - [ ] T8 — Extract token/usage metrics from harness session data; fill METRICS.md yaml; append results log row to BENCHMARKS.md; final report
       Accept: METRICS yaml filled from session telemetry; BENCHMARKS.md log row appended; final commit.
