@@ -1,26 +1,7 @@
-# macOS metadata
-._*
-.DS_Store
-
-# Editor noise
-*.swp
-.idea/
-.vscode/
-
-# Build/dependency junk generated inside run projects (agents must not commit these)
 node_modules/
-__pycache__/
-*.pyc
-.pytest_cache/
-.ruff_cache/
 dist/
-build/
-bin/
-obj/
 coverage/
-.coverage
-*.egg-info/
-
-# results/ holds the ACTIVE run only. Completed runs move to results-archive/
-# (tracked, so local and origin stay identical). Agents must not read
-# results-archive/ during a run (RUBRIC gate G6); new-run.sh only checks results/.
+out.jsonl
+out.jsonl.quarantine
+quarantine.jsonl
+*.log

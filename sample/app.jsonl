@@ -1,0 +1,6 @@
+{"ts":"2026-09-01T14:00:00+02:00","level":"INFO","svc":"api-gateway","msg":"GET /health","dur_ms":120}
+{"ts":"2026-09-01T12:00:01.250Z","level":"warning","service":"auth","msg":"slow login"}
+{"ts":"2026-09-01T12:00:02Z","level":"ERR","svc":"billing","msg":"charge failed","dur_ms":480}
+{"ts":"2026-09-01T12:00:03Z","severity":"info","app":"api-gateway","message":"GET /users","duration_ms":200}
+{"ts":"2026-09-01T12:00:04Z","level":"debug","svc":"api-gateway","msg":"GET /health","dur_ms":120}
+{"ts":"2026-09-01T12:00:09Z","level":"verbose","svc":"auth","msg":"meh"}
