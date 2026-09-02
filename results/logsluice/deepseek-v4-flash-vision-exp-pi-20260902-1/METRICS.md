@@ -12,11 +12,11 @@
 project: logsluice
 agent: pi
 model: deepseek-v4-flash-vision-exp
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
+wall_time: 00:50:00        # approx: scaffold commit 01:32 → closing ~02:21 (git timestamps); harness session start not observable
+total_tokens:              # harness did not expose usage this session (no ~/.pi session file for 2026-09-02)
 input_tokens:
 output_tokens:
-avg_tps:                # output tokens / sec
+avg_tps:
 cost:
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
