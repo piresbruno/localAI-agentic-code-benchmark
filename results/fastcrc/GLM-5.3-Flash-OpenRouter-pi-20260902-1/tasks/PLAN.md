@@ -11,17 +11,17 @@ Fastcrc is a micro-tier .NET 8 console CLI: `fastcrc --in <file>` prints the CRC
 
 ## Task breakdown
 
-- [ ] T1 — Solution + `src/Fastcrc` + `tests/Fastcrc.Tests` projects, `sample/check.txt` (9 bytes verbatim), `.editorconfig`, run-dir `.gitignore`
+- [x] T1 — Solution + `src/Fastcrc` + `tests/Fastcrc.Tests` projects, `sample/check.txt` (9 bytes verbatim), `.editorconfig`, run-dir `.gitignore`
       Accept: `dotnet build` zero errors; classic `fastcrc.sln`; fixture is exactly 9 bytes.
-- [ ] T2 — Test suite for R1–R8, named exactly per spec §5, in-process (console capture), compile-red first
+- [x] T2 — Test suite for R1–R8, named exactly per spec §5, in-process (console capture), compile-red first
       Accept: all eight named tests exist and fail before implementation exists.
-- [ ] T3 — `Crc.cs`: pure table-driven CRC-32, pinned exports only
+- [x] T3 — `Crc.cs`: pure table-driven CRC-32, pinned exports only
       Accept: pinned vectors `123456789`→`0xCBF43926`, `abc`→`0x352441C2`, empty→`0`, R3 vectors pass.
-- [ ] T4 — `Io.cs` + `Cli.cs`: parsing, envelope, exit codes, help/version (R4–R8)
+- [x] T4 — `Io.cs` + `Cli.cs`: parsing, envelope, exit codes, help/version (R4–R8)
       Accept: full suite green; help documents command, flags, exit codes, envelope, algorithm, example.
-- [ ] T5 — Quality gates: build zero warnings, `dotnet test` 100% pass, coverage ≥ 85% (`Fastcrc` assembly), smoke `--help` exit 0 + `--in sample/check.txt` → `cbf43926`
+- [x] T5 — Quality gates: build zero warnings, `dotnet test` 100% pass, coverage ≥ 85% (`Fastcrc` assembly), smoke `--help` exit 0 + `--in sample/check.txt` → `cbf43926`
       Accept: all gates green with numbers recorded below.
-- [ ] T6 — README per spec §10 (goal, ≤3-command quickstart, architecture, algorithm constants, worked example, exit/error tables, test/coverage instructions)
+- [x] T6 — README per spec §10 (goal, ≤3-command quickstart, architecture, algorithm constants, worked example, exit/error tables, test/coverage instructions)
       Accept: README committed; docs commit in history.
 
 ## Decisions & spec deviations
