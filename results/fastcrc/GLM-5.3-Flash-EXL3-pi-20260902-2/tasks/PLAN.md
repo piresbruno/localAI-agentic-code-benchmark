@@ -15,7 +15,7 @@ Fastcrc is a micro-tier .NET 8 console CLI that prints the CRC-32 (IEEE 802.3 / 
       Accept: `dotnet build` green from run dir; fixture is byte-exact.
 - [x] T2 — TDD the algorithm: `CrcTests` for R1–R3 red first, then table-driven `Crc32`
       Accept: `computes_pinned_crc32_check_values`, `empty_input_has_zero_crc`, `handles_binary_and_long_input` green; oracle values cross-checked against Python `zlib.crc32`.
-- [ ] T3 — TDD the CLI: `CliTests` for R4–R8 red first, then full `Cli.cs` (parsing, envelope, exit codes, help/version)
+- [x] T3 — TDD the CLI: `CliTests` for R4–R8 red first, then full `Cli.cs` (parsing, envelope, exit codes, help/version)
       Accept: all five named tests green; usage triggers (no args, unknown flag, missing `--in` value, extra positional) → `USAGE`/2; missing file → `INPUT_NOT_FOUND`/1.
 - [ ] T4 — Quality gates: full build (0 warnings), `dotnet test` 100%, coverage ≥85% on the Fastcrc assembly, smoke matrix (`--help`/`-h`/`--version`/`-v`/`--in` golden + every error trigger), layering greps, clean-checkout proof via `git archive`
       Accept: every gate green with recorded numbers.
