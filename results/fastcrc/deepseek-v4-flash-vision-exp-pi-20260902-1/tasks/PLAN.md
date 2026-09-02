@@ -31,6 +31,7 @@ Build Fastcrc, a TypeScript CLI that prints the CRC-32 (IEEE 802.3/ISO-HDLC) che
 
 ## Final report (fill at the end)
 
+- **Model id: `deepseek-v4-flash-vision-exp` (harness: `pi`)** — run dir `results/fastcrc/deepseek-v4-flash-vision-exp-pi-20260902-1`
 - Wall-clock time: ≈ 00:07 (scaffold 03:25 → close ~03:32) — under the ~10-minute target
 - Total tokens consumed (in + out) + avg output t/s: not exposed by this harness session — unknown (recorded `—`)
 - Errors/retries (build/test/lint): 1 (one wrong test pin `2dfd3a11` for {00,ff} — corrected to `6cdbfd72` against python zlib); 0 build warnings
