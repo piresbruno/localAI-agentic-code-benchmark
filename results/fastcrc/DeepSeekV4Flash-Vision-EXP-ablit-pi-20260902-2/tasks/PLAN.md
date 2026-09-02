@@ -11,19 +11,19 @@ Build a tiny .NET 8 console CLI that prints the CRC-32 (IEEE 802.3/ISO-HDLC) che
 
 ## Task breakdown
 
-- [ ] T1 — Scaffold solution, projects, sample/check.txt, .gitignore
+- [x] T1 — Scaffold solution, projects, sample/check.txt, .gitignore
       Accept: `dotnet build` green; `sample/check.txt` is exactly `123456789` (9 bytes, no trailing newline).
-- [ ] T2 — Implement `Crc.cs` (pure bit-wise CRC-32)
+- [x] T2 — Implement `Crc.cs` (pure bit-wise CRC-32)
       Accept: tests R1–R3 (pinned values, empty → 0, binary + 1 MiB deterministic/correct) pass.
-- [ ] T3 — Implement `Io.cs` + `Cli.cs` (parse, envelope, exit codes, help/version)
+- [x] T3 — Implement `Io.cs` + `Cli.cs` (parse, envelope, exit codes, help/version)
       Accept: `dotnet build` green; manual `--help`, `--version`, `--in` smoke run OK.
-- [ ] T4 — Add boundary tests R4–R8 (stdout discipline, missing file, exit codes, help/version completeness, determinism, golden)
+- [x] T4 — Add boundary tests R4–R8 (stdout discipline, missing file, exit codes, help/version completeness, determinism, golden)
       Accept: `dotnet test` all green.
-- [ ] T5 — Verify gates: `dotnet build` zero warnings, `dotnet test`, coverage ≥ 85% (coverlet), §6.2 golden byte-exact, error trigger spot-check
+- [x] T5 — Verify gates: `dotnet build` zero warnings, `dotnet test`, coverage ≥ 85% (coverlet), §6.2 golden byte-exact, error trigger spot-check
       Accept: BUILD_CHECK/TEST_CHECK/COVERAGE_CHECK/SMOKE_CHECK all pass; coverage recorded.
-- [ ] T6 — README.md + final report in PLAN.md
+- [x] T6 — README.md + final report in PLAN.md
       Accept: README has goal, ≤3-command quickstart, architecture, algorithm constants, example, exit/error table, test/coverage instructions.
-- [ ] T7 — Metrics + BENCHMARKS.md bookkeeping, final commit
+- [x] T7 — Metrics + BENCHMARKS.md bookkeeping, final commit
       Accept: yaml block filled from harness telemetry; results log row appended; closing commit made.
 
 ## Decisions & spec deviations
@@ -39,9 +39,9 @@ Build a tiny .NET 8 console CLI that prints the CRC-32 (IEEE 802.3/ISO-HDLC) che
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:18:30 measured so far (harness session start 06:22:43Z → last message; final value in METRICS.md)
+- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source): 3,561,309 total (3,519,717 in incl. 3,408,640 cache-read; 41,592 out) from omp session JSONL; avg 37.45 t/s = output ÷ wall time (generation time not exposed)
+- Errors/retries (build/test/lint): 3 — (1) build CS0103 `Cli` not found: top-level statements are in the global namespace, added `using Fastcrc;` to Program.cs; (2) build xUnit2013 analyzer: `Assert.Equal(1, ...Length)` → `Assert.Single`; (3) one malformed edit-tool call corrupted a line in CliTests.cs, repaired by rewriting the line. No test failures at any point after fixes.
+- Final coverage (number + measurement command): 97.77% lines / 100% branch on the Fastcrc assembly via `dotnet test --collect:"XPlat Code Coverage"` (coverage.cobertura.xml)
+- Line counts per directory: `src/Fastcrc` 117 (Program.cs 2, Crc.cs 22, Io.cs 10, Cli.cs 83); `tests/Fastcrc.Tests` 233 (AlgorithmTests.cs 46, CliTests.cs 187); sample/check.txt 1
+- Deviations from spec: none
