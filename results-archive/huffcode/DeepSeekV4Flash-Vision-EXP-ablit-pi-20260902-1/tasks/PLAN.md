@@ -1,6 +1,6 @@
 # PLAN — huffcode
 
-**Agent/Model**: pi / deepseek-v4-flash-vision-exp
+**Agent/Model**: pi / DeepSeekV4Flash-Vision-EXP-ablit
 **Started**: 2026-09-02
 **Spec**: specs/05-typescript-huffcode/SPEC.md (C# .NET 8 console)
 **Mode**: unattended: plan self-approved

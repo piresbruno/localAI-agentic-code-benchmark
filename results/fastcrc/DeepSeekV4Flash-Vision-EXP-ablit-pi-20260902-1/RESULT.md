@@ -1,6 +1,6 @@
-# RESULT — logsluice / pi
+# RESULT — fastcrc / pi
 
-**Run dir**: results/logsluice/deepseek-v4-flash-vision-exp-pi-20260902-1
+**Run dir**: results/fastcrc/DeepSeekV4Flash-Vision-EXP-ablit-pi-20260902-1
 **Date**: 2026-09-02
 **Grader**: (your name)
 

@@ -1,6 +1,6 @@
 # PLAN — logsluice
 
-**Agent/Model**: pi / deepseek-v4-flash-vision-exp
+**Agent/Model**: pi / DeepSeekV4Flash-Vision-EXP-ablit
 **Started**: 2026-09-02
 **Spec**: specs/04-typescript-logsluice/SPEC.md
 **Mode**: unattended: plan self-approved

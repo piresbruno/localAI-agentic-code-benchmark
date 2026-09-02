@@ -1,6 +1,6 @@
-# RESULT — huffcode / pi
+# RESULT — logsluice / pi
 
-**Run dir**: results/huffcode/deepseek-v4-flash-vision-exp-pi-20260902-1
+**Run dir**: results/logsluice/DeepSeekV4Flash-Vision-EXP-ablit-pi-20260902-1
 **Date**: 2026-09-02
 **Grader**: (your name)
 

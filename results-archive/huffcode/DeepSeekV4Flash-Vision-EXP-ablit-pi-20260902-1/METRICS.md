@@ -1,6 +1,6 @@
 # METRICS — huffcode / pi
 
-**Run dir**: results/huffcode/deepseek-v4-flash-vision-exp-pi-20260902-1
+**Run dir**: results/huffcode/DeepSeekV4Flash-Vision-EXP-ablit-pi-20260902-1
 **Started**: 2026-09-02 — time: `02:23`
 **Ended**: `03:16`
 
@@ -11,7 +11,7 @@
 ```yaml
 project: huffcode
 agent: pi
-model: deepseek-v4-flash-vision-exp
+model: DeepSeekV4Flash-Vision-EXP-ablit
 wall_time: 00:53:00        # approx: scaffold 02:23 → close 03:16 (git commit timestamps; harness session start not observable)
 total_tokens:              # harness did not expose usage this session (no ~/.pi session file for the benchmark dir today)
 input_tokens:

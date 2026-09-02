@@ -1,6 +1,6 @@
-# RESULT — fastcrc / pi
+# RESULT — huffcode / pi
 
-**Run dir**: results/fastcrc/deepseek-v4-flash-vision-exp-pi-20260902-1
+**Run dir**: results/huffcode/DeepSeekV4Flash-Vision-EXP-ablit-pi-20260902-1
 **Date**: 2026-09-02
 **Grader**: (your name)
 
