@@ -34,7 +34,7 @@ score:                  # normalized 0–100 (from RESULT.md)
 |--------|-------|
 | Session/turn count | 19 (incl. 3 concurrent slice subagents) |
 | Errors/retries visible in transcript (build/test failures) | 2 integration test failures on first full run (fixed before ship) |
-| Parallel evidence | max_agents = 3 concurrent task subagents (S1Codec, S2Format, S3IoCli) — scored bonus per BENCHMARKS.md |
+| Parallel evidence | max_agents = 3 concurrent task subagents (S1Codec, S2Format, S3IoCli) — informational per BENCHMARKS.md |
 | Cache-read tokens (if reported) | |
 | Harness + version | |
 

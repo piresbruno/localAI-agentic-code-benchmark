@@ -73,7 +73,7 @@ huffcode/
   returns the process exit code. `Cli.RunCli` returns the code and is
   tested in-process.
 
-### 3.1 Parallel implementation note (scored bonus)
+### 3.1 Parallel implementation note (informational)
 
 The slices are deliberately independent and contract-first. Build **S0**
 first (sln + `Types.cs` exactly as printed — the contract is complete in §4,
@@ -82,11 +82,9 @@ implemented in parallel and in any order**: each pins its exports, inputs
 and failure behavior below; S3's code depends only on those signatures, not
 on the slices' internals.
 
-Grading: runs whose harness telemetry shows concurrent implementation
-(`max_agents` ≥ 2) earn a **parallelization bonus**; `max_agents` is recorded
-in the benchmark's results log for this project (see `BENCHMARKS.md`), not
-merely informationally — the slice contracts are complete, so a serial agent
-gains nothing in correctness and spends more wall time.
+`max_agents` is recorded in the benchmark's results log (see `BENCHMARKS.md`)
+and compared within-project — informational only, no bonus. The slice
+contracts are complete, so parallelizing costs neither correctness nor time.
 
 ## 4. Canonical model & container format
 

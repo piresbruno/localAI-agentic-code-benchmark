@@ -1,6 +1,6 @@
 # Benchmark Execution List
 
-Execute **top to bottom**. Each row links to its self-contained spec. **Spec v2** (reduced scope, 600–1,000 LOC, both original projects with UI) supersedes all earlier runs. Row 3 (`tripsplit`) is a **probe-tier** edition: 250–350 LOC, CLI-only (graded on CLI/UX per its spec §7), coverage gate 85%. Row 4 (`logsluice`) is a **probe-tier** TypeScript CLI: 300–450 LOC, contract-first parallel slices (graded on CLI/UX + layering per its spec §7), coverage gate 85%. Row 5 (`huffcode`) is a **sprint-tier** C# algorithm probe: 200–350 LOC, pure Huffman codec CLI (.NET 8 console), contract-first parallel slices — **parallelization is scored** (`max_agents` bonus, §3.1 of its spec), coverage gate 85%. <｜DSML｜parameter name="i">Adding huffcode description to header
+Execute **top to bottom**. Each row links to its self-contained spec. **Spec v2** (reduced scope, 600–1,000 LOC, both original projects with UI) supersedes all earlier runs. Row 3 (`tripsplit`) is a **probe-tier** edition: 250–350 LOC, CLI-only (graded on CLI/UX per its spec §7), coverage gate 85%. Row 4 (`logsluice`) is a **probe-tier** TypeScript CLI: 300–450 LOC, contract-first parallel slices (graded on CLI/UX + layering per its spec §7), coverage gate 85%. Row 5 (`huffcode`) is a **sprint-tier** C# algorithm probe: 200–350 LOC, pure Huffman codec CLI (.NET 8 console), contract-first slices (parallel-safe; `max_agents` tracked informationally), coverage gate 85%. Row 6 (`fastcrc`) is a **micro-tier** TypeScript warmup: 60–120 LOC, CRC-32 single-command CLI, sized for a ~10-minute serial build (no parallelization expected or rewarded). <｜DSML｜parameter name="i">Adding huffcode description to header
 
 | # | Project ID | Language | Shape | UI | LOC target | Coverage gate | Spec | Status |
 |---|-----------|----------|-------|----|-----------|---------------|------|--------|
@@ -8,7 +8,8 @@ Execute **top to bottom**. Each row links to its self-contained spec. **Spec v2*
 | 2 | `parkwise` | C# (.NET 8, ASP.NET Core) | Parking-garage API + attendant console UI (UI tech = candidate's choice) | ✅ | 600–1,000 | ≥ 75% (Services + Api) | [specs/02-csharp-parkwise/SPEC.md](specs/02-csharp-parkwise/SPEC.md) | 🟨 implemented, awaiting grading |
 | 3 | `tripsplit` | C# (.NET 8 console) | Expense-settlement CLI (pure domain + thin CLI, pinned greedy settle) | — (CLI/UX) | 250–350 (350 advised) | ≥ 85% (Core + Cli) | [specs/03-csharp-tripsplit/SPEC.md](specs/03-csharp-tripsplit/SPEC.md) | 🟨 implemented, awaiting grading |
 | 4 | `logsluice` | TypeScript (Node 20+, ESM, Vitest) | Log-normalizer/summary CLI (probe tier, contract-first parallel slices) | — (CLI/UX) | 300–450 (450 advised) | ≥ 85% (src/) | [specs/04-typescript-logsluice/SPEC.md](specs/04-typescript-logsluice/SPEC.md) | 🟨 implemented, awaiting grading |
-| 5 | `huffcode` | C# (.NET 8 console, xUnit + coverlet) | Lossless Huffman codec CLI (sprint tier, contract-first parallel slices — parallelization scored) | — (CLI/UX) | 200–350 (350 advised) | ≥ 85% (Huffcode assembly) | [specs/05-typescript-huffcode/SPEC.md](specs/05-typescript-huffcode/SPEC.md) | 🟨 implemented, awaiting grading |
+| 5 | `huffcode` | C# (.NET 8 console, xUnit + coverlet) | Lossless Huffman codec CLI (sprint tier, contract-first slices; parallel-safe) | — (CLI/UX) | 200–350 (350 advised) | ≥ 85% (Huffcode assembly) | [specs/05-typescript-huffcode/SPEC.md](specs/05-typescript-huffcode/SPEC.md) | 🟨 implemented, awaiting grading |
+| 6 | `fastcrc` | TypeScript (Node 20+, ESM, Vitest) | CRC-32 (IEEE 802.3) single-command checksum CLI (micro tier, ~10-min serial build) | — (CLI/UX) | 60–120 (120 advised) | ≥ 85% (src/) | [specs/06-typescript-fastcrc/SPEC.md](specs/06-typescript-fastcrc/SPEC.md) | ⬜ not run |
 
 Per-project verification commands (used in `PROCESS.md` Phase 3):
 
@@ -19,6 +20,7 @@ Per-project verification commands (used in `PROCESS.md` Phase 3):
 | `tripsplit` | `dotnet build` | `dotnet test` | `dotnet test --collect:"XPlat Code Coverage"` (coverlet, Core + Cli) | `dotnet run --project src/Tripsplit.Cli -- --help` → exit 0; settle + balance on `sample/ledger.json` byte-match spec §6.4 |
 | `logsluice` | `npm run build` (tsc) | `npm test` (vitest) | `npx vitest run --coverage` (v8, `src/`) | `node dist/cli.js --help` → exit 0; normalize + summary on `sample/` byte-match spec §6.4 |
 | `huffcode` | `dotnet build` | `dotnet test` | `dotnet test --collect:"XPlat Code Coverage"` (coverlet, Huffcode assembly) | `dotnet run --project src/Huffcode -- --help` → exit 0; encode + decode on `sample/message.txt` byte-match spec §6.2 |
+| `fastcrc` | `npm run build` (tsc) | `npm test` (vitest) | `npx vitest run --coverage` (v8, `src/`) | `node dist/cli.js --help` → exit 0; `node dist/cli.js --in <txt>` for `123456789` prints `cbf43926` byte-exact |
 
 ## Isolation (mandatory)
 
@@ -29,7 +31,7 @@ The working tree must never show one run's implementation to another agent. **Be
 One line per completed run for quick reference — appended by the agent at closing bookkeeping. **The canonical comparison is `results/RESULTS.md`** (per-project ranking + overall model leaderboard, markdown), regenerated by `scripts/build-report.py` after every execution; it ranks both active and archived runs. Graded runs live in `results/<project>/<model>-<harness>-<date>-<run-number>/` while active, then move to `results-archive/` via `scripts/archive-results.sh`.
 
 **Per-project tracking**: token count, avg t/s and wall time are compared **within the same project** (across models). Do not compare metrics across different projects — the specs differ in difficulty.
-`max_agents` = maximum concurrent subagents observed in the run's harness telemetry; `—` when the harness does not expose it. **Scored bonus** for the contract-first parallel-slice specs (`logsluice`, `huffcode`): their slice contracts are complete in-spec, so a serial agent gains no correctness — only more wall time — and is recorded without the bonus. Informational only (no gate) for all other projects.
+`max_agents` = maximum concurrent subagents observed in the run's harness telemetry; `—` when the harness does not expose it. Informational only — not a gate; compared within-project like the other metrics. It is meaningful only for specs designed for parallel slices (`logsluice`, `huffcode`) — those remain explicitly parallel-safe, but no bonus is awarded.
 
 ```
 | date | project | model/harness | verdict | coverage | total_tokens | avg t/s | wall_time | max_agents | notes |
