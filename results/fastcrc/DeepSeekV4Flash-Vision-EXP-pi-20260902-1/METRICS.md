@@ -1,8 +1,8 @@
 # METRICS — fastcrc / pi
 
 **Run dir**: results/fastcrc/DeepSeekV4Flash-Vision-EXP-pi-20260902-1
-**Started**: 2026-09-02 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-09-02 — time: `14:58:23`
+**Ended**: 2026-09-02 — time: `15:04:17`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,12 +12,12 @@
 project: fastcrc
 agent: pi
 model: DeepSeekV4Flash-Vision-EXP
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
+wall_time: 00:05:54
+total_tokens: 3888074
+input_tokens: 3837102
+output_tokens: 50972
+avg_tps: 143.66
+cost: 0.084484
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
 ```
@@ -25,17 +25,17 @@ score:                  # normalized 0–100 (from RESULT.md)
 ## Derivation notes
 
 - **wall_time**: harness session start → last message. Exclude operator idle time if the harness allows; note how it was computed.
-- **avg_tps**: output tokens ÷ generation time if exposed; otherwise output tokens ÷ wall_time (note which).
+- **avg_tps**: output tokens ÷ wall_time (00:05:54 = 354.81 s → 50,972 / 354.81 ≈ 143.66). The Pi harness exposes no per-message generation time, so wall_time is the denominator.
 - Include retries/errors in totals — they are part of the run's real cost.
 
 ## Extra observations
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 104 messages |
+| Errors/retries visible in transcript (build/test failures) | 0 |
+| Cache-read tokens (if reported) | 3,724,509 |
+| Harness + version | pi (Oh My Pi) |
 
 ## Where to find the numbers (by harness)
 
@@ -72,5 +72,8 @@ PY
 ## Raw transcript excerpt (evidence)
 
 ```
-(paste the final usage line / /cost output / status output here)
+session: ~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark-wt/2026-09-02T13-58-23-028Z_01a06269-e834-7101-98b9-931b53aa6bdb.jsonl
+input_tokens: 3837102  output_tokens: 50972  total_tokens: 3888074
+cache_read: 3724509  cache_write: 0  cost: 0.084484
+wall: 00:05:54 (session start 13:58:23Z -> last message at time of capture; session still live)
 ```
