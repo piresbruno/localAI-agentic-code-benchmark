@@ -39,8 +39,8 @@ Build a tiny .NET 8 console CLI that prints the CRC-32 (IEEE 802.3/ISO-HDLC) che
 
 ## Final report (fill at the end)
 
-- Wall-clock time: 00:18:30 measured so far (harness session start 06:22:43Z → last message; final value in METRICS.md)
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source): 3,561,309 total (3,519,717 in incl. 3,408,640 cache-read; 41,592 out) from omp session JSONL; avg 37.45 t/s = output ÷ wall time (generation time not exposed)
+- Wall-clock time: 00:19:58 (harness session start 06:22:43Z → last message; source: omp session JSONL)
+- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source): 4,220,603 total (4,173,822 in incl. 4,055,552 cache-read; 46,781 out) from omp session JSONL; avg 39.03 t/s = output ÷ wall time (generation time not exposed)
 - Errors/retries (build/test/lint): 3 — (1) build CS0103 `Cli` not found: top-level statements are in the global namespace, added `using Fastcrc;` to Program.cs; (2) build xUnit2013 analyzer: `Assert.Equal(1, ...Length)` → `Assert.Single`; (3) one malformed edit-tool call corrupted a line in CliTests.cs, repaired by rewriting the line. No test failures at any point after fixes.
 - Final coverage (number + measurement command): 97.77% lines / 100% branch on the Fastcrc assembly via `dotnet test --collect:"XPlat Code Coverage"` (coverage.cobertura.xml)
 - Line counts per directory: `src/Fastcrc` 117 (Program.cs 2, Crc.cs 22, Io.cs 10, Cli.cs 83); `tests/Fastcrc.Tests` 233 (AlgorithmTests.cs 46, CliTests.cs 187); sample/check.txt 1
