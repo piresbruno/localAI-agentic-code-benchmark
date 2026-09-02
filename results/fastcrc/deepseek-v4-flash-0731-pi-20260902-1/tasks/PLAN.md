@@ -52,9 +52,16 @@ assembly; zero warnings (TreatWarningsAsErrors + Nullable). Micro tier:
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
+- Wall-clock time: 00:12:39 (session 2026-09-02T14:06:47Z → 14:19:27Z, harness telemetry)
 - Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+  5,867,526 (input 5,798,050 incl. 5,495,552 cache-read; output 69,476); avg 91.4 out t/s —
+  from omp session JSONL (`~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark-wt/…jsonl`).
+- Errors/retries (build/test/lint): 1 test-run fix round (golden-test arg bug; xunit culture-sensitive
+  `DoesNotContain` on ESC — replaced with char-code assertion). Scaffold script BSD-sed
+  incompatibility worked around. No build/lint errors.
+- Final coverage (number + measurement command): 94.54% lines (Fastcrc assembly) via
+  `dotnet test --collect:"XPlat Code Coverage"` (gate ≥ 85%).
+- Line counts per directory: src/Fastcrc 142 non-blank (Crc 26, Io 13, Cli 96, Program 7);
+  tests/Fastcrc.Tests 159 non-blank; README 95 lines. src raw 161.
+- Deviations from spec: none functional. Advisory LOC 120 exceeded (142 non-blank) — driven by
+  the §7-scored help surface (all R7 tokens) and XML docs; feature set is exactly the spec's.

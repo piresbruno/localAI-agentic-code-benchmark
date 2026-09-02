@@ -1,8 +1,8 @@
 # METRICS — fastcrc / pi
 
 **Run dir**: results/fastcrc/deepseek-v4-flash-0731-pi-20260902-1
-**Started**: 2026-09-02 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-09-02 — time: `14:06:47`
+**Ended**: `14:19:27`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,12 +12,12 @@
 project: fastcrc
 agent: pi
 model: deepseek-v4-flash-0731
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
+wall_time: 00:12:39
+total_tokens: 5867526
+input_tokens: 5798050
+output_tokens: 69476
+avg_tps: 91.4
+cost: 0.117568
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
 ```
@@ -32,10 +32,10 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 229 JSONL rows (agent turns + tool calls) |
+| Errors/retries visible in transcript (build/test failures) | 1 test-run fix round: golden-test arg bug + xunit culture-sensitive ANSI assertion (fixed forward); scaffold script BSD-sed incompatibility (worked around) |
+| Cache-read tokens (if reported) | 5,495,552 |
+| Harness + version | pi (omp) |
 
 ## Where to find the numbers (by harness)
 
@@ -72,5 +72,8 @@ PY
 ## Raw transcript excerpt (evidence)
 
 ```
-(paste the final usage line / /cost output / status output here)
+session: ~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark-wt/2026-09-02T14-06-47-286Z_01a06271-99f6-7015-a0f0-0e901910e509.jsonl
+input_tokens: 5798050.0 (incl. cacheRead 5495552.0)  output_tokens: 69476.0  total_tokens: 5867526.0
+cost: 0.117568   wall: 2026-09-02T14:06:47.286Z -> 14:19:27.141Z (00:12:39)
+avg_tps: 91.4 (output / wall seconds)
 ```
