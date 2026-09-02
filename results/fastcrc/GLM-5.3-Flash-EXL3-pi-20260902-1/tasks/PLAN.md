@@ -39,7 +39,7 @@ checkout.
       exit codes, envelope, algorithm, example and --version prints
       `fastcrc 1.0.0`; R8 byte-identical output across runs; all exit 0.
       ✔ 8/8 tests green; smoke: golden `cbf43926`, --help exit 0, --version exit 0
-- [x] T4 — Quality gates: coverage ≥ 85 % on Fastcrc assembly measured with
+- [x] T5 — README per spec §10 (goal, quickstart ≤ 3 commands, architecture,
       `dotnet test --collect:"XPlat Code Coverage"`; zero warnings; layering
       self-review (only Cli.cs touches Console, only Io.cs does file I/O)
       Accept: real coverage number recorded, gates green.
@@ -66,9 +66,9 @@ checkout.
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:28:02 (harness session start → last message, from `~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark/2026-09-02T11-59-59-387Z_*.jsonl`)
+- Total tokens consumed (in + out) + avg output t/s: 2,529,484 total (2,489,961 input incl. 0 cache-read + 39,523 output), 23.5 t/s (output ÷ wall — generation time not exposed). Source: self-recorded from omp session JSONL (harness telemetry)
+- Errors/retries (build/test/lint): 2 — `scripts/new-run.sh` BSD-sed placeholder failure (filled manually); edit-tool misfire on `src/Fastcrc/Cli.cs` (rewritten cleanly). Zero build/test/lint failures; 8/8 tests green on every run
+- Final coverage (number + measurement command): 98.18 % lines (54/55) on the Fastcrc assembly via `dotnet test --collect:"XPlat Code Coverage"` (coverlet); only the 1-line `Program.cs` entry shim uncovered — gate ≥ 85 % met
+- Line counts per directory: `src/Fastcrc` 119 non-blank / 136 raw .cs lines (Cli.cs 81/93, Crc.cs 29/32, Io.cs 7/8, Program.cs 2/3); `tests/Fastcrc.Tests` 2 test files (CrcTests.cs, CliTests.cs); `sample/check.txt` 9 bytes
+- Deviations from spec: none functional — 8 documented decisions (classic .sln + net8.0 pin, sole-argument help/version, verbatim `--in` value, INPUT_NOT_FOUND for all read failures, cwd-independent golden path, independently derived R3 vectors, non-blank LOC convention, relaxed JSON encoder) in the table above
