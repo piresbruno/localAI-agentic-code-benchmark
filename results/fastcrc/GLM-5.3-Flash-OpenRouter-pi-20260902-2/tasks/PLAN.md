@@ -24,13 +24,13 @@ and eight named xUnit tests R1–R8, all in-process. Hard parts are exactness
       binary + 1 MiB pattern); Accept: R1–R3 green, values match zlib oracle.
 - [x] T3 — `Io.cs` `ReadAllBytes` (only file-I/O module); Accept: build green,
       wired as Cli's only read path.
-- [ ] T4 — `Cli.cs` argv parsing, JSON error envelope, exit codes + tests R4–R6;
+- [x] T4 — `Cli.cs` argv parsing, JSON error envelope, exit codes + tests R4–R6;
       Accept: success/0, data/1, usage/2 matrix green; stdout checksum-only,
       stderr envelope-only.
-- [ ] T5 — `--help`/`--version` per §7 + golden `sample/check.txt` fixture + tests R7–R8;
+- [x] T5 — `--help`/`--version` per §7 + golden `sample/check.txt` fixture + tests R7–R8;
       Accept: help documents command/flags/exit codes/envelope/algorithm, exit 0;
       version prints `fastcrc 1.0.0`; golden byte-exact `cbf43926\n`.
-- [ ] T6 — README + full quality gates; Accept: coverage ≥ 85% on Fastcrc assembly
+- [x] T6 — README + full quality gates; Accept: coverage ≥ 85% on Fastcrc assembly
       via `dotnet test --collect:"XPlat Code Coverage"`, zero warnings, smoke green.
 
 ## Decisions & spec deviations
