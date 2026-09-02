@@ -48,9 +48,9 @@ golden outputs.
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:21:35 (session start 03:26:26Z → last message 03:48:01Z)
+- Total tokens consumed (in + out) + avg output t/s: 4,004,930 total (input 3,955,962 incl. 3,862,784 cache-read; output 48,968); avg 37.8 t/s (output ÷ wall time). Source: omp session JSONL per-message `usage` records — `~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark/2026-09-02T03-26-26-000Z_01a06027-...jsonl`.
+- Errors/retries (build/test/lint): 0 test failures; 3 tool/compile hiccups fixed forward (new-run.sh BSD-sed, .slnx→.sln, two compile errors CS0103/CS0246); 0 API retries.
+- Final coverage (number + measurement command): 98.14% lines (Fastcrc assembly) via `dotnet test --collect:"XPlat Code Coverage"` (coverlet) — gate ≥85% met. Tested files: Program 0% (single `return` shim), Cli/Crc/Io 100%.
+- Line counts per directory: src/Fastcrc 109 (Program 2, Crc 24, Io 5, Cli 78); tests/Fastcrc.Tests 162 (CrcTests 30, CliTests 132); sample/check.txt 1 line (9 bytes).
+- Deviations from spec: none. Decisions (documented in table above and README): pinned package versions; `--in` extra/`--in` no-value are USAGE; missing directory → INPUT_NOT_FOUND; classic `.sln` (not `.slnx`).
