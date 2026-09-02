@@ -4,9 +4,7 @@ namespace Fastcrc;
 public static class Cli
 {
     private const string VersionText = "fastcrc 1.0.0";
-    private const int ExitSuccess = 0;
-    private const int ExitDataError = 1;
-    private const int ExitUsage = 2;
+    private const int ExitSuccess = 0, ExitDataError = 1, ExitUsage = 2;
 
     private const string HelpText = """
     fastcrc 1.0.0 — print the CRC-32 (IEEE 802.3) checksum of a file
@@ -38,27 +36,18 @@ public static class Cli
     /// <summary>Runs the CLI in-process and returns the process exit code.</summary>
     public static int RunCli(string[] args)
     {
-        if (args.Length == 0)
-        {
-            return Usage("missing required argument: --in <file>");
-        }
+        if (args.Length == 0) return Usage("missing required argument: --in <file>");
         if (args[0] is "--help" or "-h")
-        {
             return args.Length == 1 ? Print(HelpText) : Usage($"unexpected argument: {args[1]}");
-        }
         if (args[0] is "--version" or "-v")
-        {
             return args.Length == 1 ? Print(VersionText) : Usage($"unexpected argument: {args[1]}");
-        }
         if (args[0] == "--in")
-        {
             return args.Length switch
             {
                 1 => Usage("missing value for --in"),
                 2 => Checksum(args[1]),
                 _ => Usage($"unexpected argument: {args[2]}"),
             };
-        }
         return args[0].StartsWith('-') ? Usage($"unknown flag: {args[0]}") : Usage($"unexpected argument: {args[0]}");
     }
 
@@ -67,18 +56,13 @@ public static class Cli
     {
         try
         {
-            byte[] bytes = Io.ReadAllBytes(path);
-            Print(Crc.Crc32(bytes).ToString("x8"));
+            Print(Crc.Crc32(Io.ReadAllBytes(path)).ToString("x8"));
             return ExitSuccess;
         }
         catch (IOException ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
-        {
-            return DataError($"input file not found: {path}");
-        }
+        { return DataError($"input file not found: {path}"); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            return DataError($"cannot read input file: {path}");
-        }
+        { return DataError($"cannot read input file: {path}"); }
     }
 
     /// <summary>Writes one line to stdout with a byte-deterministic LF ending; returns 0.</summary>
@@ -88,29 +72,16 @@ public static class Cli
         return ExitSuccess;
     }
 
-    private static int Usage(string message)
-    {
-        WriteError("USAGE", message);
-        return ExitUsage;
-    }
+    private static int Usage(string message) { WriteError("USAGE", message); return ExitUsage; }
 
-    private static int DataError(string message)
-    {
-        WriteError("INPUT_NOT_FOUND", message);
-        return ExitDataError;
-    }
+    private static int DataError(string message) { WriteError("INPUT_NOT_FOUND", message); return ExitDataError; }
 
     /// <summary>Writes the single-line JSON error envelope to stderr.</summary>
-    private static void WriteError(string code, string message)
-    {
+    private static void WriteError(string code, string message) =>
         Console.Error.Write($"{{\"error\":{{\"code\":\"{code}\",\"message\":\"{EscapeJson(message)}\"}}}}\n");
-    }
 
     /// <summary>Escapes the characters that must not appear raw inside a JSON string.</summary>
     private static string EscapeJson(string text) => text
-        .Replace("\\", "\\\\")
-        .Replace("\"", "\\\"")
-        .Replace("\n", "\\n")
-        .Replace("\r", "\\r")
-        .Replace("\t", "\\t");
+        .Replace("\\", "\\\\").Replace("\"", "\\\"")
+        .Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
 }
