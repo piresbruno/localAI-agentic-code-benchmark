@@ -103,6 +103,22 @@ describe("ingest ordering", () => {
   });
 });
 
+describe("ingest blank lines", () => {
+  it("skips blank lines but keeps physical line numbers in source", async () => {
+    const f = path.join(dir, "blanks.jsonl");
+    await writeFile(
+      f,
+      '\n{"ts":"2026-09-01T12:00:00Z","level":"verbose","svc":"a","msg":"x"}\n' +
+        '   \n{"ts":"2026-09-01T12:00:01Z","level":"info","svc":"a","msg":"ok"}\n',
+    );
+    const r = await ingest([f], AUTO);
+    expect(r.error).toBeNull();
+    expect(r.events).toHaveLength(1);
+    expect(r.events[0]!.source.line).toBe(4); // physical line, blanks skipped but counted
+    expect(r.quarantined[0]!.source.line).toBe(2);
+  });
+});
+
 describe("ingest quarantine", () => {
   it("quarantine_carries_raw_source_reason (R3)", async () => {
     const f = path.join(dir, "q.jsonl");
