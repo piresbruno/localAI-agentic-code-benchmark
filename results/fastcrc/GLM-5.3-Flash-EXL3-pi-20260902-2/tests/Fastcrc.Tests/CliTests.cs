@@ -46,6 +46,9 @@ public class CliTests
         Assert.Equal(1, exit);
         Assert.Equal(string.Empty, stdout);
         Assert.Equal("{\"error\":{\"code\":\"INPUT_NOT_FOUND\",\"message\":\"input file not found: no/such/input.bin\"}}\n", stderr);
+        var (escapedExit, _, escapedErr) = Run("--in", "we\"ird\\pa\th");
+        Assert.Equal(1, escapedExit);
+        Assert.Equal("{\"error\":{\"code\":\"INPUT_NOT_FOUND\",\"message\":\"input file not found: we\\\"ird\\\\pa\\u0009h\"}}\n", escapedErr);
     }
 
     [Fact]
@@ -69,6 +72,7 @@ public class CliTests
             new[] { "--in", "" },
             new[] { "--in", "sample/check.txt", "extra.txt" },
             new[] { "positional.txt" },
+            new[] { "--in", "sample/check.txt", "--in", "other.txt" },
         };
         foreach (string[] args in usageCases)
         {
@@ -78,6 +82,24 @@ public class CliTests
             Assert.StartsWith("{\"error\":{\"code\":\"USAGE\",\"message\":\"", stderr);
             Assert.EndsWith("\"}}\n", stderr);
             Assert.DoesNotContain((char)0x1B, stderr);
+        }
+    }
+
+    [Fact]
+    public void maps_unreadable_input_to_data_error()
+    {
+        string dir = Path.Combine(Path.GetTempPath(), "fastcrc-tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dir);
+        try
+        {
+            var (exit, stdout, stderr) = Run("--in", dir);
+            Assert.Equal(1, exit);
+            Assert.Equal(string.Empty, stdout);
+            Assert.Equal("{\"error\":{\"code\":\"INPUT_NOT_FOUND\",\"message\":\"cannot read input file: " + dir + "\"}}\n", stderr);
+        }
+        finally
+        {
+            Directory.Delete(dir);
         }
     }
 
