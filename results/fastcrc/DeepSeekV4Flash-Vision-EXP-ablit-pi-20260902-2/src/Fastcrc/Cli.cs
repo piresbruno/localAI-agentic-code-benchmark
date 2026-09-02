@@ -6,8 +6,6 @@ namespace Fastcrc;
 /// <summary>Argv parsing, the JSON error envelope, exit codes and help text.</summary>
 public static class Cli
 {
-    private const string VersionLine = "fastcrc 1.0.0";
-
     private const string Help =
         "usage: fastcrc --in <file>\n" +
         "\n" +
@@ -49,7 +47,7 @@ public static class Cli
 
         if (args.Length == 1 && (args[0] == "--version" || args[0] == "-v"))
         {
-            Console.Out.WriteLine(VersionLine);
+            Console.Out.WriteLine("fastcrc 1.0.0");
             return 0;
         }
 
@@ -60,8 +58,7 @@ public static class Cli
 
         if (args.Length != 2)
         {
-            string message = args.Length < 2 ? "missing value for --in" : $"unexpected argument: {args[2]}";
-            return Error("USAGE", message);
+            return Error("USAGE", args.Length < 2 ? "missing value for --in" : $"unexpected argument: {args[2]}");
         }
 
         byte[] bytes;

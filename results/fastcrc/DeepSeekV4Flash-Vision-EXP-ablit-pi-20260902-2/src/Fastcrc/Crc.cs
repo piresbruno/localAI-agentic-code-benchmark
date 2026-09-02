@@ -5,8 +5,7 @@ public static class Crc
 {
     private const uint Polynomial = 0xEDB88320;
 
-    /// <summary>Computes the reflected CRC-32 checksum of <paramref name="data"/>.</summary>
-    /// <returns>Checksum in 0..0xFFFFFFFF; empty input yields 0.</returns>
+    /// <summary>Computes the reflected CRC-32 checksum of <paramref name="data"/> (0 for empty input).</summary>
     public static uint Crc32(byte[] data)
     {
         uint crc = 0xFFFFFFFF;
