@@ -45,9 +45,9 @@ and eight named xUnit tests R1–R8, all in-process. Hard parts are exactness
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:14:05 (omp session JSONL: first → last event)
+- Total tokens consumed (in + out) + avg output t/s: 2,248,459 total (2,212,181 input incl. 1,757,056 cache-read + 36,278 output), 42.9 out/s (output ÷ wall) — source: omp session JSONL, self-reported harness telemetry
+- Errors/retries (build/test/lint): 1 — stray token `entic` in CliTests.cs caught in review before first build (fixed forward); TDD red run was by design; scaffold BSD-sed placeholder bug worked around manually
+- Final coverage (number + measurement command): 98.21% lines (Fastcrc assembly) via `dotnet test --collect:"XPlat Code Coverage"` (coverlet.cobertura.xml, package name="Fastcrc"); only Program.cs shim uncovered
+- Line counts per directory: src/Fastcrc — 140 raw / 118 non-blank (Cli 97, Crc 32, Io 8, Program 3); tests — 177 raw across 3 files (CliTests 95, Crc32Tests 32, TestHost 50); sample fixture 9 bytes
+- Deviations from spec: none beyond the 5 decisions in the table above (all under "spec silent" or safer readings)

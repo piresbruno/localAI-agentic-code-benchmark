@@ -2,7 +2,7 @@
 
 **Run dir**: results/GLM-5.3-Flash-OpenRouter-pi-20260902-2
 **Started**: 2026-09-02 — time: `14:58`
-**Ended**: `____:____`
+**Ended**: `15:11`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,12 +12,12 @@
 project: fastcrc
 agent: GLM-5.3-Flash-OpenRouter
 model: GLM-5.3-Flash-OpenRouter
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
+wall_time: 00:14:05
+total_tokens: 2248459
+input_tokens: 2212181
+output_tokens: 36278
+avg_tps: 42.9
+cost: 0.139119
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
 ```
@@ -32,10 +32,10 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 32 assistant messages |
+| Errors/retries visible in transcript (build/test failures) | 1 — stray token in CliTests.cs caught in review before first build; TDD red run by design; scaffold BSD-sed bug worked around |
+| Cache-read tokens (if reported) | 1,757,056 |
+| Harness + version | pi (Oh My Pi); GLM-5.3-Flash via OpenRouter |
 
 ## Where to find the numbers (by harness)
 
@@ -64,7 +64,7 @@ for line in open(p):
         cw += u.get("cacheWrite", 0)
         cost += (u.get("cost") or {}).get("total", 0)
 print("session:", p)
-print("input_tokens:", i, "output_tokens:", o, "total_tokens:", i + o)
+print("input_tokens: 2212181", i, "output_tokens: 36278", o, "total_tokens:", i + o)
 print("cache_read:", cr, "cache_write:", cw, "cost:", round(cost, 6))
 PY
 ```
@@ -72,5 +72,9 @@ PY
 ## Raw transcript excerpt (evidence)
 
 ```
-(paste the final usage line / /cost output / status output here)
+session: ~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark/2026-09-02T13-57-41-663Z_01a06269-469f-7638-a3d3-0e53e02e5090.jsonl
+messages with usage: 32 | first_ts: 2026-09-02T13:57:41.663Z last_ts: 2026-09-02T14:11:47.648Z
+input_tokens: 2212181 output_tokens: 36278 total_tokens: 2248459
+cache_read: 1757056 cache_write: 0 cost: 0.139119
+wall seconds: 845 wall: 00:14:05 | avg tps (out/wall): 42.9
 ```
