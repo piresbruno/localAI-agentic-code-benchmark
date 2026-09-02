@@ -1,7 +1,24 @@
+# macOS metadata
+._*
+.DS_Store
+
+# Editor noise
+*.swp
+.idea/
+.vscode/
+
+# Build/dependency junk generated inside run projects (agents must not commit these)
 node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
 dist/
+build/
+bin/
+obj/
 coverage/
-out.jsonl
-out.jsonl.quarantine
-quarantine.jsonl
-*.log
+.coverage
+*.egg-info/
+
+# Do NOT ignore results/ — graded runs and results/index.html are the artifacts.

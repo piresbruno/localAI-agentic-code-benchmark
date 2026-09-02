@@ -1,0 +1,2 @@
+Sep  1 12:00:07 host billing[7]: FATAL: db conn lost
+Sep 01 12:00:08 host auth[8]: info: token refresh
