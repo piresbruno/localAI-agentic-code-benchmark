@@ -20,9 +20,9 @@ and eight named xUnit tests R1–R8, all in-process. Hard parts are exactness
 
 - [ ] T1 — Scaffold project skeleton per §3 (sln, src/Fastcrc csproj + Program shim,
       tests/Fastcrc.Tests xUnit + coverlet); Accept: `dotnet build` zero errors/warnings.
-- [ ] T2 — `Crc.cs` pure table-driven CRC-32 + tests R1–R3 (pinned values, empty,
+- [x] T2 — `Crc.cs` pure table-driven CRC-32 + tests R1–R3 (pinned values, empty,
       binary + 1 MiB pattern); Accept: R1–R3 green, values match zlib oracle.
-- [ ] T3 — `Io.cs` `ReadAllBytes` (only file-I/O module); Accept: build green,
+- [x] T3 — `Io.cs` `ReadAllBytes` (only file-I/O module); Accept: build green,
       wired as Cli's only read path.
 - [ ] T4 — `Cli.cs` argv parsing, JSON error envelope, exit codes + tests R4–R6;
       Accept: success/0, data/1, usage/2 matrix green; stdout checksum-only,
