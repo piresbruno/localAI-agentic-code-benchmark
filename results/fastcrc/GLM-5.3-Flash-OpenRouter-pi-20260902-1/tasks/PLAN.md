@@ -36,9 +36,9 @@ Fastcrc is a micro-tier .NET 8 console CLI: `fastcrc --in <file>` prints the CRC
 
 ## Final report (fill at the end)
 
-- Wall-clock time:
-- Total tokens consumed (in + out) + avg output t/s (if the harness exposes them; state source):
-- Errors/retries (build/test/lint):
-- Final coverage (number + measurement command):
-- Line counts per directory:
-- Deviations from spec:
+- Wall-clock time: 00:30:11 (harness session 13:18:46Z -> 13:48:57Z, omp session JSONL)
+- Total tokens consumed: 1,776,461 (input 1,712,695 incl. 1,557,696 cache-read + output 63,766), avg 35.2 out t/s, cost $0.1019 - source: omp session JSONL
+- Errors/retries (build/test/lint): 3, all fixed forward: new-run.sh BSD-sed placeholder failure (manual substitution); CS1010; CS0103 (JS template-escaping of C# literals)
+- Final coverage: 94.23% lines via dotnet test --collect:"XPlat Code Coverage" (package name="Fastcrc" line-rate 0.9423)
+- Line counts per directory: src non-blank 105 (Program 2, Crc 25, Io 5, Cli 73); tests 191 non-blank; within 60-120 micro-tier target
+- Deviations from spec: none beyond the PLAN.md table (worktree, INPUT_NOT_FOUND mapping, strict flag parsing)

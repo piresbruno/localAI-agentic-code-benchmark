@@ -1,8 +1,8 @@
 # METRICS — fastcrc / pi
 
 **Run dir**: results/fastcrc/GLM-5.3-Flash-OpenRouter-pi-20260902-1
-**Started**: 2026-09-02 — time: `____:____`
-**Ended**: `____:____`
+**Started**: 2026-09-02 — time: `13:18:46Z`
+**Ended**: `13:48:57Z`
 
 > Fill this from **harness telemetry** (session logs below), NOT from the agent's own report. The agent's self-report goes in PLAN.md; if the two disagree, the harness numbers win. After grading, copy `verdict` and `score` from RESULT.md into the yaml block — `build-report.py` reads it for the `results/RESULTS.md` ranking.
 
@@ -12,12 +12,12 @@
 project: fastcrc
 agent: pi
 model: GLM-5.3-Flash-OpenRouter
-wall_time:              # hh:mm:ss, total execution time
-total_tokens:           # input + output
-input_tokens:
-output_tokens:
-avg_tps:                # output tokens / sec
-cost:
+wall_time: 00:30:11
+total_tokens: 1776461
+input_tokens: 1712695
+output_tokens: 63766
+avg_tps: 35.2
+cost: 0.101864
 verdict:                # PASS | PASS-WITH-NOTES | FAIL  (from RESULT.md)
 score:                  # normalized 0–100 (from RESULT.md)
 ```
@@ -32,10 +32,10 @@ score:                  # normalized 0–100 (from RESULT.md)
 
 | Metric | Value |
 |--------|-------|
-| Session/turn count | |
-| Errors/retries visible in transcript (build/test failures) | |
-| Cache-read tokens (if reported) | |
-| Harness + version | |
+| Session/turn count | 1 session, 23 usage-bearing assistant messages |
+| Errors/retries visible in transcript (build/test failures) | 3 fixed forward: new-run.sh BSD-sed placeholder failure (manual substitution); CS1010; CS0103 (JS template-escaping of C# literals) |
+| Cache-read tokens (if reported) | 1,557,696 |
+| Harness + version | Oh My Pi (pi), model glm-5.3-flash via OpenRouter; max concurrent subagents 0 (serial, micro-tier) |
 
 ## Where to find the numbers (by harness)
 
@@ -72,5 +72,9 @@ PY
 ## Raw transcript excerpt (evidence)
 
 ```
-(paste the final usage line / /cost output / status output here)
+session: ~/.omp/agent/sessions/-Developer-localAI-agentic-code-benchmark/2026-09-02T13-18-46-570Z_01a06245-a52a-71b0-a886-56b24c7d2f11.jsonl
+first_ts: 2026-09-02T13:18:46.570Z  last_ts: 2026-09-02T13:48:57.678Z
+input_tokens (incl cacheRead): 1712695  output_tokens: 63766  total: 1776461
+cacheRead: 1557696  cacheWrite: 0  cost: 0.101864
+wall: 00:30:11 (1811s)  avg_tps (output/wall): 35.2
 ```
