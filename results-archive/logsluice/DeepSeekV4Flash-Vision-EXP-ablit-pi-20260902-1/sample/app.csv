@@ -1,4 +1,0 @@
-timestamp,level,service,message,duration_ms,extra
-2026-09-01 12:00:05,INFO,billing,"retried, then ok",
-2026-09-01 12:00:06,error,api-gateway,timeout,999
-2026-09-01 12:00:10,fatal,billing,refund lost,60
